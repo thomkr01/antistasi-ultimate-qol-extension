@@ -150,7 +150,8 @@ SQF_KEYWORDS = {"private", "params", "if", "then", "else", "exitWith", "forEach"
                 "from", "to", "step", "for", "with", "isNil", "isNull", "not", "and", "or"}
 MAGIC = {"_this", "_x", "_y", "_forEachIndex", "_thisEventHandler", "_thisSetting"}
 EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player",
-                    "BIS_fnc_holdActionAdd", "BIS_fnc_holdActionRemove", "SCRT_fnc_loot_gatherLoot"}
+                    "BIS_fnc_holdActionAdd", "BIS_fnc_holdActionRemove", "SCRT_fnc_loot_gatherLoot",
+                    "SCRT_fnc_common_getNearPlayers"}
 
 
 def check_wiki(wiki):
@@ -302,8 +303,12 @@ def check_antistasi(au):
     # Loot gathering: the crate's function, action, radius parameter and class AUQOL mirrors.
     loot = au / "A3A" / "addons" / "scrt" / "Loot"
     gather = (loot / "fn_loot_gatherLoot.sqf").read_text()
-    if 'params ["_vehicle", "_radius"' not in gather:
+    if 'params ["_vehicle", "_radius", ["_overridePosition",[]]]' not in gather:
         problems.append("SCRT_fnc_loot_gatherLoot parameters changed")
+    if "_overridePosition isEqualTo [] && {[getPosATL player, _radius] call A3A_fnc_enemyNearCheck}" not in gather:
+        problems.append("SCRT_fnc_loot_gatherLoot no longer skips its enemy check when given a position")
+    if not list((au / "A3A" / "addons" / "scrt").rglob("fn_common_getNearPlayers.sqf")) or not list((au / "A3A" / "addons").rglob("fn_enemyNearCheck.sqf")):
+        problems.append("SCRT_fnc_common_getNearPlayers or A3A_fnc_enemyNearCheck not found")
     addaction = (loot / "fn_loot_addActionLoot.sqf").read_text()
     for needed in ('"lootActionID"', "STR_antistasi_actions_loot_around_text", "holdaction_box_ca.paa", "lootCrateDistance"):
         if needed not in addaction:

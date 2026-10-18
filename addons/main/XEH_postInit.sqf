@@ -3,6 +3,10 @@
 // Network events. Each runs on the machine that owns the object passed as target.
 ["auqol_eject_unit", { _this call AUQOL_fnc_ejectUnit }] call CBA_fnc_addEventHandler;
 ["auqol_service_refill", { _this call AUQOL_fnc_serviceRefillLocal }] call CBA_fnc_addEventHandler;
+["auqol_loot_message", {
+    systemChat localize (_this select 0);
+    playSound "A3AP_UiFailure";
+}] call CBA_fnc_addEventHandler;
 if (isServer) then {
     ["auqol_capacity_apply", { _this call AUQOL_fnc_capacityApply }] call CBA_fnc_addEventHandler;
     ["auqol_loot_gather", { _this call AUQOL_fnc_lootGather }] call CBA_fnc_addEventHandler;

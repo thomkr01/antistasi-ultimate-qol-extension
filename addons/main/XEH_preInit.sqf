@@ -104,7 +104,14 @@ private _capacityChanged = { if (auqol_ready && {isServer}) then { call AUQOL_fn
 
 [
     "auqol_loot_radius", "SLIDER",
-    ["Loot gather radius (m)", "How far around the vehicle or loot crate loot is gathered from, 10 to 2000 m. Antistasi's enemies-nearby check uses the same radius."],
+    ["Loot gather radius (m)", "How far around the vehicle or loot crate loot is gathered from, 10 to 2000 m."],
+    [_category, "Loot gathering"],
+    [10, 2000, 2000, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_loot_enemyRadius", "SLIDER",
+    ["Enemy check radius (m)", "Gathering is refused while an enemy in combat mode is this close to the vehicle or crate, 10 to 2000 m."],
     [_category, "Loot gathering"],
     [10, 2000, 500, 0], 1
 ] call CBA_fnc_addSetting;

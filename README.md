@@ -49,7 +49,8 @@ Open **Options → Addon Options → Antistasi Ultimate QoL**. "Server" settings
 | `auqol_capacity_enabled` | Checkbox | On | Server | Increase carrying capacity. |
 | `auqol_capacity_multiplier` | Slider 1–1000 | 1000 | Server | Container capacity multiplier. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
-| `auqol_loot_radius` | Slider 10–2000 | 500 | Server | Loot gather radius in metres. |
+| `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
+| `auqol_loot_enemyRadius` | Slider 10–2000 | 500 | Server | Gathering is refused while an enemy in combat is this close. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
 | `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, capacity change and loot run. |
@@ -76,7 +77,7 @@ Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 - **Ejection** listens to the global `Dammaged`, `Fuel` and `GetIn` events on land vehicles, excluding static weapons, and acts only on the machine where the vehicle is local. That can be the server, a headless client or a player. A vehicle counts as immobilized when `canMove` is false, or, if enabled, when its fuel is exactly 0. Parked or waiting vehicles never qualify. The mod waits until the vehicle is below 3 km/h, then moves each eligible unit out on the machine that owns it, with `unassignVehicle`, `moveOut` and `leaveVehicle`. Nothing is damaged and ownership is unchanged.
 - **Service stock** refills only the service cargo (`setFuelCargo`, `setAmmoCargo`, `setRepairCargo`) of objects whose config declares that service. It refills from the vanilla `Service` event while a vehicle is being serviced, and once when the object appears. A fuel truck's own engine fuel is never touched. Under ACE it uses ACE's own APIs instead.
 - **Player features** are applied on settings change, on respawn or unit change, and by a 5-second re-check, because Antistasi re-applies role traits without raising an event. They only restore values AUQOL itself changed.
-- **Loot** adds a copy of the crate's hold action to vehicles and swaps it in on the crate. Completing it asks the server to run Antistasi's own `SCRT_fnc_loot_gatherLoot`, the crate's function, with the AUQOL radius. Enemy check, 10-second cooldown, unlocked-item rule and money split are Antistasi's.
+- **Loot** adds a copy of the crate's hold action to vehicles and swaps it in on the crate. Completing it asks the server to run Antistasi's own `SCRT_fnc_loot_gatherLoot`, the crate's function, with the AUQOL radius. The 10-second cooldown, unlocked-item rule and money split are Antistasi's. The enemies-nearby check is done by AUQOL with its own radius, using Antistasi's `A3A_fnc_enemyNearCheck`.
 - **Withstand** sets `A3A_selfReviveTimeout`, the cooldown Antistasi's `A3A_fnc_selfRevive` reads, which defaults to 300 s.
 - **Capacity** is applied by the server, because `setMaxLoad` must run there. It is re-applied when your worn containers change, and containers you drop go back to normal capacity.
 
@@ -104,7 +105,6 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - ACE rearm's "magazine supply" mode is a stockpile of specific magazines and is not made infinite.
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.
 - The engine caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change that per unit, so AUQOL raises it to 9999 in config for every unit, AI included, and it has no in-game switch. See [docs/configuration.md](docs/configuration.md#carrying-capacity).
-- Loot gathering keeps Antistasi's "enemies nearby" check, which uses the same radius. A large radius blocks gathering while any enemy in combat mode is that close.
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
 - Antistasi's loadout screen draws its capacity bars from config values, so with the multiplier on it can show more than 100%.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.

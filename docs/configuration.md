@@ -76,9 +76,10 @@ Needs Antistasi Ultimate. Without it the action is not added.
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
 | `auqol_loot_enabled` | Checkbox | On | Server | Adds the loot crate's "Gather Scattered Loot" hold action to every land vehicle, aircraft and boat (not static weapons), and makes vehicles and the loot crate use `auqol_loot_radius`. Off: vehicles lose the action and the crate uses Antistasi's `lootCrateDistance` parameter again. |
-| `auqol_loot_radius` | Slider 10–2000, integer | 500 | Server | Gather radius in metres around the vehicle or crate. Antistasi's crate parameter only goes to 400. |
+| `auqol_loot_radius` | Slider 10–2000, integer | 2000 | Server | Gather radius in metres around the vehicle or crate. Antistasi's crate parameter only goes to 400. |
+| `auqol_loot_enemyRadius` | Slider 10–2000, integer | 500 | Server | Gathering is refused while an enemy in combat mode is within this distance of the vehicle or crate. Antistasi's own check would use the gather radius. |
 
-The action is the crate's own: same text, icon, 2-second hold, on foot within 5 m. Completing it runs Antistasi's `SCRT_fnc_loot_gatherLoot` on the server, so everything else is the crate's behaviour: dead bodies, weapon holders and surrender crates in the radius are emptied into the vehicle, money items are split between rebel players, already-unlocked items follow the mission's "loot crate ignores unlocked items" parameter, there is a 10-second cooldown per vehicle, and it refuses while enemies in combat mode are within the radius. Items are added even past the vehicle's normal cargo capacity, as with the crate.
+The action is the crate's own: same text, icon, 2-second hold, on foot within 5 m. Completing it runs Antistasi's `SCRT_fnc_loot_gatherLoot` on the server, so everything else is the crate's behaviour: dead bodies, weapon holders and surrender crates in the radius are emptied into the vehicle, money items are split between rebel players, already-unlocked items follow the mission's "loot crate ignores unlocked items" parameter, and there is a 10-second cooldown per vehicle. The enemies-nearby check is AUQOL's, with `auqol_loot_enemyRadius`, centred on the vehicle. Antistasi's crate centres it on the host player instead, which on a dedicated server is no position at all. Items are added even past the vehicle's normal cargo capacity, as with the crate.
 
 ## Withstand
 
