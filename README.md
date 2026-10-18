@@ -2,6 +2,8 @@
 
 A standalone Arma 3 addon that adds quality-of-life features to Antistasi Ultimate without editing any mission file. It needs CBA_A3. ACE3, RHS and CUP are optional, and the mod detects them at runtime.
 
+A full description of each feature and its rules is in [FEATURES.md](FEATURES.md).
+
 | Feature | What it does |
 | --- | --- |
 | Enemy crew ejection | When an enemy AI land vehicle can no longer move, its living enemy AI occupants are moved out and their group stops using the vehicle. |

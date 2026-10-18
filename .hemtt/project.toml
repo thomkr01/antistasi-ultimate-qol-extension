@@ -11,5 +11,6 @@ git_hash = 0
 include = [
     "mod.cpp",
     "README.md",
+    "FEATURES.md",
     "LICENSE",
 ]
