@@ -40,7 +40,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 32 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.2.3.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.2.4.zip
 ```
 
 ### Not covered by static checks
@@ -57,7 +57,7 @@ Run this in single player first, then on a dedicated server with a second client
 ### 1. Startup and diagnostics
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.2.3 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+2. Check the RPT for the `[AUQOL] Version 1.2.4 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
 3. Open Addon Options and check the 12 settings listed in the README.
 
 ### 2. Enemy crew ejection
@@ -78,7 +78,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### 4. Player features
 
-1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, and container maximums equal to config × 9999.
+1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, and container maximums of 9999.
 2. Aim down sights while standing after a sprint: there should be no sway. Sprint for several minutes: there should be no exhaustion. Fill a backpack with heavy items and sprint: no slowdown or forced walking.
 3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within 5 s.
 4. Toggle each player setting off. Sway, stamina and loadCoef should return to normal: aim coef 1, stamina on, and loadCoef back to the role's value.

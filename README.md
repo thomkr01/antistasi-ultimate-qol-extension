@@ -11,7 +11,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | No weapon sway | Removes weapon sway for your own character. |
 | Unlimited stamina | Your own character never tires. AI is unchanged. |
 | Weight-independent running | Carried weight no longer drains or reserves your stamina. |
-| Carrying capacity | Multiplies your uniform, vest and backpack capacity, 9999x by default. |
+| Carrying capacity | Your uniform, vest and backpack each hold 9999 by default. |
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 
@@ -47,7 +47,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
 | `auqol_capacity_enabled` | Checkbox | On | Server | Increase carrying capacity. |
-| `auqol_capacity_multiplier` | Slider 1–9999 | 9999 | Server | Container capacity multiplier. |
+| `auqol_capacity_value` | Slider 1–9999 | 9999 | Server | Capacity of each worn container. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
 | `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
 | `auqol_loot_enemyRadius` | Slider 10–2000 | 500 | Server | Gathering is refused while an enemy in combat is this close. |
@@ -106,7 +106,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.
 - The engine caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change that per unit, so AUQOL raises it to 9999 in config for every unit, AI included, and it has no in-game switch. See [docs/configuration.md](docs/configuration.md#carrying-capacity).
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
-- Antistasi's loadout screen draws its capacity bars from config values, so with the multiplier on it can show more than 100%.
+- Antistasi's loadout screen draws its capacity bars from config values, so with this feature on it can show more than 100%.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).

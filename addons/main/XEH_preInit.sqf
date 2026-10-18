@@ -82,14 +82,14 @@ private _capacityChanged = { if (auqol_ready && {isServer}) then { call AUQOL_fn
 
 [
     "auqol_capacity_enabled", "CHECKBOX",
-    ["Increase carrying capacity", "Multiplies the capacity of players' uniform, vest and backpack containers."],
+    ["Increase carrying capacity", "Gives players' uniform, vest and backpack containers the capacity below."],
     [_category, "Carrying capacity"],
     true, 1, _capacityChanged
 ] call CBA_fnc_addSetting;
 
 [
-    "auqol_capacity_multiplier", "SLIDER",
-    ["Carrying capacity multiplier", "Container capacity multiplier, 1 to 9999. The engine's total soldier load limit (maxSoldierLoad) is a static config value (9999 in this mod) and is not changed by this setting."],
+    "auqol_capacity_value", "SLIDER",
+    ["Container capacity", "Capacity of each worn uniform, vest and backpack, 1 to 9999. Containers that are already bigger keep their own capacity. The engine's total soldier load limit (maxSoldierLoad) is a static config value (9999 in this mod) and is not changed by this setting."],
     [_category, "Carrying capacity"],
     [1, 9999, 9999, 0], 1, _capacityChanged
 ] call CBA_fnc_addSetting;

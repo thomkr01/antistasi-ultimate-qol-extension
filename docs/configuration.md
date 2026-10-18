@@ -1,6 +1,6 @@
 # Configuration
 
-All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_multiplier = 100;`.
+All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_value = 5000;`.
 
 **Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. The player features are also server settings, so the server decides for everyone, while the effect is still applied on each player's own machine. Only `auqol_debug` is *Client* (`isGlobal = 0`).
 
@@ -54,8 +54,8 @@ These only ever affect the local player's unit. AI is not changed.
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_capacity_enabled` | Checkbox | On | Server | Turn the multiplier on or off. |
-| `auqol_capacity_multiplier` | Slider 1–9999, integer | 9999 | Server | Each worn container's capacity becomes its config capacity (`getContainerMaxLoad`) times this value. |
+| `auqol_capacity_enabled` | Checkbox | On | Server | Turn the capacity change on or off. |
+| `auqol_capacity_value` | Slider 1–9999, integer | 9999 | Server | Each worn container's capacity becomes this value. A container whose config capacity (`getContainerMaxLoad`) is already higher is left alone. |
 
 **Which capacity systems are affected:**
 
@@ -67,7 +67,7 @@ These only ever affect the local player's unit. AI is not changed.
 | Antistasi arsenal restrictions | No | These are unlock counts, not capacity. |
 | Antistasi logistics (vehicle cargo nodes) | No | Vehicle cargo slots are a separate mechanic. |
 
-Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The multiplier is clamped to 1–9999, and the slider only allows integers, so there are no overflow or invalid values: the largest vanilla backpack times 9999 is well within float precision.
+Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The value is clamped to 1–9999 and the slider only allows integers, so there are no invalid values.
 
 ## Loot gathering
 

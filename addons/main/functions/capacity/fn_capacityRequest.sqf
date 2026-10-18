@@ -2,7 +2,7 @@
     Author: AUQOL
     Client side of the carrying-capacity feature. setMaxLoad has to run on the server, so whenever the
     player's uniform, vest or backpack container objects change, the server is asked to re-apply the
-    multiplier, and to restore containers the player no longer wears (a dropped backpack must not
+    capacity, and to restore containers the player no longer wears (a dropped backpack must not
     keep the boosted capacity for whoever picks it up). Loadout events fire on every inventory change;
     the container comparison keeps this to one request per actual container change.
 

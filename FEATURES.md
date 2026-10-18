@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.3. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.4. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -59,13 +59,13 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 - **ACE:** ACE's movement load base and the load it reports to fatigue are kept at 0 as well.
 - **Setting:** `auqol_player_weightless`, server-wide, on by default.
 
-## 6. Carrying capacity multiplier
+## 6. Carrying capacity
 
-Your uniform, vest and backpack hold more, by a multiplier of 9999 by default.
+Your uniform, vest and backpack each get a fixed capacity, 9999 by default. Containers that are already bigger keep their own capacity.
 
 - Applied on the server to the containers players are wearing, as the engine requires. Changing gear or respawning re-applies it. A dropped container goes back to its normal capacity, so anyone who picks it up gets the normal amount.
 - **Total load cap:** the game caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change it per unit, so AUQOL raises it to 9999 in config. That applies to every unit, AI included, and has no in-game switch.
-- **Settings:** `auqol_capacity_enabled` (on) and `auqol_capacity_multiplier` (1 to 9999, default 9999). Both are server-wide.
+- **Settings:** `auqol_capacity_enabled` (on) and `auqol_capacity_value` (1 to 9999, default 9999). Both are server-wide.
 
 ## 7. Loot from any vehicle
 

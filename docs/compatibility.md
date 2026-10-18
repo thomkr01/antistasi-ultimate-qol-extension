@@ -49,7 +49,7 @@ If an ACE function is missing, AUQOL logs one warning and leaves that ACE path u
 | Refill vanilla cargo | `setFuelCargo` / `setAmmoCargo` / `setRepairCargo` (local arg, global effect) | The service object's owner, either directly or through `CBA_fnc_targetEvent`, throttled to once per 2 s per object |
 | ACE refuel and rearm sources | `makeSource` (server only), `setSupplyCount` (public variable) | Server |
 | Antistasi garage | Garage state lives on the server | Server |
-| Carrying capacity | `setMaxLoad` ("should be executed on the server") | The client asks with `CBA_fnc_serverEvent`. The server applies its own multiplier, only to player units. |
+| Carrying capacity | `setMaxLoad` ("should be executed on the server") | The client asks with `CBA_fnc_serverEvent`. The server applies its own capacity value, only to player units. |
 | Sway, stamina, loadCoef | `setCustomAimCoef` (local), `enableStamina` (local arg), `setUnitTrait` (local arg) | The player's own client |
 
 AUQOL uses no `remoteExec` of its own. All cross-machine calls are named CBA events with fixed handlers, so a client can't make another machine run arbitrary code through them.
