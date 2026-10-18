@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.2.2
+
+- Carrying capacity multiplier default and maximum raised from 1000 to 9999 (`auqol_capacity_multiplier`).
+
 ## 1.2.1
 
 - In-game name is now "Antistasi Ultimate QoL Extension by TchicX" (launcher, mod list and Addon Options). Setting names are unchanged, so saved settings keep working.

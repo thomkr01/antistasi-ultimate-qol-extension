@@ -55,7 +55,7 @@ These only ever affect the local player's unit. AI is not changed.
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
 | `auqol_capacity_enabled` | Checkbox | On | Server | Turn the multiplier on or off. |
-| `auqol_capacity_multiplier` | Slider 1–1000, integer | 1000 | Server | Each worn container's capacity becomes its config capacity (`getContainerMaxLoad`) times this value. |
+| `auqol_capacity_multiplier` | Slider 1–9999, integer | 9999 | Server | Each worn container's capacity becomes its config capacity (`getContainerMaxLoad`) times this value. |
 
 **Which capacity systems are affected:**
 
@@ -67,7 +67,7 @@ These only ever affect the local player's unit. AI is not changed.
 | Antistasi arsenal restrictions | No | These are unlock counts, not capacity. |
 | Antistasi logistics (vehicle cargo nodes) | No | Vehicle cargo slots are a separate mechanic. |
 
-Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The multiplier is clamped to 1–1000, and the slider only allows integers, so there are no overflow or invalid values: the largest vanilla backpack times 1000 is well within float precision.
+Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The multiplier is clamped to 1–9999, and the slider only allows integers, so there are no overflow or invalid values: the largest vanilla backpack times 9999 is well within float precision.
 
 ## Loot gathering
 

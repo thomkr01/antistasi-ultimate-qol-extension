@@ -11,7 +11,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | No weapon sway | Removes weapon sway for your own character. |
 | Unlimited stamina | Your own character never tires. AI is unchanged. |
 | Weight-independent running | Carried weight no longer drains or reserves your stamina. |
-| Carrying capacity | Multiplies your uniform, vest and backpack capacity, 1000x by default. |
+| Carrying capacity | Multiplies your uniform, vest and backpack capacity, 9999x by default. |
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 
@@ -47,7 +47,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_unlimitedStamina` | Checkbox | On | Client | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Client | Running unaffected by carried weight. |
 | `auqol_capacity_enabled` | Checkbox | On | Server | Increase carrying capacity. |
-| `auqol_capacity_multiplier` | Slider 1–1000 | 1000 | Server | Container capacity multiplier. |
+| `auqol_capacity_multiplier` | Slider 1–9999 | 9999 | Server | Container capacity multiplier. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
 | `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
 | `auqol_loot_enemyRadius` | Slider 10–2000 | 500 | Server | Gathering is refused while an enemy in combat is this close. |

@@ -4,7 +4,7 @@
     container's capacity to its config capacity (getContainerMaxLoad of the worn class) times the
     multiplier, and puts released containers back to their config capacity. Only containers AUQOL
     changed are restored. The multiplier comes from the server's own setting, never from the client,
-    and is clamped to 1..1000.
+    and is clamped to 1..9999.
 
     The engine's total soldier load limit (CfgInventoryGlobalVariable >> maxSoldierLoad) is static
     config and cannot be changed per unit by script; config.cpp raises it to 9999 for every unit.
@@ -34,7 +34,7 @@ private _restore = {
 
 if (isNull _unit || {!isPlayer _unit}) exitWith {};
 
-private _multiplier = if (auqol_capacity_enabled) then { round ((auqol_capacity_multiplier max 1) min 1000) } else { 1 };
+private _multiplier = if (auqol_capacity_enabled) then { round ((auqol_capacity_multiplier max 1) min 9999) } else { 1 };
 
 {
     _x params ["_container", "_class"];
