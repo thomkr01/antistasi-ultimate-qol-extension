@@ -23,7 +23,7 @@ The script runs the static checks, `hemtt check`, and then `hemtt release`. The 
 
 | Symptom | Check |
 | --- | --- |
-| No "Antistasi Ultimate QoL" entry in Addon Options | Make sure the mod is loaded. Search the RPT for `[AUQOL] Version`. If that line is missing, the addon didn't load. Check that CBA is loaded. |
+| No "Antistasi Ultimate QoL by TchicX" entry in Addon Options | Make sure the mod is loaded. Search the RPT for `[AUQOL] Version`. If that line is missing, the addon didn't load. Check that CBA is loaded. |
 | A feature seems inactive | Run `call AUQOL_fnc_diagnostics` in the debug console on the machine in question. It prints which integration handles each feature there. In MP, server-scoped settings follow the server's value. |
 | Crew is not ejected | Only land vehicles with eligible crew qualify: alive, AI, hostile to the rebels, not captive or surrendered. The vehicle must report `canMove` false, or have empty fuel with the fuel option on. Turn on `auqol_debug` to see an `Ejecting N unit(s)` line in the RPT of the machine that owns the vehicle. |
 | A fuel truck still runs dry under ACE | Check that `ace_refuel_enabled` is on and the truck has `ace_refuel_fuelCargo` or `transportFuel` in config. Sources disabled by the mission (capacity -1) are left alone on purpose. |

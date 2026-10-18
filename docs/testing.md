@@ -40,7 +40,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 32 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.2.0.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.2.1.zip
 ```
 
 ### Not covered by static checks
@@ -57,7 +57,7 @@ Run this in single player first, then on a dedicated server with a second client
 ### 1. Startup and diagnostics
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.2.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+2. Check the RPT for the `[AUQOL] Version 1.2.1 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
 3. Open Addon Options and check the 12 settings listed in the README.
 
 ### 2. Enemy crew ejection

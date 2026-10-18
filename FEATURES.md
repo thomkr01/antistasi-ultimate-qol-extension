@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.1. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -8,7 +8,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **CBA_A3 is the only hard dependency** (`requiredAddons[] = {"cba_main"}`).
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL*, and can be toggled during a mission.
+- **Every feature is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers, never `remoteExec`.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles

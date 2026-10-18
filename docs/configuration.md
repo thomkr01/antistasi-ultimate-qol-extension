@@ -1,6 +1,6 @@
 # Configuration
 
-All settings are under **Options → Addon Options → Antistasi Ultimate QoL**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_multiplier = 100;`.
+All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_multiplier = 100;`.
 
 **Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. Settings marked *Client* are registered with `isGlobal = 0`. Each player chooses for themselves, unless the server admin forces a value.
 

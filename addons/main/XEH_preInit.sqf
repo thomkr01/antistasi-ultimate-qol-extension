@@ -4,7 +4,7 @@ auqol_ready = false;
 auqol_service_cache = createHashMap;
 auqol_aceRearmSources = [];
 
-private _category = "Antistasi Ultimate QoL";
+private _category = "Antistasi Ultimate QoL by TchicX";
 
 // --- Crew ejection (evaluated where each vehicle is local, so the server value is forced on everyone)
 [

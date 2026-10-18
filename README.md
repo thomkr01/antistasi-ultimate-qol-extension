@@ -33,7 +33,7 @@ More detail is in [docs/installation.md](docs/installation.md).
 
 ## CBA settings
 
-Open **Options → Addon Options → Antistasi Ultimate QoL**. "Server" settings are synchronized from the server to everyone (`isGlobal = 1`). "Client" settings belong to each player unless the server forces them.
+Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server" settings are synchronized from the server to everyone (`isGlobal = 1`). "Client" settings belong to each player unless the server forces them.
 
 | Setting | Type | Default | Scope | Purpose |
 | --- | --- | --- | --- | --- |
