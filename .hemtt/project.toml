@@ -1,0 +1,15 @@
+name = "Antistasi Ultimate QoL Extension"
+author = "AUQOL Contributors"
+prefix = "auqol"
+mainprefix = "z"
+
+[version]
+path = "addons/main/script_version.hpp"
+git_hash = 0
+
+[files]
+include = [
+    "mod.cpp",
+    "README.md",
+    "LICENSE",
+]

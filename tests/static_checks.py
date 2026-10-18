@@ -1,0 +1,334 @@
+#!/usr/bin/env python3
+"""Static checks for AUQOL that do not need the Arma 3 engine.
+
+Run from the repository root:
+
+    python3 tests/static_checks.py [--cba PATH] [--ace PATH] [--antistasi PATH] [--wiki PATH]
+
+Without source paths only the self-contained checks run. With them, every external function,
+variable, event name and class name the mod relies on is looked up in the real sources:
+
+    --cba        clone of https://github.com/CBATeam/CBA_A3
+    --ace        clone of https://github.com/acemod/ACE3
+    --antistasi  clone of https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate
+    --wiki       "dist" branch of https://github.com/acemod/arma3-wiki (parsed BI wiki: commands and events)
+
+Exit code 0 when every executed check passes, 1 otherwise. Checks that were skipped are listed.
+"""
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+ADDON = ROOT / "addons" / "main"
+PREFIX = "\\z\\auqol\\addons\\main\\"
+
+failures = []
+skipped = []
+passed = []
+
+
+def check(name, problems):
+    if problems:
+        failures.append((name, problems))
+    else:
+        passed.append(name)
+
+
+def sqf_files():
+    return sorted(ROOT.glob("addons/**/*.sqf")) + sorted(ROOT.glob("optionals/**/*.sqf"))
+
+
+def strip_comments(text):
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+    return re.sub(r"//[^\n]*", "", text)
+
+
+def strip_strings(text):
+    return re.sub(r'"(?:[^"]|"")*"', '""', text)
+
+
+def sqf_code(include_ingame=False):
+    files = sqf_files() + (sorted(ROOT.glob("tests/ingame/*.sqf")) if include_ingame else [])
+    return {p: strip_comments(p.read_text()) for p in files}
+
+
+# --- CfgFunctions ------------------------------------------------------------------------------
+
+def cfg_functions():
+    text = strip_comments((ADDON / "config.cpp").read_text())
+    block = re.search(r"class CfgFunctions\s*\{(.*)\};", text, re.S).group(1)
+    functions = {}
+    for folder, body in re.findall(r'file\s*=\s*"([^"]+)";(.*?)\n\s*\};', block, re.S):
+        for name in re.findall(r"class\s+(\w+)\s*\{\s*\};", body):
+            functions[f"AUQOL_fnc_{name}"] = folder + "\\fn_" + name + ".sqf"
+    return functions
+
+
+def check_functions():
+    functions = cfg_functions()
+    problems = []
+    registered_files = set()
+    for fnc, path in functions.items():
+        if not path.startswith(PREFIX):
+            problems.append(f"{fnc}: path {path} is outside {PREFIX}")
+            continue
+        local = ADDON / path[len(PREFIX):].replace("\\", "/")
+        registered_files.add(local.resolve())
+        if not local.is_file():
+            problems.append(f"{fnc}: missing file {local.relative_to(ROOT)}")
+    for f in ADDON.rglob("fn_*.sqf"):
+        if f.resolve() not in registered_files:
+            problems.append(f"{f.relative_to(ROOT)} is not registered in CfgFunctions")
+    used = set()
+    for path, code in sqf_code().items():
+        for fnc in re.findall(r"\bAUQOL_fnc_\w+", code):
+            used.add(fnc)
+            if fnc not in functions:
+                problems.append(f"{path.relative_to(ROOT)} calls undefined {fnc}")
+    for fnc in functions:
+        if fnc not in used:
+            problems.append(f"{fnc} is registered but never called")
+    check("CfgFunctions: every function has a file, every file is registered, every call is defined", problems)
+    return functions
+
+
+def check_config_paths():
+    problems = []
+    text = (ADDON / "config.cpp").read_text()
+    for path in re.findall(r"compileScript \['([^']+)'\]", text):
+        local = ADDON / path[len(PREFIX):].replace("\\", "/")
+        if not path.startswith(PREFIX) or not local.is_file():
+            problems.append(f"XEH script {path} not found")
+    prefix = (ADDON / "$PBOPREFIX$").read_text().strip()
+    if "\\" + prefix + "\\" != PREFIX:
+        problems.append(f"$PBOPREFIX$ is {prefix}, expected {PREFIX.strip(chr(92))}")
+    if not re.search(r'requiredAddons\[\]\s*=\s*\{\s*"cba_main"\s*\}', text):
+        problems.append('auqol_main must require exactly {"cba_main"}')
+    check("config.cpp: XEH paths exist, PBO prefix matches, CBA is the only hard dependency", problems)
+
+
+# --- Settings ----------------------------------------------------------------------------------
+
+def settings():
+    text = strip_comments((ADDON / "XEH_preInit.sqf").read_text())
+    return re.findall(r'^\s*"(auqol_\w+)",\s*"(CHECKBOX|SLIDER|LIST|EDITBOX)"', text, re.M)
+
+
+def check_settings():
+    declared = settings()
+    names = {n for n, _ in declared}
+    problems = []
+    if len(names) != len(declared):
+        problems.append("duplicate setting names")
+    docs = (ROOT / "docs" / "configuration.md").read_text()
+    readme = (ROOT / "README.md").read_text()
+    for name in names:
+        if f"`{name}`" not in docs:
+            problems.append(f"{name} missing from docs/configuration.md")
+        if f"`{name}`" not in readme:
+            problems.append(f"{name} missing from README.md settings table")
+    # Every auqol_ global read in code is a setting or assigned somewhere in the mod.
+    assigned = set()
+    reads = set()
+    for code in sqf_code().values():
+        nostr = strip_strings(code)
+        assigned.update(re.findall(r"\b(auqol_\w+)\s*=(?!=)", nostr))
+        reads.update(re.findall(r"\b(auqol_\w+)\b", nostr))
+    for var in sorted(reads - names - assigned):
+        problems.append(f"global {var} is read but never declared or assigned")
+    check("CBA settings: unique, documented in README and docs, no undeclared auqol_ globals", problems)
+    return names
+
+
+# --- Wiki-backed checks ------------------------------------------------------------------------
+
+SQF_KEYWORDS = {"private", "params", "if", "then", "else", "exitWith", "forEach", "while", "do", "switch",
+                "case", "default", "true", "false", "nil", "call", "spawn", "select", "count", "continue",
+                "from", "to", "step", "for", "with", "isNil", "isNull", "not", "and", "or"}
+MAGIC = {"_this", "_x", "_y", "_forEachIndex", "_thisEventHandler", "_thisSetting"}
+EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player"}
+
+
+def check_wiki(wiki):
+    commands = {p.stem.lower(): p for p in (wiki / "commands").glob("*.yml")}
+    events = {}
+    for kind in (wiki / "events").iterdir():
+        for p in kind.glob("*.yml"):
+            events.setdefault(kind.name, {})[p.stem] = p
+
+    # 1. Every bare identifier is a real SQF command or a known variable/function (addon and in-game test scripts).
+    problems = []
+    for path, code in sqf_code(include_ingame=True).items():
+        code = strip_strings(code)
+        code = re.sub(r"#define[^\n]*", "", code)
+        defines = set(re.findall(r"#define\s+(\w+)", path.read_text()))
+        for ident in sorted(set(re.findall(r"(?<![\w#])([A-Za-z]\w*)\b", code))):
+            if ident.lower() in commands or ident in SQF_KEYWORDS or ident in EXTERNAL_GLOBALS or ident in defines:
+                continue
+            if re.match(r"(auqol_|AUQOL_fnc_|CBA_fnc_|ace_\w+_fnc_|HR_GRG_fnc_|A3A_)", ident):
+                continue
+            if re.fullmatch(r"\d\w*", ident):
+                continue
+            problems.append(f"{path.relative_to(ROOT)}: '{ident}' is not an Arma 3 command or known symbol")
+    check("SQF: every command used exists in the Arma 3 wiki command list", problems)
+
+    # 2. Event handler names and the parameter positions the code relies on.
+    used_object = set()
+    used_mission = set()
+    for code in sqf_code().values():
+        used_object.update(re.findall(r'addEventHandler \["(\w+)"', code))
+        used_mission.update(re.findall(r'addMissionEventHandler \["(\w+)"', code))
+    problems = []
+    for name in used_object:
+        if name not in events.get("standard", {}):
+            problems.append(f"object event handler {name} not in the wiki")
+    for name in used_mission:
+        if name not in events.get("mission", {}):
+            problems.append(f"mission event handler {name} not in the wiki")
+    expected_params = {
+        ("standard", "Dammaged"): ["unit"],
+        ("standard", "Fuel"): ["vehicle", "hasFuel"],
+        ("standard", "GetIn"): ["vehicle"],
+        ("mission", "Service"): ["serviceVehicle", "servicedVehicle", "serviceType"],
+    }
+    for (kind, name), params in expected_params.items():
+        path = events.get(kind, {}).get(name)
+        if not path:
+            problems.append(f"{kind} event {name} not in the wiki")
+            continue
+        actual = re.findall(r"^- name: (\w+)", path.read_text(), re.M)
+        if actual[:len(params)] != params:
+            problems.append(f"{name} params are {actual}, code assumes {params}")
+    check("Event handlers: names exist and the parameter positions used match the wiki", problems)
+
+    # 3. Locality heuristic: files using local-argument commands must contain a locality guard.
+    local_arg = {stem for stem, p in commands.items() if re.search(r"^argument_loc: Local", p.read_text(), re.M)}
+    problems = []
+    for path, code in sqf_code().items():
+        nostr = strip_strings(code)
+        used = {c for c in re.findall(r"\b([A-Za-z]\w*)\b", nostr) if c.lower() in local_arg}
+        used -= {"params", "private"}
+        if used and not re.search(r"\b(local|isServer|hasInterface)\b", nostr):
+            problems.append(f"{path.relative_to(ROOT)} uses local-argument {sorted(used)} without a local/isServer/hasInterface guard")
+    check("Locality (heuristic): local-argument commands are guarded", problems)
+
+
+# --- Source-backed checks ----------------------------------------------------------------------
+
+def all_text(root, patterns):
+    out = []
+    for pattern in patterns:
+        for p in root.rglob(pattern):
+            try:
+                out.append(p.read_text(errors="ignore"))
+            except OSError:
+                pass
+    return "\n".join(out)
+
+
+def check_cba(cba):
+    problems = []
+    for fnc in sorted({f for c in sqf_code().values() for f in re.findall(r"\bCBA_fnc_\w+", c)}):
+        name = fnc[len("CBA_fnc_"):]
+        if not list(cba.rglob(f"fnc_{name}.sqf")):
+            problems.append(f"{fnc} not found in CBA_A3")
+    text = all_text(cba / "addons", ["*.sqf", "*.hpp", "*.cpp"])
+    for needed in ['"CBA_settingsInitialized"', "class ADDON", "Extended_PreInit_EventHandlers",
+                   "Extended_PostInit_EventHandlers", '"InitPost"', '"unit"', '"loadout"']:
+        if needed not in text:
+            problems.append(f"{needed} not found in CBA_A3")
+    if 'PREFIX cba' not in text or not (cba / "addons" / "main" / "config.cpp").is_file():
+        problems.append("cba_main CfgPatches class not found")
+    check("CBA_A3: every CBA function, event and config class used exists", problems)
+
+
+def check_ace(ace):
+    problems = []
+    code = "\n".join(sqf_code().values())
+    for comp, name in sorted(set(re.findall(r"\bace_(\w+?)_fnc_(\w+)", code))):
+        if not (ace / "addons" / comp / "functions" / f"fnc_{name}.sqf").is_file():
+            problems.append(f"ace_{comp}_fnc_{name} not found in ACE3")
+    # ACE variables: ace_<component>_<name> must appear as GVAR/QGVAR(<name>) in that component.
+    for var in sorted(set(re.findall(r'"(ace_[A-Za-z0-9_]+)"', code))):
+        if "_fnc_" in var:
+            continue
+        if var == "ace_main":  # CfgPatches class (PREFIX ace, COMPONENT main), not a variable
+            if not (ace / "addons" / "main" / "config.cpp").is_file():
+                problems.append("ace_main CfgPatches not found in ACE3")
+            continue
+        found = False
+        for comp_dir in (ace / "addons").iterdir():
+            comp = comp_dir.name
+            if var.startswith(f"ace_{comp}_"):
+                name = var[len(f"ace_{comp}_"):]
+                src = all_text(comp_dir, ["*.sqf", "*.hpp", "*.cpp"])
+                if re.search(rf"\bQ?GVAR\({re.escape(name)}\)", src):
+                    found = True
+                    break
+        if not found:
+            problems.append(f"{var} not found as a variable in ACE3")
+    for define, value in (("REFUEL_INFINITE_FUEL", "-10"),):
+        if not re.search(rf"#define {define} {value}\b", (ace / "addons" / "refuel" / "defines.hpp").read_text()):
+            problems.append(f"{define} is not {value} in ACE3")
+    text = all_text(ace / "addons" / "refuel", ["*.hpp"])
+    if "class Land_CanisterFuel_F" not in text:
+        problems.append("Land_CanisterFuel_F not found in ACE refuel config")
+    compat = all_text(ace / "addons", ["config.cpp"])
+    for patch in ("rhs_main_loadorder", "rhsusf_main_loadorder", "CUP_Vehicles_LoadOrder"):
+        if f'"{patch}"' not in compat:
+            problems.append(f"CfgPatches {patch} not referenced by ACE compat")
+    check("ACE3: every ACE function, variable, constant and class used exists", problems)
+
+
+def check_antistasi(au):
+    problems = []
+    code = "\n".join(sqf_code().values())
+    src = all_text(au / "A3A" / "addons", ["*.sqf", "*.hpp", "*.cpp", "*.inc"])
+    for fnc in sorted(set(re.findall(r"\bHR_GRG_fnc_(\w+)", code))):
+        if not list((au / "A3A" / "addons" / "garage").rglob(f"fn_{fnc}.sqf")):
+            problems.append(f"HR_GRG_fnc_{fnc} not found in Antistasi garage")
+    for needed in ("HR_GRG_Vehicles", "HR_GRG_Sources", "A3A_hasAce", "teamPlayer =", '"surrendered"',
+                   "#define HR_GRG_SOURCEINDEX 6", "class HR_GRG", 'requiredAddons[] = {"A3A_core"}'):
+        if needed not in src:
+            problems.append(f"{needed} not found in Antistasi Ultimate")
+    # The stored fuel layout the garage restore writes to: [fuel, fuelCargo, aceFuelCargo].
+    getfuel = next((au / "A3A" / "addons" / "garage").rglob("fn_getFuel.sqf")).read_text()
+    if 'getFuelCargo _vehicle, _vehicle getVariable ["ace_refuel_currentFuelCargo"' not in getfuel:
+        problems.append("garage fuel state layout changed (fn_getFuel.sqf)")
+    check("Antistasi Ultimate: garage functions, variables and data layout used exist", problems)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cba", type=Path)
+    parser.add_argument("--ace", type=Path)
+    parser.add_argument("--antistasi", type=Path)
+    parser.add_argument("--wiki", type=Path)
+    args = parser.parse_args()
+
+    check_functions()
+    check_config_paths()
+    check_settings()
+    for label, path, fn in (("Arma 3 wiki", args.wiki, check_wiki), ("CBA_A3", args.cba, check_cba),
+                            ("ACE3", args.ace, check_ace), ("Antistasi Ultimate", args.antistasi, check_antistasi)):
+        if path and path.is_dir():
+            fn(path)
+        else:
+            skipped.append(f"{label} checks (no source path given)")
+
+    for name in passed:
+        print(f"PASS  {name}")
+    for name, problems in failures:
+        print(f"FAIL  {name}")
+        for p in problems:
+            print(f"      - {p}")
+    for name in skipped:
+        print(f"SKIP  {name}")
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
