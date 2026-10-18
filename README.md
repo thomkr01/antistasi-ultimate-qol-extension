@@ -25,7 +25,7 @@ Every feature is on by default, has its own CBA setting, and can be switched on 
 
 ## Installation
 
-1. Build the mod (see [Building](#building)) or take a release zip, and extract `@auqol`.
+1. Download the latest zip from [Releases](https://github.com/thomkr01/antistasi-ultimate-qol-extension/releases) (or build it, see [Building](#building)) and extract `@auqol`.
 2. Load it alongside CBA_A3 and Antistasi Ultimate, for example `-mod=@CBA_A3;@AntistasiUltimate;@auqol`.
 3. In multiplayer, run it on the server and on every client. Settings that change world state are forced by the server.
 

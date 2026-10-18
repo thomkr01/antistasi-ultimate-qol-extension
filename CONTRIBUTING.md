@@ -34,3 +34,9 @@ tools/build.sh --sources ../auqol-sources
 ```
 
 The command must pass. Then describe what you tested in game, and in which environment (SP, hosted, dedicated, with or without ACE), because CI can't run Arma.
+
+## Releasing
+
+1. Bump the version in `addons/main/script_version.hpp` and add a section to `CHANGELOG.md`.
+2. Commit, then push a tag that matches: `git tag v1.2.0 && git push origin v1.2.0`.
+3. CI builds the mod and publishes a GitHub release with `auqol-<version>.zip`. It fails if the tag and `script_version.hpp` disagree.

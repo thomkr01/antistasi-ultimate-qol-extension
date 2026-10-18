@@ -3,7 +3,7 @@
 ## Players and servers
 
 1. Install [CBA_A3](https://steamcommunity.com/workshop/filedetails/?id=450814997). It is required.
-2. Get `@auqol`, either from a release zip or by building it (see below).
+2. Get `@auqol` from the zip on the [Releases page](https://github.com/thomkr01/antistasi-ultimate-qol-extension/releases), or build it (see below).
 3. Load the mods together: `-mod=@CBA_A3;@AntistasiUltimate;@auqol`, plus ACE3, RHS or CUP if you use them. Load order doesn't matter, because `auqol_main` requires `cba_main` and detects everything else at runtime.
 4. Multiplayer: load `@auqol` on the server, every client and every headless client. Copy `keys/auqol_<version>.bikey` into the server's `keys` folder if you verify signatures.
 5. Start Antistasi Ultimate as usual. No mission file needs editing.
