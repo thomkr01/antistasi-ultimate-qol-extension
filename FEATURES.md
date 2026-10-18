@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.4. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.3.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -8,7 +8,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **CBA_A3 is the only hard dependency** (`requiredAddons[] = {"cba_main"}`).
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
+- **Every feature except no recoil is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers, never `remoteExec`.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
@@ -59,15 +59,21 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 - **ACE:** ACE's movement load base and the load it reports to fatigue are kept at 0 as well.
 - **Setting:** `auqol_player_weightless`, server-wide, on by default.
 
-## 6. Carrying capacity
+## 6. No recoil (optional)
 
-Your uniform, vest and backpack each get a fixed capacity, 9999 by default. Containers that are already bigger keep their own capacity.
+Removes weapon recoil for your own character. AI is unchanged.
 
-- Applied on the server to the containers players are wearing, as the engine requires. Changing gear or respawning re-applies it. A dropped container goes back to its normal capacity, so anyone who picks it up gets the normal amount.
-- **Total load cap:** the game caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change it per unit, so AUQOL raises it to 9999 in config. That applies to every unit, AI included, and has no in-game switch.
-- **Settings:** `auqol_capacity_enabled` (on) and `auqol_capacity_value` (1 to 9999, default 9999). Both are server-wide.
+- Sets the recoil coefficient to 0, and back to 1 when turned off.
+- **Setting:** `auqol_player_noRecoil`, server-wide, **off** by default.
 
-## 7. Loot from any vehicle
+## 7. No total weight limit
+
+You can keep picking things up however heavy your load is. Normally the game stops you once your total load passes a cap, even if your backpack still has room.
+
+- The cap (`maxSoldierLoad`, vanilla 1000) is raised to 10,000,000. Uniform, vest and backpack sizes are unchanged: a container still holds only what fits in it.
+- It's a config value, so it applies to every unit, AI included, and has no in-game switch.
+
+## 8. Loot from any vehicle
 
 Every vehicle works like Antistasi's loot crate, so you don't have to buy and haul the crate around.
 
@@ -77,7 +83,7 @@ Every vehicle works like Antistasi's loot crate, so you don't have to buy and ha
 - **Separate enemy check:** gathering is refused while an enemy in combat is within `auqol_loot_enemyRadius` of the vehicle, 10 to 2000 m, default 500. So you can gather from 2000 m while only nearby enemies block it.
 - **Settings:** `auqol_loot_enabled` (on), `auqol_loot_radius` and `auqol_loot_enemyRadius`. All are server-wide. Turning loot off removes the vehicle action and puts the crate back on Antistasi's radius.
 
-## 8. Short Withstand cooldown
+## 9. Short Withstand cooldown
 
 Antistasi's Withstand self-revive normally has a 5-minute cooldown. AUQOL sets it to 1 second.
 

@@ -40,7 +40,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 32 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.2.4.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.3.0.zip
 ```
 
 ### Not covered by static checks
@@ -57,7 +57,7 @@ Run this in single player first, then on a dedicated server with a second client
 ### 1. Startup and diagnostics
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.2.4 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+2. Check the RPT for the `[AUQOL] Version 1.3.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
 3. Open Addon Options and check the 12 settings listed in the README.
 
 ### 2. Enemy crew ejection
@@ -78,17 +78,18 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### 4. Player features
 
-1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, and container maximums of 9999.
+1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, recoil coef `1` (no recoil is off by default) and a total carry limit of 10000000.
 2. Aim down sights while standing after a sprint: there should be no sway. Sprint for several minutes: there should be no exhaustion. Fill a backpack with heavy items and sprint: no slowdown or forced walking.
 3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within 5 s.
 4. Toggle each player setting off. Sway, stamina and loadCoef should return to normal: aim coef 1, stamina on, and loadCoef back to the role's value.
-5. Drop your backpack. `maxLoad` on the dropped container should return to its config value, and whoever picks it up gets normal capacity.
+5. Turn `auqol_player_noRecoil` on and fire a full magazine: the muzzle should not climb. Turn it off and recoil should come back.
 6. **With ACE3:** the stamina bar should stay full while sprinting with a full load, and there should be no sway, with ACE sway on and off.
 
-### 5. Carrying capacity limits
+### 5. Total weight limit
 
-1. Fill all containers. You should get past 1000 mass (`loadAbs player`) and stop near 9999, the `maxSoldierLoad` cap AUQOL sets.
-2. `call AUQOL_fnc_diagnostics` should show `maxSoldierLoad=9999`.
+1. Put something very heavy in your inventory (a launcher and rockets, or several machine guns) until you are past 1000 mass (`loadAbs player`). You should still be able to add more items as long as the container has room.
+2. Your backpack should not hold more than its normal size.
+3. `call AUQOL_fnc_diagnostics` should show a total carry limit of 10000000.
 
 ### 6. Loot from vehicles
 

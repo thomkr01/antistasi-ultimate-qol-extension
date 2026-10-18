@@ -19,10 +19,12 @@ class CfgPatches {
     };
 };
 
-// Total soldier load cap (vanilla 1000). Static config, so it applies to every unit, AI included.
+// Total soldier load cap (vanilla 1000): the limit that stops you picking up more once you carry
+// something heavy. Raised so total weight never blocks you; container capacities are unchanged.
+// Static config, so it applies to every unit, AI included.
 // Load order after vanilla comes through cba_main -> cba_common -> A3_Data_F_AoW_Loadorder.
 class CfgInventoryGlobalVariable {
-    maxSoldierLoad = 9999;
+    maxSoldierLoad = 10000000;
 };
 
 class Extended_PreInit_EventHandlers {
@@ -70,12 +72,6 @@ class CfgFunctions {
         class player {
             file = "\z\auqol\addons\main\functions\player";
             class playerApply {};
-        };
-        class capacity {
-            file = "\z\auqol\addons\main\functions\capacity";
-            class capacityRequest {};
-            class capacityApply {};
-            class capacityApplyAll {};
         };
         class loot {
             file = "\z\auqol\addons\main\functions\loot";

@@ -2,6 +2,12 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.3.0
+
+- No total weight limit: `maxSoldierLoad` raised to 10,000,000, so heavy items no longer stop you picking up more.
+- Removed the container capacity feature (`auqol_capacity_enabled`, `auqol_capacity_value`). Uniforms, vests and backpacks keep their normal size.
+- No recoil option for the local player (`auqol_player_noRecoil`), off by default.
+
 ## 1.2.4
 
 - Carrying capacity is a fixed value per worn container (`auqol_capacity_value`, default 9999) instead of a multiplier. It replaces `auqol_capacity_multiplier`, so a saved multiplier value no longer applies.

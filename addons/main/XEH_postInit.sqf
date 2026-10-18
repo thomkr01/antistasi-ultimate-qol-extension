@@ -8,7 +8,6 @@
     playSound "A3AP_UiFailure";
 }] call CBA_fnc_addEventHandler;
 if (isServer) then {
-    ["auqol_capacity_apply", { _this call AUQOL_fnc_capacityApply }] call CBA_fnc_addEventHandler;
     ["auqol_loot_gather", { _this call AUQOL_fnc_lootGather }] call CBA_fnc_addEventHandler;
 };
 

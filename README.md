@@ -11,7 +11,8 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | No weapon sway | Removes weapon sway for your own character. |
 | Unlimited stamina | Your own character never tires. AI is unchanged. |
 | Weight-independent running | Carried weight no longer drains or reserves your stamina. |
-| Carrying capacity | Your uniform, vest and backpack each hold 9999 by default. |
+| No total weight limit | You can keep picking things up however heavy your load is. Uniform, vest and backpack keep their normal size. |
+| No recoil (optional) | Removes weapon recoil for your own character. Off by default. |
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 
@@ -46,14 +47,13 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. |
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
-| `auqol_capacity_enabled` | Checkbox | On | Server | Increase carrying capacity. |
-| `auqol_capacity_value` | Slider 1–9999 | 9999 | Server | Capacity of each worn container. |
+| `auqol_player_noRecoil` | Checkbox | Off | Server | No weapon recoil. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
 | `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
 | `auqol_loot_enemyRadius` | Slider 10–2000 | 500 | Server | Gathering is refused while an enemy in combat is this close. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, capacity change and loot run. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill and loot run. |
 
 There is no medical or logistics stock setting because the audit found no depleting medical or logistics service stock to change. See [docs/service-audit.md](docs/service-audit.md). The full reference is in [docs/configuration.md](docs/configuration.md).
 
@@ -68,7 +68,8 @@ There is no medical or logistics stock setting because the audit found no deplet
 | No sway | `setCustomAimCoef` | Yes | n/a | n/a | ACE sway factor |
 | Unlimited stamina | `enableStamina` | Yes | n/a | n/a | ACE Advanced Fatigue duty factor |
 | Weightless running | `loadCoef` trait | Yes. Re-applied after Antistasi role traits. | n/a | n/a | ACE movement base `loadCoef` and fatigue carried mass |
-| Carrying capacity | `setMaxLoad` on worn containers | Yes | n/a | n/a | Inventory only. ACE dragging limits are untouched. |
+| No total weight limit | `maxSoldierLoad` in config | Yes | n/a | n/a | Inventory only. ACE dragging limits are untouched. |
+| No recoil | `setUnitRecoilCoefficient` | Yes | n/a | n/a | n/a (ACE has no recoil module) |
 
 Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 
@@ -79,7 +80,7 @@ Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 - **Player features** are applied on settings change, on respawn or unit change, and by a 5-second re-check, because Antistasi re-applies role traits without raising an event. They only restore values AUQOL itself changed.
 - **Loot** adds a copy of the crate's hold action to vehicles and swaps it in on the crate. Completing it asks the server to run Antistasi's own `SCRT_fnc_loot_gatherLoot`, the crate's function, with the AUQOL radius. The 10-second cooldown, unlocked-item rule and money split are Antistasi's. The enemies-nearby check is done by AUQOL with its own radius, using Antistasi's `A3A_fnc_enemyNearCheck`.
 - **Withstand** sets `A3A_selfReviveTimeout`, the cooldown Antistasi's `A3A_fnc_selfRevive` reads, which defaults to 300 s.
-- **Capacity** is applied by the server, because `setMaxLoad` must run there. It is re-applied when your worn containers change, and containers you drop go back to normal capacity.
+- **No total weight limit** raises the engine's total soldier load cap (`maxSoldierLoad`, vanilla 1000) to 10,000,000 in config. That cap is what stops you adding items once you carry something heavy. Each container's own size is unchanged.
 
 There are no per-frame handlers. The only timers are the 5-second player re-check, a 10-second garage-fuel check, and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
 
@@ -104,9 +105,8 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - An overturned vehicle with no damage is left to the engine, which ejects crews from upside-down vehicles on its own.
 - ACE rearm's "magazine supply" mode is a stockpile of specific magazines and is not made infinite.
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.
-- The engine caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change that per unit, so AUQOL raises it to 9999 in config for every unit, AI included, and it has no in-game switch. See [docs/configuration.md](docs/configuration.md#carrying-capacity).
+- The total weight limit is a config value, so it applies to every unit, AI included, and has no in-game switch. Script can't change it per unit. See [docs/configuration.md](docs/configuration.md#total-weight-limit).
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
-- Antistasi's loadout screen draws its capacity bars from config values, so with this feature on it can show more than 100%.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).

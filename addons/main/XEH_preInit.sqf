@@ -53,7 +53,7 @@ private _serviceChanged = { if (auqol_ready) then { call AUQOL_fnc_serviceApplyA
     true, 1
 ] call CBA_fnc_addSetting;
 
-// --- Local player (each client chooses unless the server forces a value)
+// --- Local player (server-forced, applied on each player's own machine)
 private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } };
 
 [
@@ -77,21 +77,11 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
     true, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
-// --- Carrying capacity (setMaxLoad must run on the server, so the server value is forced)
-private _capacityChanged = { if (auqol_ready && {isServer}) then { call AUQOL_fnc_capacityApplyAll } };
-
 [
-    "auqol_capacity_enabled", "CHECKBOX",
-    ["Increase carrying capacity", "Gives players' uniform, vest and backpack containers the capacity below."],
-    [_category, "Carrying capacity"],
-    true, 1, _capacityChanged
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_capacity_value", "SLIDER",
-    ["Container capacity", "Capacity of each worn uniform, vest and backpack, 1 to 9999. Containers that are already bigger keep their own capacity. The engine's total soldier load limit (maxSoldierLoad) is a static config value (9999 in this mod) and is not changed by this setting."],
-    [_category, "Carrying capacity"],
-    [1, 9999, 9999, 0], 1, _capacityChanged
+    "auqol_player_noRecoil", "CHECKBOX",
+    ["No recoil", "Removes weapon recoil for your own character (setUnitRecoilCoefficient 0). AI recoil is not changed."],
+    [_category, "Player"],
+    false, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
 // --- Loot gathering (Antistasi Ultimate). The server picks the radius, so both are server-forced.
@@ -136,7 +126,7 @@ private _withstandChanged = { if (auqol_ready) then { call AUQOL_fnc_withstandAp
 // --- Diagnostics
 [
     "auqol_debug", "CHECKBOX",
-    ["Verbose diagnostic logging", "Writes one RPT line per ejection, refill and capacity change. Leave off during normal play."],
+    ["Verbose diagnostic logging", "Writes one RPT line per ejection, refill and loot run. Leave off during normal play."],
     [_category, "Diagnostics"],
     false, 0
 ] call CBA_fnc_addSetting;

@@ -1,6 +1,6 @@
 # Configuration
 
-All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_value = 5000;`.
+All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_loot_radius = 1000;`.
 
 **Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. The player features are also server settings, so the server decides for everyone, while the effect is still applied on each player's own machine. Only `auqol_debug` is *Client* (`isGlobal = 0`).
 
@@ -47,27 +47,15 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 | `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. Uses vanilla `setCustomAimCoef 0`, or an ACE sway multiplier of 0 when ACE sway is active. |
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Uses vanilla `enableStamina false`, or an ACE Advanced Fatigue duty factor of 0 when ACE fatigue is active. |
 | `auqol_player_weightless` | Checkbox | On | Server | Sets the `loadCoef` trait to 0, including ACE movement's saved base value, and gives ACE Advanced Fatigue a carried mass of 0. |
+| `auqol_player_noRecoil` | Checkbox | Off | Server | `setUnitRecoilCoefficient 0` on your own character, back to 1 when turned off. |
 
 These only ever affect the local player's unit. AI is not changed.
 
-## Carrying capacity
+## Total weight limit
 
-| Setting | Type | Default | Scope | Description |
-| --- | --- | --- | --- | --- |
-| `auqol_capacity_enabled` | Checkbox | On | Server | Turn the capacity change on or off. |
-| `auqol_capacity_value` | Slider 1–9999, integer | 9999 | Server | Each worn container's capacity becomes this value. A container whose config capacity (`getContainerMaxLoad`) is already higher is left alone. |
+There is no setting. The engine stops you adding items once your total load passes `CfgInventoryGlobalVariable >> maxSoldierLoad` (vanilla 1000), however much room your backpack has. AUQOL raises it to 10,000,000 in `config.cpp`, so total weight never blocks you. Each uniform, vest and backpack keeps its own normal capacity.
 
-**Which capacity systems are affected:**
-
-| System | Affected? | Why |
-| --- | --- | --- |
-| Vanilla uniform, vest and backpack containers | Yes | `setMaxLoad` on each worn container. It runs on the server, as the command requires, and persists for JIP. |
-| Vanilla total soldier load (`CfgInventoryGlobalVariable >> maxSoldierLoad`, 1000) | Yes, to 9999 | It is a static config value, and the wiki states unit max load cannot be set by script, so `config.cpp` sets it. It applies to every unit, AI included, and also lowers how much weight drains vanilla stamina for everyone. It has no runtime switch: remove the mod to undo it. |
-| ACE carrying and dragging of objects (`ace_dragging_weightCoefficient`) | No | That is a separate, global ACE setting for objects you carry by hand, not inventory capacity. Server admins can change it in ACE's own settings. |
-| Antistasi arsenal restrictions | No | These are unlock counts, not capacity. |
-| Antistasi logistics (vehicle cargo nodes) | No | Vehicle cargo slots are a separate mechanic. |
-
-Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The value is clamped to 1–9999 and the slider only allows integers, so there are no invalid values.
+It is a static config value, and the wiki says unit max load can't be set by script, so it applies to every unit, AI included. It also makes weight count for almost nothing in vanilla stamina for everyone. Remove the mod to undo it.
 
 ## Loot gathering
 
@@ -96,6 +84,6 @@ A cooldown already running when you change the setting finishes at its old lengt
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore and capacity change, on the machine doing it. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore and loot run, on the machine doing it. |
 
 `call AUQOL_fnc_diagnostics` returns and logs the active integrations on that machine. Run from the debug console, it also prints them to system chat.

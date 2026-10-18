@@ -1,6 +1,6 @@
 /*
     Author: AUQOL
-    Applies the three local-player settings to the current player unit (client only). Called on
+    Applies the local-player settings to the current player unit (client only). Called on
     setting changes, on player unit change (respawn, team switch) and every 5 seconds; every branch
     only writes when the value differs, and only restores values AUQOL itself changed.
 
@@ -11,6 +11,7 @@
     - Weightless: loadCoef trait 0 (equipment weight multiplier for stamina). ACE movement rebuilds
       loadCoef from its saved base value ace_movement_loadCoef on every loadout change, so that base
       is set to 0 as well.
+    - No recoil: setUnitRecoilCoefficient 0, restored to 1 when turned off.
 
     Arguments: none
     Return Value: none
@@ -48,6 +49,19 @@ if !(missionNamespace getVariable ["ace_advanced_fatigue_enabled", false]) then 
             _unit enableStamina true;
             _unit setVariable ["auqol_staminaSet", nil];
         };
+    };
+};
+
+// --- Recoil
+if (auqol_player_noRecoil) then {
+    if (unitRecoilCoefficient _unit != 0) then {
+        _unit setUnitRecoilCoefficient 0;
+        _unit setVariable ["auqol_recoilSet", true];
+    };
+} else {
+    if (_unit getVariable ["auqol_recoilSet", false]) then {
+        _unit setUnitRecoilCoefficient 1;
+        _unit setVariable ["auqol_recoilSet", nil];
     };
 };
 

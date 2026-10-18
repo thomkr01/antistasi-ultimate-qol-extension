@@ -19,7 +19,6 @@ addons/main/
   functions/eject       crew ejection
   functions/service     service stock (vanilla + Antistasi garage)
   functions/player      sway, stamina, weight
-  functions/capacity    carrying capacity
   compat/ace            ACE refuel, rearm, sway and fatigue integration
 tests/static_checks.py  static validation
 tools/build.sh|ps1      check + build

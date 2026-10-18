@@ -23,7 +23,8 @@ With only CBA loaded, every feature works on vanilla mechanics. The ejection fal
 | No sway | `setCustomAimCoef 0` (local argument, local effect) | n/a | n/a | n/a | When `ace_common_enableSway` is on, ACE re-applies the coefficient every 0.5 s, so AUQOL adds a sway multiplier of 0 with `ace_common_fnc_addSwayFactor` instead |
 | Unlimited stamina | `enableStamina false` (local argument, global effect) | n/a | n/a | n/a | ACE Advanced Fatigue disables vanilla stamina itself. AUQOL adds a duty factor of 0 with `ace_advanced_fatigue_fnc_addDutyFactor`, which is ACE-internal (see below). |
 | Weightless running | `setUnitTrait ["loadCoef", 0]` | Antistasi sets `loadCoef` 1.2–1.4 by role in `A3A_fnc_unitTraits` after respawn. The 5-second re-check re-applies 0 and remembers Antistasi's value for when the setting is turned off. | n/a | n/a | ACE movement rebuilds `loadCoef` from `ace_movement_loadCoef` on every loadout change, so that base is set to 0 too. ACE fatigue reads carried mass from `ace_movement_totalLoad`, which AUQOL keeps at 0 from its duty factor hook. |
-| Carrying capacity | `setMaxLoad` on worn containers, run on the server | Antistasi's loadout screen draws its bars from config capacity, so it can show more than 100% | n/a | n/a | ACE dragging and carrying of objects is untouched |
+| No total weight limit | `maxSoldierLoad` in config | n/a | n/a | n/a | ACE dragging and carrying of objects is untouched |
+| No recoil | `setUnitRecoilCoefficient 0` on the local player | n/a | n/a | n/a | ACE has no recoil feature |
 
 Loot and Withstand use only Antistasi Ultimate: `SCRT_fnc_loot_gatherLoot`, the `lootActionID` variable and the action text of `SCRT_fnc_loot_addActionLoot`, the `lootCrateDistance` parameter, the faction's `lootCrate` class, and the `A3A_selfReviveTimeout` value `A3A_fnc_selfRevive` reads. Without Antistasi both features do nothing.
 
@@ -49,7 +50,6 @@ If an ACE function is missing, AUQOL logs one warning and leaves that ACE path u
 | Refill vanilla cargo | `setFuelCargo` / `setAmmoCargo` / `setRepairCargo` (local arg, global effect) | The service object's owner, either directly or through `CBA_fnc_targetEvent`, throttled to once per 2 s per object |
 | ACE refuel and rearm sources | `makeSource` (server only), `setSupplyCount` (public variable) | Server |
 | Antistasi garage | Garage state lives on the server | Server |
-| Carrying capacity | `setMaxLoad` ("should be executed on the server") | The client asks with `CBA_fnc_serverEvent`. The server applies its own capacity value, only to player units. |
-| Sway, stamina, loadCoef | `setCustomAimCoef` (local), `enableStamina` (local arg), `setUnitTrait` (local arg) | The player's own client |
+| Sway, stamina, loadCoef, recoil | `setCustomAimCoef` (local), `enableStamina` (local arg), `setUnitTrait` (local arg) | The player's own client |
 
 AUQOL uses no `remoteExec` of its own. All cross-machine calls are named CBA events with fixed handlers, so a client can't make another machine run arbitrary code through them.

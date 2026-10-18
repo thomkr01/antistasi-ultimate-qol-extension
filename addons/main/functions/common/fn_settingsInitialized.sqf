@@ -22,18 +22,12 @@ if (isServer) then {
         auqol_aceRearmSources = auqol_aceRearmSources select { !isNull _x };
         { [_x, auqol_service_ammo] call AUQOL_fnc_aceRearmApply } forEach +auqol_aceRearmSources; // copy: disabling removes entries
     }, 30] call CBA_fnc_addPerFrameHandler;
-
-    call AUQOL_fnc_capacityApplyAll;
 };
 
 if (hasInterface) then {
     call AUQOL_fnc_aceRegisterFactors;
 
-    ["unit", {
-        call AUQOL_fnc_playerApply;
-        [true] call AUQOL_fnc_capacityRequest;
-    }, true] call CBA_fnc_addPlayerEventHandler;
-    ["loadout", { [false] call AUQOL_fnc_capacityRequest }] call CBA_fnc_addPlayerEventHandler;
+    ["unit", { call AUQOL_fnc_playerApply }, true] call CBA_fnc_addPlayerEventHandler;
 
     // Antistasi re-applies role traits (loadCoef) after respawn and role changes without an event;
     // this re-check is three cheap getters every 5 seconds and only writes when a value drifted.
