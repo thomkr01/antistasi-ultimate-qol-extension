@@ -83,7 +83,7 @@ def check_functions():
         if f.resolve() not in registered_files:
             problems.append(f"{f.relative_to(ROOT)} is not registered in CfgFunctions")
     used = set()
-    for path, code in sqf_code().items():
+    for path, code in sqf_code(include_ingame=True).items():
         for fnc in re.findall(r"\bAUQOL_fnc_\w+", code):
             used.add(fnc)
             if fnc not in functions:
@@ -161,7 +161,8 @@ SQF_KEYWORDS = {"private", "params", "if", "then", "else", "exitWith", "forEach"
 MAGIC = {"_this", "_x", "_y", "_forEachIndex", "_thisEventHandler", "_thisSetting"}
 EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player",
                     "BIS_fnc_holdActionAdd", "BIS_fnc_holdActionRemove", "SCRT_fnc_loot_gatherLoot",
-                    "SCRT_fnc_common_getNearPlayers"}
+                    "SCRT_fnc_common_getNearPlayers", "SCRT_fnc_arsenal_loadoutArsenal", "BIS_fnc_addScriptedEventHandler",
+                    "BIS_fnc_baseWeapon", "rebelLoadouts", "jna_dataList"}
 
 
 def check_wiki(wiki):
@@ -331,7 +332,30 @@ def check_antistasi(au):
     selfrevive = next((au / "A3A" / "addons" / "core").rglob("fn_selfRevive.sqf")).read_text()
     if 'missionNamespace getVariable ["A3A_selfReviveTimeout", 300]' not in selfrevive:
         problems.append("A3A_fnc_selfRevive no longer reads missionNamespace A3A_selfReviveTimeout")
-    check("Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist", problems)
+    # Rebel loadout editor ("Copy from user"): the editor flag, the stored player loadout, the editor step
+    # AUQOL reuses (and the _display it reads from the caller), the slot override switch, the blanked
+    # Random button, and the arsenal's unlimited marker.
+    editor = (au / "A3A" / "addons" / "scrt" / "Arsenal" / "fn_arsenal_loadoutArsenal.sqf").read_text()
+    for needed in ('case "applyInitialLoadout":', 'localNamespace setVariable ["commanderLoadout", getUnitLoadout player];',
+                   "private _loadout = _rebelLoadouts get currentRebelLoadout;", "['showMessage',[_display,",
+                   'case "OverrideTab":', "private _tabBtnCtrl = _display displayCtrl (_IDC - 30);",
+                   '_tabBtnCtrl setVariable ["OverrideTab", _override];',
+                   "_ctrlButtonRandom = _display displayctrl IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM;",
+                   'if(_amount == -1)exitWith{"[   ∞  ]  ";};'):
+        if needed not in editor:
+            problems.append(f"{needed} not found in fn_arsenal_loadoutArsenal.sqf")
+    jna_init = (au / "A3A" / "addons" / "jeroen_arsenal" / "JNA" / "fn_arsenal_init.sqf").read_text()
+    for needed in ('[missionNamespace, "arsenalOpened", {', 'case (uiNamespace getVariable ["isLoadoutArsenal", false]):'):
+        if needed not in jna_init:
+            problems.append(f"{needed} not found in JNA fn_arsenal_init.sqf")
+    handle = (au / "A3A" / "addons" / "jeroen_arsenal" / "JNA" / "fn_arsenal_handleAction.sqf").read_text()
+    if '["jn_fnc_arsenal", "Loading Nutz™ Arsenal"] call bis_fnc_startloadingscreen;' not in handle:
+        problems.append("JNA no longer opens with the jn_fnc_arsenal loading screen")
+    # Stuck recovery: unit state variables Antistasi sets, read to leave busy units alone.
+    for needed in ('setVariable ["incapacitated"', 'setVariable ["helping"', 'setVariable ["rearming"'):
+        if needed not in src:
+            problems.append(f"{needed} not found in Antistasi Ultimate")
+    check("Antistasi Ultimate: garage, loot, Withstand, loadout editor and unit state names used exist", problems)
 
 
 def main():

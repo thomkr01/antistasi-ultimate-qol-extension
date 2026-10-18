@@ -7,6 +7,7 @@
     systemChat localize (_this select 0);
     playSound "A3AP_UiFailure";
 }] call CBA_fnc_addEventHandler;
+["auqol_stuck_message", { systemChat ("[AUQOL] " + (_this select 0)) }] call CBA_fnc_addEventHandler;
 if (isServer) then {
     ["auqol_loot_gather", { _this call AUQOL_fnc_lootGather }] call CBA_fnc_addEventHandler;
 };
@@ -15,6 +16,11 @@ if (isServer) then {
 ["LandVehicle", "InitPost", { (_this select 0) call AUQOL_fnc_ejectInitVehicle }, true, ["StaticWeapon"], true] call CBA_fnc_addClassEventHandler;
 ["All", "InitPost", { (_this select 0) call AUQOL_fnc_serviceInitObject }, true, ["Man"], true] call CBA_fnc_addClassEventHandler;
 ["All", "InitPost", { [_this select 0] call AUQOL_fnc_lootInitObject }, true, ["Man"], true] call CBA_fnc_addClassEventHandler;
+
+// Antistasi's rebel loadout editor is a BIS arsenal; its open event is the only hook into that screen.
+if (hasInterface) then {
+    [missionNamespace, "arsenalOpened", { _this call AUQOL_fnc_loadoutCopyInit }] call BIS_fnc_addScriptedEventHandler;
+};
 
 // Vanilla resupply (2.12+): fires repeatedly while a vehicle is being rearmed, repaired or refuelled.
 addMissionEventHandler ["Service", { _this call AUQOL_fnc_serviceOnService }];

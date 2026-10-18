@@ -2,6 +2,12 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.5.0
+
+- Squad perks: no sway, unlimited stamina, weightless running and no recoil also apply to the AI in your group (`auqol_player_squad`, on by default). Each still follows its own player setting.
+- "Copy from user" button in Antistasi's Set Rebel Loadout arsenal: loads your own loadout into the role being edited, unlocked items only, with the slot overrides switched on (`auqol_loadout_copyFromUser`, on by default).
+- AI stuck detection and recovery: friendly AI with somewhere to go that make no progress are freed in steps (refresh order, rejoin formation, short safe hop, optional emergency teleport to the squad leader), with cooldowns, a round limit and optional chat messages. Your squad only by default. 14 new `auqol_stuck_*` settings; the teleport and the "got stuck" messages are off by default.
+
 ## 1.4.1
 
 - Item caches emptied by loot gathering are now deleted instead of left behind empty.

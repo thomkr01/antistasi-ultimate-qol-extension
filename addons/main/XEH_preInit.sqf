@@ -84,6 +84,120 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
     false, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
+[
+    "auqol_player_squad", "CHECKBOX",
+    ["Apply to AI in your squad", "The no sway, unlimited stamina, weightless running and no recoil settings above also apply to the AI in your own group (the ones local to your machine). Under ACE the AI get the vanilla versions, since ACE sway and fatigue only run for players."],
+    [_category, "Player"],
+    true, 1, _playerChanged
+] call CBA_fnc_addSetting;
+
+// --- Antistasi rebel loadout editor (client UI, server-forced like the rest)
+[
+    "auqol_loadout_copyFromUser", "CHECKBOX",
+    ["'Copy from user' button in the rebel loadout editor", "Adds a 'Copy from user' button to the bottom bar of Antistasi's Set Rebel Loadout arsenal. It loads your own loadout into the role being edited, keeping only unlocked items. Press Save afterwards to keep it."],
+    [_category, "Rebel loadouts"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+// --- AI stuck detection and recovery (runs on whichever machine owns each AI)
+[
+    "auqol_stuck_enabled", "CHECKBOX",
+    ["Detect and recover stuck friendly AI", "Watches friendly AI that have somewhere to go but make no progress, then tries to free them: refresh the move order, rejoin formation, a short safe hop, and (if enabled) a teleport to the squad leader."],
+    [_category, "AI stuck recovery"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_scope", "LIST",
+    ["Which AI to watch", "Your squad: AI in each player's own group. Near players: friendly AI within the radius below of any player. All: every friendly AI (checked where each AI is local, every 5 s)."],
+    [_category, "AI stuck recovery"],
+    [[0, 1, 2], ["Your squad", "Friendly AI near players", "All friendly AI"], 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_scopeRadius", "SLIDER",
+    ["Radius for 'near players' (m)", "Only used by the 'Friendly AI near players' scope, 50 to 3000 m."],
+    [_category, "AI stuck recovery"],
+    [50, 3000, 500, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_timeout", "SLIDER",
+    ["Stuck after (s)", "How long a unit with somewhere to go may make no progress before it counts as stuck, 10 to 300 s. Also the time each recovery step gets to work."],
+    [_category, "AI stuck recovery"],
+    [10, 300, 30, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_minProgress", "SLIDER",
+    ["Minimum progress (m)", "Moving this far, or getting this much closer to its destination, within the time above counts as progress, 0.5 to 20 m."],
+    [_category, "AI stuck recovery"],
+    [0.5, 20, 3, 1], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_refreshOrders", "CHECKBOX",
+    ["Step 1: refresh the move order", "Re-issues the unit's current order to the same destination: the same move position, the same waypoint, or follow the leader."],
+    [_category, "AI stuck recovery"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_regroup", "CHECKBOX",
+    ["Step 2: rejoin formation", "For units following their leader in formation: clears stuck targets and orders, then tells them to follow the leader again. Units with an explicit move order or a hold order are skipped."],
+    [_category, "AI stuck recovery"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_reposition", "CHECKBOX",
+    ["Step 3: short safe hop", "Moves the unit (or the vehicle it drives) a few metres toward where it is going, onto a checked spot: dry, not steep, not under a roof, clear of objects and with no enemies within 100 m."],
+    [_category, "AI stuck recovery"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_teleport", "CHECKBOX",
+    ["Step 4: emergency teleport to the squad leader", "Last resort for infantry: moves the unit to a checked spot next to its squad leader, if the leader is within the maximum distance below. Never players, vehicles, or units parachuting, swimming or climbing."],
+    [_category, "AI stuck recovery"],
+    false, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_maxDistance", "SLIDER",
+    ["Maximum hop / teleport distance (m)", "The safe hop goes at most 10 m (25 m for vehicles) and never further than this. The teleport is only used when the leader is within this distance, 5 to 500 m."],
+    [_category, "AI stuck recovery"],
+    [5, 500, 100, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_cooldown", "SLIDER",
+    ["Cooldown after a failed recovery (s)", "When every enabled step has been tried and the unit is still stuck, wait this long before starting again, 10 to 600 s."],
+    [_category, "AI stuck recovery"],
+    [10, 600, 60, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_maxAttempts", "SLIDER",
+    ["Maximum recovery rounds", "After this many failed rounds the unit is left alone until it moves again by itself, 1 to 10."],
+    [_category, "AI stuck recovery"],
+    [1, 10, 3, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_notifyDetect", "CHECKBOX",
+    ["Message when a unit gets stuck", "System chat line naming the unit, why it seems stuck and which step is being tried. Shown to the player leading its group."],
+    [_category, "AI stuck recovery"],
+    false, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_stuck_notifyResult", "CHECKBOX",
+    ["Message when recovery works or fails", "System chat line when a stuck unit moves again, and when a recovery round fails. Shown to the player leading its group."],
+    [_category, "AI stuck recovery"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 // --- Loot gathering (Antistasi Ultimate). The server picks the radius, so both are server-forced.
 [
     "auqol_loot_enabled", "CHECKBOX",

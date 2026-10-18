@@ -81,6 +81,20 @@ class CfgFunctions {
             class lootGather {};
             class lootCaches {};
         };
+        class loadout {
+            file = "\z\auqol\addons\main\functions\loadout";
+            class loadoutCopyInit {};
+            class loadoutCopyFromUser {};
+        };
+        class stuck {
+            file = "\z\auqol\addons\main\functions\stuck";
+            class stuckMonitor {};
+            class stuckEvaluate {};
+            class stuckRecover {};
+            class stuckFindPosition {};
+            class stuckNotify {};
+            class stuckSimulate {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

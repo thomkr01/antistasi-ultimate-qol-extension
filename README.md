@@ -15,8 +15,11 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | No recoil (optional) | Removes weapon recoil for your own character. Off by default. |
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
+| Squad gets your perks | No sway, unlimited stamina, weightless running and no recoil also apply to the AI in your group. |
+| Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
+| AI stuck recovery | Friendly AI that have somewhere to go but make no progress are freed step by step: refresh the order, rejoin formation, a short safe hop, and an optional emergency teleport to the squad leader. |
 
-Every feature is on by default, has its own CBA setting, and can be switched on or off while the mission is running.
+Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default except no recoil, the emergency teleport and the "unit got stuck" messages.
 
 ## Requirements
 
@@ -48,13 +51,29 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
 | `auqol_player_noRecoil` | Checkbox | Off | Server | No weapon recoil. |
+| `auqol_player_squad` | Checkbox | On | Server | Also apply the four player settings above to the AI in your group. |
+| `auqol_loadout_copyFromUser` | Checkbox | On | Server | "Copy from user" button in Antistasi's rebel loadout editor. |
+| `auqol_stuck_enabled` | Checkbox | On | Server | Detect and recover stuck friendly AI. |
+| `auqol_stuck_scope` | List | Your squad | Server | Which AI to watch: your squad, friendly AI near players, or all friendly AI. |
+| `auqol_stuck_scopeRadius` | Slider 50–3000 | 500 | Server | Radius for the "near players" scope, in metres. |
+| `auqol_stuck_timeout` | Slider 10–300 | 30 | Server | Seconds without progress before a unit counts as stuck; also the time each step gets. |
+| `auqol_stuck_minProgress` | Slider 0.5–20 | 3 | Server | Metres moved (or gained toward the destination) that count as progress. |
+| `auqol_stuck_refreshOrders` | Checkbox | On | Server | Step 1: re-issue the unit's current order. |
+| `auqol_stuck_regroup` | Checkbox | On | Server | Step 2: formation followers rejoin formation. |
+| `auqol_stuck_reposition` | Checkbox | On | Server | Step 3: short hop onto a checked safe spot toward the destination. |
+| `auqol_stuck_teleport` | Checkbox | Off | Server | Step 4: emergency teleport next to the squad leader (infantry only). |
+| `auqol_stuck_maxDistance` | Slider 5–500 | 100 | Server | Cap for the hop, and how close the leader must be for a teleport, in metres. |
+| `auqol_stuck_cooldown` | Slider 10–600 | 60 | Server | Wait after a failed recovery round, in seconds. |
+| `auqol_stuck_maxAttempts` | Slider 1–10 | 3 | Server | Failed rounds before a unit is left alone until it moves by itself. |
+| `auqol_stuck_notifyDetect` | Checkbox | Off | Server | System chat line when a unit gets stuck and for each step tried. |
+| `auqol_stuck_notifyResult` | Checkbox | On | Server | System chat line when a unit moves again or a round fails. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
 | `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
 | `auqol_loot_enemyRadius` | Slider 10–2000 | 500 | Server | Gathering is refused while an enemy in combat is this close. |
 | `auqol_loot_caches` | Checkbox | On | Server | Also empty enemy item caches within 30 m into the vehicle or crate, then delete the empty box. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill and loot run. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, loot run and stuck-recovery event. |
 
 There is no medical or logistics stock setting because the audit found no depleting medical or logistics service stock to change. See [docs/service-audit.md](docs/service-audit.md). The full reference is in [docs/configuration.md](docs/configuration.md).
 
@@ -71,6 +90,9 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Weightless running | `loadCoef` trait | Yes. Re-applied after Antistasi role traits. | n/a | n/a | ACE movement base `loadCoef` and fatigue carried mass |
 | No total weight limit | `maxSoldierLoad` in config | Yes | n/a | n/a | Inventory only. ACE dragging limits are untouched. |
 | No recoil | `setUnitRecoilCoefficient` | Yes | n/a | n/a | n/a (ACE has no recoil module) |
+| Squad perks | Same commands on your group's AI | Yes | n/a | n/a | AI get the vanilla commands, since ACE sway and fatigue only run for players. |
+| Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |
+| AI stuck recovery | Engine AI commands | Leaves garrisons, patrols, HOLD/GUARD waypoints, incapacitated, surrendered, healing and rearming units alone | Any infantry or land vehicle | Any infantry or land vehicle | Respects ACE unconscious state (`lifeState`). |
 
 Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 
@@ -81,9 +103,12 @@ Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 - **Player features** are applied on settings change, on respawn or unit change, and by a 5-second re-check, because Antistasi re-applies role traits without raising an event. They only restore values AUQOL itself changed.
 - **Loot** adds a copy of the crate's hold action to vehicles and swaps it in on the crate. Completing it asks the server to run Antistasi's own `SCRT_fnc_loot_gatherLoot`, the crate's function, with the AUQOL radius. The 10-second cooldown, unlocked-item rule and money split are Antistasi's. Enemy item caches within 30 m (the supply crates at outposts, bases and airports) are emptied into a weapon holder first, so the same run picks their contents up, and the empty box is deleted. The enemies-nearby check is done by AUQOL with its own radius, using Antistasi's `A3A_fnc_enemyNearCheck`.
 - **Withstand** sets `A3A_selfReviveTimeout`, the cooldown Antistasi's `A3A_fnc_selfRevive` reads, which defaults to 300 s.
+- **Squad perks** run in the same 5-second player re-check over the AI in your group that are local to your machine, so new recruits get them within 5 seconds.
+- **Copy from user** waits for Antistasi's loadout editor to finish opening, then turns the editor's empty third bottom-bar button into "Copy from user". It takes the loadout you wore when you opened the editor, drops anything the arsenal does not have unlimited, and loads the rest through Antistasi's own "load this role" step, which switches the slot overrides on. Nothing is saved until you press Save.
+- **AI stuck recovery** checks every 5 seconds, on each machine, only the AI local to that machine. A unit is watched only while it has a destination more than 8 m away (25 m in a vehicle) and nothing else to do, and is stuck after the timeout with no progress. Steps are tried one per timeout window, cheapest first; after the last enabled step the round fails, a cooldown follows, and after the maximum number of rounds the unit is left alone. Tracking is a variable on the unit, so nothing piles up over a long campaign. Details in [FEATURES.md](FEATURES.md#12-ai-stuck-recovery).
 - **No total weight limit** raises the engine's total soldier load cap (`maxSoldierLoad`, vanilla 1000) to 10,000,000 in config. That cap is what stops you adding items once you carry something heavy. Each container's own size is unchanged.
 
-There are no per-frame handlers. The only timers are the 5-second player re-check, a 10-second garage-fuel check, and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
+There are no per-frame handlers. The only timers are the 5-second player re-check, the 5-second stuck-AI check, a 10-second garage-fuel check, and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
 
 ## Diagnostics
 
@@ -108,6 +133,9 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.
 - The total weight limit is a config value, so it applies to every unit, AI included, and has no in-game switch. Script can't change it per unit. See [docs/configuration.md](docs/configuration.md#total-weight-limit).
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
+- The stuck check can't see why the engine's pathfinding failed, only that a unit with a destination made no progress. A unit that is legitimately waiting with a destination set (for example behind a closed gate a player will open) can be nudged. Raise the timeout if that happens.
+- The emergency teleport is off by default, infantry only, and only to a leader within the maximum distance. Vehicles are only ever moved by the short hop.
+- "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).

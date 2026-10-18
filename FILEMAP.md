@@ -10,11 +10,13 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `script_version.hpp` | The version, `MAJOR.MINOR.PATCH`. Changing it on `main` publishes a GitHub release. |
 | `$PBOPREFIX$` | PBO prefix `z\auqol\addons\main`. |
 | `XEH_preInit.sqf` | All CBA settings (names, defaults, ranges, tooltips) and global state. |
-| `XEH_postInit.sqf` | Event wiring: CBA network events, class InitPost handlers, the vanilla `Service` event, settings-ready hook. |
-| `functions/common/` | `fn_settingsInitialized` (starts timers, applies everything once settings are final), `fn_diagnostics` (RPT report), `fn_log`, `fn_isHostileSide`. |
+| `XEH_postInit.sqf` | Event wiring: CBA network events, class InitPost handlers, the arsenal's `arsenalOpened` scripted event, the vanilla `Service` event, settings-ready hook. |
+| `functions/common/` | `fn_settingsInitialized` (starts timers, including the 5 s stuck-AI pass, and applies everything once settings are final), `fn_diagnostics` (RPT report), `fn_log`, `fn_isHostileSide`. |
 | `functions/eject/` | Enemy crew ejection: vehicle event handlers (`fn_ejectInitVehicle`), the immobilized and eligibility checks, and moving units out. |
 | `functions/service/` | Infinite service stock: config detection (`fn_serviceConfig`), vanilla refills from the `Service` event, applying to all vehicles, the Antistasi garage fuel restore. |
-| `functions/player/fn_playerApply.sqf` | No sway, unlimited stamina, weightless running and no recoil for the local player. |
+| `functions/player/fn_playerApply.sqf` | No sway, unlimited stamina, weightless running and no recoil for the local player, and for the AI in their group when `auqol_player_squad` is on. |
+| `functions/loadout/` | "Copy from user" in Antistasi's rebel loadout editor: adding the button when the editor opens (`fn_loadoutCopyInit`) and copying the player's loadout, unlocked items only (`fn_loadoutCopyFromUser`). |
+| `functions/stuck/` | AI stuck detection and recovery: the 5 s pass over the chosen scope (`fn_stuckMonitor`), per-unit eligibility, progress and step choice (`fn_stuckEvaluate`), the four recovery steps (`fn_stuckRecover`), safe-spot search (`fn_stuckFindPosition`), messages (`fn_stuckNotify`) and the debug-console test helper (`fn_stuckSimulate`). |
 | `functions/loot/` | Loot from any vehicle: which objects get the action (`fn_lootIsTarget`), adding it (`fn_lootInitObject`, `fn_lootAddAction`), the server run (`fn_lootGather`) and emptying nearby item caches (`fn_lootCaches`). |
 | `functions/withstand/fn_withstandApply.sqf` | Antistasi Withstand cooldown. |
 | `compat/ace/` | ACE3 only: infinite refuel sources, limited rearm top-up, sway and fatigue factors. |
@@ -43,5 +45,5 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `tools/build.sh` | Runs the static checks, `hemtt check` and `hemtt release`. `tools/build.ps1` is the Windows version. |
 | `tools/check_ingame_scripts.sh` | Compiles the in-game test scripts. |
 | `tests/static_checks.py` | Checks functions, settings and docs, Arma commands and events, and every CBA, ACE and Antistasi name the code uses against their sources. |
-| `tests/ingame/*.sqf` | Debug-console scripts for testing ejection, service stock and player features in game. |
+| `tests/ingame/*.sqf` | Debug-console scripts for testing ejection, service stock, player features and AI stuck recovery (`stuck_test.sqf`) in game. |
 | `.github/workflows/ci.yml` | CI: checks and build on every push. Publishes a GitHub release when `main` has a new version. |
