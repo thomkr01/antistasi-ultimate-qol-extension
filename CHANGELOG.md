@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.2.3
+
+- No sway, unlimited stamina and weightless running are now server settings (`isGlobal = 1`): the server decides for every player. They still run on each player's machine.
+
 ## 1.2.2
 
 - Carrying capacity multiplier default and maximum raised from 1000 to 9999 (`auqol_capacity_multiplier`).

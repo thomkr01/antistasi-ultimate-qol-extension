@@ -2,7 +2,7 @@
 
 All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_capacity_multiplier = 100;`.
 
-**Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. Settings marked *Client* are registered with `isGlobal = 0`. Each player chooses for themselves, unless the server admin forces a value.
+**Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. The player features are also server settings, so the server decides for everyone, while the effect is still applied on each player's own machine. Only `auqol_debug` is *Client* (`isGlobal = 0`).
 
 Every setting takes effect immediately, with no mission restart.
 
@@ -44,9 +44,9 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_player_noSway` | Checkbox | On | Client | No weapon sway. Uses vanilla `setCustomAimCoef 0`, or an ACE sway multiplier of 0 when ACE sway is active. |
-| `auqol_player_unlimitedStamina` | Checkbox | On | Client | Uses vanilla `enableStamina false`, or an ACE Advanced Fatigue duty factor of 0 when ACE fatigue is active. |
-| `auqol_player_weightless` | Checkbox | On | Client | Sets the `loadCoef` trait to 0, including ACE movement's saved base value, and gives ACE Advanced Fatigue a carried mass of 0. |
+| `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. Uses vanilla `setCustomAimCoef 0`, or an ACE sway multiplier of 0 when ACE sway is active. |
+| `auqol_player_unlimitedStamina` | Checkbox | On | Server | Uses vanilla `enableStamina false`, or an ACE Advanced Fatigue duty factor of 0 when ACE fatigue is active. |
+| `auqol_player_weightless` | Checkbox | On | Server | Sets the `loadCoef` trait to 0, including ACE movement's saved base value, and gives ACE Advanced Fatigue a carried mass of 0. |
 
 These only ever affect the local player's unit. AI is not changed.
 

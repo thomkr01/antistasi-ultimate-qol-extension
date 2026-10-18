@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.2. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.2.3. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -41,7 +41,7 @@ Weapon sway is removed for your own character only. AI and other players are unc
 
 - **Vanilla:** the aim coefficient is set to 0.
 - **ACE:** when ACE sway is on, a sway factor of 0 is added through ACE's own API, so ACE doesn't override it.
-- **Setting:** `auqol_player_noSway`, per client, on by default.
+- **Setting:** `auqol_player_noSway`, server-wide, on by default.
 
 ## 4. Unlimited stamina
 
@@ -49,7 +49,7 @@ Your own character never runs out of stamina. AI is unchanged.
 
 - **Vanilla:** stamina is disabled for the local player.
 - **ACE Advanced Fatigue:** a duty factor of 0 is added, so ACE fatigue never builds up.
-- **Setting:** `auqol_player_unlimitedStamina`, per client, on by default.
+- **Setting:** `auqol_player_unlimitedStamina`, server-wide, on by default.
 
 ## 5. Running speed unaffected by weight
 
@@ -57,7 +57,7 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 
 - The `loadCoef` trait is set to 0. Antistasi resets it by role after respawn, so it is re-applied, and the role's value comes back if you turn the setting off.
 - **ACE:** ACE's movement load base and the load it reports to fatigue are kept at 0 as well.
-- **Setting:** `auqol_player_weightless`, per client, on by default.
+- **Setting:** `auqol_player_weightless`, server-wide, on by default.
 
 ## 6. Carrying capacity multiplier
 

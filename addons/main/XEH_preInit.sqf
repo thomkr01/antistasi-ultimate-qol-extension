@@ -60,21 +60,21 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
     "auqol_player_noSway", "CHECKBOX",
     ["No weapon sway", "Removes weapon sway for your own character (setCustomAimCoef 0, or an ACE sway factor of 0 when ACE sway is active)."],
     [_category, "Player"],
-    true, 0, _playerChanged
+    true, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_player_unlimitedStamina", "CHECKBOX",
     ["Unlimited stamina", "Disables the vanilla stamina system for your own character, or zeroes ACE Advanced Fatigue exertion when that is active. AI stamina is not changed."],
     [_category, "Player"],
-    true, 0, _playerChanged
+    true, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_player_weightless", "CHECKBOX",
     ["Running unaffected by carried weight", "Sets your character's loadCoef trait to 0 so equipment weight no longer drains or reserves stamina, and removes carried mass from ACE Advanced Fatigue. Other movement mechanics are unchanged."],
     [_category, "Player"],
-    true, 0, _playerChanged
+    true, 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
 // --- Carrying capacity (setMaxLoad must run on the server, so the server value is forced)

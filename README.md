@@ -33,7 +33,7 @@ More detail is in [docs/installation.md](docs/installation.md).
 
 ## CBA settings
 
-Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server" settings are synchronized from the server to everyone (`isGlobal = 1`). "Client" settings belong to each player unless the server forces them.
+Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server" settings are synchronized from the server to everyone (`isGlobal = 1`). The only "Client" setting is `auqol_debug`, which each machine sets for itself. Player features (sway, stamina, weight) are still applied on each player's own machine, but the server decides whether they are on.
 
 | Setting | Type | Default | Scope | Purpose |
 | --- | --- | --- | --- | --- |
@@ -43,9 +43,9 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_service_ammo` | Checkbox | On | Server | Infinite ammunition-service stock. |
 | `auqol_service_repair` | Checkbox | On | Server | Infinite repair-service stock. |
 | `auqol_service_garageFuel` | Checkbox | On | Server | Keep Antistasi garage fuel sources full. Also needs the fuel setting on. |
-| `auqol_player_noSway` | Checkbox | On | Client | No weapon sway. |
-| `auqol_player_unlimitedStamina` | Checkbox | On | Client | Unlimited stamina. |
-| `auqol_player_weightless` | Checkbox | On | Client | Running unaffected by carried weight. |
+| `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. |
+| `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
+| `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
 | `auqol_capacity_enabled` | Checkbox | On | Server | Increase carrying capacity. |
 | `auqol_capacity_multiplier` | Slider 1–9999 | 9999 | Server | Container capacity multiplier. |
 | `auqol_loot_enabled` | Checkbox | On | Server | Loot action on every vehicle, with the radius below for vehicles and the loot crate. |
