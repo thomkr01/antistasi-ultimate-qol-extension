@@ -143,4 +143,4 @@ The unit's health, gear, group, rank and role are never changed. When every enab
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Squad perks, Copy from user and AI stuck recovery are new in 1.5.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user (1.5.0) has been reported working. Squad perks and AI stuck recovery have not been reported yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
