@@ -24,6 +24,10 @@ if (isServer) then {
     }, 30] call CBA_fnc_addPerFrameHandler;
 };
 
+// AI stuck checks run on every machine (server, clients, headless clients) for the AI local to it.
+// No engine event reports "no progress", so this polls; the pass returns at once when the feature is off.
+[{ call AUQOL_fnc_stuckMonitor }, 5] call CBA_fnc_addPerFrameHandler;
+
 if (hasInterface) then {
     call AUQOL_fnc_aceRegisterFactors;
 

@@ -29,4 +29,6 @@ The script runs the static checks, `hemtt check`, and then `hemtt release`. The 
 | A fuel truck still runs dry under ACE | Check that `ace_refuel_enabled` is on and the truck has `ace_refuel_fuelCargo` or `transportFuel` in config. Sources disabled by the mission (capacity -1) are left alone on purpose. |
 | ACE ammo truck still runs dry | The top-up only applies in ACE's "limited ammo supply based on caliber" mode. The default "unlimited" mode is already infinite, and "magazine supply" mode is not handled. |
 | Player setting won't stay off or on | Player settings are server settings. Change them in the server tab of Addon Options (as admin), or in the server's `cba_settings.sqf`. |
+| No "Copy from user" button | It only appears in Antistasi Ultimate's Set Rebel Loadout arsenal (commander menu), not the normal arsenal, and needs `auqol_loadout_copyFromUser` on. |
+| Squad AI keep getting nudged while waiting | Raise `auqol_stuck_timeout`, or turn on `auqol_stuck_notifyDetect` to see the reason they are judged stuck. |
 | RPT warning `ACE ... not found` | Your ACE version renamed an API AUQOL uses. That feature falls back to vanilla behaviour. Please open an issue with your ACE version. |

@@ -43,7 +43,14 @@ private _lines = [
     format ["Loot from vehicles: %1, radius %2 m, enemy check %3 m (Antistasi loot function found: %4)",
         ("auqol_loot_enabled" call _setting) call _onOff, missionNamespace getVariable ["auqol_loot_radius", 0],
         missionNamespace getVariable ["auqol_loot_enemyRadius", 0], !isNil "SCRT_fnc_loot_gatherLoot"],
-    format ["Withstand cooldown: %1, %2 s", ("auqol_withstand_enabled" call _setting) call _onOff, missionNamespace getVariable ["A3A_selfReviveTimeout", 300]]
+    format ["Withstand cooldown: %1, %2 s", ("auqol_withstand_enabled" call _setting) call _onOff, missionNamespace getVariable ["A3A_selfReviveTimeout", 300]],
+    format ["Copy from user button: %1 (Antistasi loadout editor found: %2)", ("auqol_loadout_copyFromUser" call _setting) call _onOff, !isNil "SCRT_fnc_arsenal_loadoutArsenal"],
+    format ["AI stuck recovery: %1, scope %2, timeout %3 s, steps refresh %4 regroup %5 hop %6 teleport %7",
+        ("auqol_stuck_enabled" call _setting) call _onOff,
+        ["your squad", "near players", "all friendly AI"] param [missionNamespace getVariable ["auqol_stuck_scope", 0], "?"],
+        missionNamespace getVariable ["auqol_stuck_timeout", 0],
+        ("auqol_stuck_refreshOrders" call _setting) call _onOff, ("auqol_stuck_regroup" call _setting) call _onOff,
+        ("auqol_stuck_reposition" call _setting) call _onOff, ("auqol_stuck_teleport" call _setting) call _onOff]
 ];
 
 if (isServer) then {
@@ -51,10 +58,10 @@ if (isServer) then {
 };
 
 if (hasInterface) then {
-    _lines pushBack format ["Player: no sway %1 (%2) | unlimited stamina %3 (%4) | weightless %5",
+    _lines pushBack format ["Player: no sway %1 (%2) | unlimited stamina %3 (%4) | weightless %5 | squad AI too %6",
         ("auqol_player_noSway" call _setting) call _onOff, ["vanilla aim coef", "ACE sway factor"] select _aceSway,
         ("auqol_player_unlimitedStamina" call _setting) call _onOff, ["vanilla stamina", "ACE Advanced Fatigue"] select _aceFatigue,
-        ("auqol_player_weightless" call _setting) call _onOff];
+        ("auqol_player_weightless" call _setting) call _onOff, ("auqol_player_squad" call _setting) call _onOff];
 };
 
 { [_x] call AUQOL_fnc_log } forEach _lines;

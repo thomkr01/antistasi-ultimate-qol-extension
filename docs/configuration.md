@@ -48,8 +48,48 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Uses vanilla `enableStamina false`, or an ACE Advanced Fatigue duty factor of 0 when ACE fatigue is active. |
 | `auqol_player_weightless` | Checkbox | On | Server | Sets the `loadCoef` trait to 0, including ACE movement's saved base value, and gives ACE Advanced Fatigue a carried mass of 0. |
 | `auqol_player_noRecoil` | Checkbox | Off | Server | `setUnitRecoilCoefficient 0` on your own character, back to 1 when turned off. |
+| `auqol_player_squad` | Checkbox | On | Server | Also apply the four settings above to the AI in your group that are local to your machine. AI always get the vanilla commands (`setCustomAimCoef`, `enableStamina`, `loadCoef`, `setUnitRecoilCoefficient`), because ACE sway, Advanced Fatigue and movement only run for players. Off restores the AI values AUQOL changed. |
 
-These only ever affect the local player's unit. AI is not changed.
+With `auqol_player_squad` off these only affect the local player's unit. With it on they also cover the AI in your own group, re-checked every 5 seconds so new recruits are included. AI outside your group are never changed. An AI that leaves your group keeps the values it had (Antistasi normally deletes dismissed AI).
+
+## Rebel loadouts
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_loadout_copyFromUser` | Checkbox | On | Server | Adds "Copy from user" to the bottom bar of Antistasi's Set Rebel Loadout arsenal, in the empty third slot (the vanilla Random button, which Antistasi blanks). |
+
+**What it copies.** The loadout you wore when you opened the editor, which Antistasi keeps aside while you edit. Weapons are reduced to their base class, the way the arsenal lists them. Every item that the arsenal does not have unlimited is dropped: a locked weapon, uniform, vest, backpack, headgear, facewear or assigned item leaves that slot unset, which Antistasi fills at random for each recruit, and locked attachments, magazines and container items are removed. The chat line lists what was skipped.
+
+**How it is applied.** Through Antistasi's own "load this role into the editor" step, so every slot the copy fills gets its override switch turned on (green). Nothing is saved until you press Save. Closing without saving keeps the old loadout, and you get your own loadout back on close as usual.
+
+**Recruits not wearing the loadout?** That is Antistasi's slot switch. Green slot icons on the left of the editor are forced on recruits, black ones are rolled at random. Click a black icon to make it green, then Save. New loadouts start all green unless the mission parameter "loadoutArsenalDefaultOverride" is off.
+
+## AI stuck recovery
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_stuck_enabled` | Checkbox | On | Server | Master switch. |
+| `auqol_stuck_scope` | List | Your squad | Server | 0 Your squad: AI in each player's own group. 1 Friendly AI near players: within `auqol_stuck_scopeRadius` of any player. 2 All friendly AI. Friendly means Antistasi's `teamPlayer` side, or the player's side outside Antistasi. |
+| `auqol_stuck_scopeRadius` | Slider 50–3000 | 500 | Server | Radius for scope 1, in metres. |
+| `auqol_stuck_timeout` | Slider 10–300 | 30 | Server | Seconds without progress before a unit counts as stuck. Each recovery step also gets this long to work. |
+| `auqol_stuck_minProgress` | Slider 0.5–20 | 3 | Server | Moving this many metres from where the current window started, or getting this much closer to the destination, counts as progress and resets everything. |
+| `auqol_stuck_refreshOrders` | Checkbox | On | Server | Step 1: re-issue the current order to the same place (`doMove`, `setCurrentWaypoint` on the current waypoint, or `doFollow` the leader). |
+| `auqol_stuck_regroup` | Checkbox | On | Server | Step 2, formation followers only: `doWatch objNull`, `doStop`, `doFollow` the leader. |
+| `auqol_stuck_reposition` | Checkbox | On | Server | Step 3: a hop of up to 10 m (25 m for a driven vehicle) toward the destination or leader, onto a checked spot, then step 1 again. |
+| `auqol_stuck_teleport` | Checkbox | Off | Server | Step 4, infantry only: to a checked spot within 15 m of the squad leader, when the leader is within `auqol_stuck_maxDistance`. |
+| `auqol_stuck_maxDistance` | Slider 5–500 | 100 | Server | Upper limit for the hop, and the furthest the leader may be for a teleport. |
+| `auqol_stuck_cooldown` | Slider 10–600 | 60 | Server | After every enabled step failed (one round), wait this long before the next round. |
+| `auqol_stuck_maxAttempts` | Slider 1–10 | 3 | Server | Failed rounds before the unit is left alone until it moves again by itself. |
+| `auqol_stuck_notifyDetect` | Checkbox | Off | Server | System chat when a unit gets stuck (with the likely reason) and for each step tried. |
+| `auqol_stuck_notifyResult` | Checkbox | On | Server | System chat when a unit moves again, and when a round fails or the unit is given up on. |
+
+**Checks.** Every 5 seconds each machine (server, headless clients, players) checks the AI local to it in the chosen scope. A unit local to one machine is never checked anywhere else, so recovery never runs twice. The full list of skipped states is in [FEATURES.md](../FEATURES.md#12-ai-stuck-recovery). In short: a unit is watched only with a destination more than 8 m away (25 m driving), only a move or follow order, not fighting, not down, surrendered, healing or rearming, on the ground and dry, and, in AI-led groups, not holding, guarding or patrolling.
+
+**Safe spots** for steps 3 and 4 come from `findEmptyPosition` (room for that unit or vehicle type), and are rejected when in water, on a slope above about 37°, under a roof, more than 3 m above or below the centre, or within 100 m of a unit hostile to the players.
+
+**Messages** go to the player leading the unit's group, through a CBA event when the AI is local to another machine. A unit produces at most one line when it gets stuck, one per step, one per failed round and one when it moves again. With `auqol_debug` on, each event is also written to the RPT with the unit's grid position.
+
+**Clean-up.** Tracking is a variable on the unit, cleared whenever the unit is ineligible and dropped with the unit when it dies or is deleted. A unit not seen for 15 seconds, or that changed group, starts fresh. There is one 5-second timer per machine and no per-unit script.
 
 ## Total weight limit
 
@@ -85,6 +125,6 @@ A cooldown already running when you change the setting finishes at its old lengt
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore and loot run, on the machine doing it. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore, loot run and stuck-recovery event, on the machine doing it. |
 
 `call AUQOL_fnc_diagnostics` returns and logs the active integrations on that machine. Run from the debug console, it also prints them to system chat.

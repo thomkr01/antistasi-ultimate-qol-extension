@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.4.1. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.5.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -8,7 +8,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **CBA_A3 is the only hard dependency** (`requiredAddons[] = {"cba_main"}`).
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature except no recoil is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
+- **Every feature is on by default except no recoil, the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers, never `remoteExec`.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
@@ -92,6 +92,55 @@ Antistasi's Withstand self-revive normally has a 5-minute cooldown. AUQOL sets i
 - Antistasi ties Withstand's after-effects (grey screen, aim penalty) to the same timer, so they also end after 1 second.
 - The mission's Withstand self-revive parameter still has to be turned on.
 
+## 10. Your squad gets your perks
+
+The AI in your own group get the same no sway, unlimited stamina, weight-independent running and no recoil as you.
+
+- Each of the four follows its own player setting, so no recoil still stays off unless you turn it on.
+- `auqol_player_squad` (on) switches the squad part. Turning it off puts your AI back to normal.
+- Applied on your machine to the AI local to it (your recruits are), within 5 seconds of joining.
+- Under ACE the AI get the vanilla commands, because ACE sway and Advanced Fatigue only run for players.
+
+## 11. "Copy from user" in the rebel loadout editor
+
+In Antistasi's Set Rebel Loadout arsenal, the empty third button in the bottom bar becomes "Copy from user".
+
+- It loads the loadout you were wearing when you opened the editor into the role you are editing. Press Save to keep it, as with any edit.
+- Only items the arsenal has unlimited (shown with the infinity sign) are copied, the same rule the editor uses. A locked weapon, uniform, vest, backpack, helmet, facewear or assigned item leaves that slot to Antistasi's random pick; locked attachments, magazines and container items are just dropped. A chat line lists what was skipped.
+- Every slot it fills gets its override switch turned on (the green slot icons), so recruits wear exactly that.
+- Antistasi already forces the "set loadout" on recruits for every slot whose icon is green; black slots are rolled at random. AUQOL does not change that.
+- `auqol_loadout_copyFromUser` (on).
+
+## 12. AI stuck recovery
+
+Friendly AI that should be moving but aren't get freed automatically, cheapest fix first.
+
+**Who is watched** (`auqol_stuck_scope`): the AI in each player's own group (default), friendly AI within `auqol_stuck_scopeRadius` of any player, or all friendly AI. Each machine only checks the AI it owns, every 5 seconds, so the server, headless clients and players never act on the same unit twice.
+
+**When a unit counts as stuck.** It needs somewhere to go and nothing else to do:
+
+- the engine says it has a destination (`expectedDestination`), more than 8 m away on foot or 25 m when driving. Units that are "not moving" or doing a direct move such as getting in or resupplying are skipped;
+- its only order is a move, or following its leader. Stop and Hold, attack, heal, get in, rearm and other commands are left alone, as are units with movement or pathfinding AI switched off;
+- it is not fighting: no attack target, not suppressed, no known enemy within 300 m;
+- it is not unconscious, incapacitated or surrendered, and not healing someone or rearming from bodies (Antistasi's own flags);
+- on foot it is on the ground, not swimming and not on a ladder. In a vehicle only the AI driver of a land vehicle that can still move and has fuel counts, and only with no player aboard. Passengers, static weapons, aircraft and boats are skipped;
+- in groups led by AI (patrols, garrisons, high-command squads) it is not on a HOLD, GUARD, SENTRY, LOITER or DISMISS waypoint and not on a looping patrol route.
+
+Then, if it neither moves `auqol_stuck_minProgress` metres (default 3) nor gets that much closer to its destination within `auqol_stuck_timeout` seconds (default 30), it is stuck.
+
+**Recovery steps**, each given another timeout window to work before the next one:
+
+1. **Refresh the order** (`auqol_stuck_refreshOrders`, on): the same order to the same place again. A move order is re-issued, an AI leader's current waypoint is set again, a follower is told to follow its leader, a driver is sent on again. Formation, behaviour and waypoints are not changed.
+2. **Rejoin formation** (`auqol_stuck_regroup`, on): only for units following their leader with no order of their own. Clears a stuck look target, then stop and follow the leader, which drops a stuck command queue.
+3. **Short safe hop** (`auqol_stuck_reposition`, on): moves the unit up to 10 m (a vehicle up to 25 m, never more than `auqol_stuck_maxDistance`) toward its destination, or toward its leader if it is following. The spot must have room for it, be dry, not steep, not under a roof, not more than 3 m above or below, and have no hostile unit within 100 m. Then step 1 again.
+4. **Emergency teleport** (`auqol_stuck_teleport`, off): infantry only, to a checked spot next to its squad leader, and only when the leader is within `auqol_stuck_maxDistance` (default 100 m). Never players, vehicles, or units parachuting, swimming or climbing.
+
+The unit's health, gear, group, rank and role are never changed. When every enabled step has failed, the round counts as failed and the unit waits `auqol_stuck_cooldown` seconds (default 60). After `auqol_stuck_maxAttempts` failed rounds (default 3) it is left alone until it moves again by itself.
+
+**Messages** go to the player leading the unit's group: `auqol_stuck_notifyResult` (on) when it moves again or a round fails, `auqol_stuck_notifyDetect` (off) when it gets stuck, with the likely reason (an obstacle in front, terrain, or no path), and for each step. With `auqol_debug` every event is also written to the RPT.
+
+**Testing without a real stuck unit:** `[cursorObject] call AUQOL_fnc_stuckSimulate` in the debug console marks a unit as past the timeout. `tests/ingame/stuck_test.sqf` builds a real stuck case.
+
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Squad perks, Copy from user and AI stuck recovery are new in 1.5.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

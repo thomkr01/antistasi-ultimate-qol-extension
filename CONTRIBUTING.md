@@ -18,8 +18,10 @@ addons/main/
   functions/common      logging, diagnostics, side check, settings-ready entry point
   functions/eject       crew ejection
   functions/service     service stock (vanilla + Antistasi garage)
-  functions/player      sway, stamina, weight, recoil
+  functions/player      sway, stamina, weight, recoil (player and squad AI)
   functions/loot        loot from vehicles and item caches
+  functions/loadout     "Copy from user" in Antistasi's rebel loadout editor
+  functions/stuck       AI stuck detection and recovery
   functions/withstand   Withstand cooldown
   compat/ace            ACE refuel, rearm, sway and fatigue integration
 tests/static_checks.py  static validation
