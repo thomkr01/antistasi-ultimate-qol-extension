@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.4.0
+
+- Loot gathering also empties enemy item caches (outpost, base and airport supply crates) within 30 m of the vehicle or loot crate (`auqol_loot_caches`, on by default).
+
 ## 1.3.0
 
 - No total weight limit: `maxSoldierLoad` raised to 10,000,000, so heavy items no longer stop you picking up more.

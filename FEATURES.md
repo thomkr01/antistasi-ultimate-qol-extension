@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.3.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.4.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -80,6 +80,7 @@ Every vehicle works like Antistasi's loot crate, so you don't have to buy and ha
 - **Same action as the crate:** "Gather Scattered Loot", a 2-second hold, on foot within 5 m. It is added to every land vehicle, aircraft and boat, but not static weapons.
 - **Same behaviour as the crate:** the server runs Antistasi's own crate function. Loot from dead bodies, dropped weapons and surrender crates goes into the vehicle. Money is split between rebel players, unlocked items follow the mission's parameter, and there is a 10-second cooldown.
 - **One radius for both:** vehicles and the loot crate use `auqol_loot_radius`, 10 to 2000 m, default 2000. Antistasi's own crate parameter only goes to 400.
+- **Item caches:** enemy item caches (the supply crates at outposts, bases and airports) within 30 m of the vehicle or crate are emptied into it too, with the same unlocked-item and money rules. `auqol_loot_caches`, on by default.
 - **Separate enemy check:** gathering is refused while an enemy in combat is within `auqol_loot_enemyRadius` of the vehicle, 10 to 2000 m, default 500. So you can gather from 2000 m while only nearby enemies block it.
 - **Settings:** `auqol_loot_enabled` (on), `auqol_loot_radius` and `auqol_loot_enemyRadius`. All are server-wide. Turning loot off removes the vehicle action and puts the crate back on Antistasi's radius.
 

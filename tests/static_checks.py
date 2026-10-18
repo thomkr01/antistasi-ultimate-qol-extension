@@ -313,7 +313,8 @@ def check_antistasi(au):
     for needed in ('"lootActionID"', "STR_antistasi_actions_loot_around_text", "holdaction_box_ca.paa", "lootCrateDistance"):
         if needed not in addaction:
             problems.append(f"{needed} not found in fn_loot_addActionLoot.sqf")
-    for needed in ("class lootCrateDistance", '["lootCrate", "A3AP_Box_Syndicate_Ammo_F"]', "class A3AP_Box_Syndicate_Ammo_F"):
+    for needed in ('_faction get "ammobox"', 'setVariable ["A3A_canGarage", true, true]', '"GroundWeaponHolder"', '"lastLooted"',
+                   "class lootCrateDistance", '["lootCrate", "A3AP_Box_Syndicate_Ammo_F"]', "class A3AP_Box_Syndicate_Ammo_F"):
         if needed not in src:
             problems.append(f"{needed} not found in Antistasi Ultimate")
     # Withstand: the cooldown A3A_fnc_selfRevive reads from missionNamespace.

@@ -40,7 +40,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 32 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.3.0.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.4.0.zip
 ```
 
 ### Not covered by static checks
@@ -57,7 +57,7 @@ Run this in single player first, then on a dedicated server with a second client
 ### 1. Startup and diagnostics
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.3.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+2. Check the RPT for the `[AUQOL] Version 1.4.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
 3. Open Addon Options and check the 12 settings listed in the README.
 
 ### 2. Enemy crew ejection
@@ -97,7 +97,8 @@ Run this in single player first, then on a dedicated server with a second client
 2. Set `auqol_loot_radius` to 2000 and check that bodies far away are gathered too. Set it to 10 and check that they aren't.
 3. Buy a loot crate. It should show one "Gather Scattered Loot" action, not two, and use the same radius as the vehicles.
 4. Use it twice within 10 seconds: the second try should say it was used recently. With an enemy in combat within 500 m it should say enemies are nearby. With one at 1000 m it should still gather, including bodies out to 2000 m.
-5. Turn `auqol_loot_enabled` off: vehicles lose the action, and the crate still works with Antistasi's own radius.
+5. Capture or clear an outpost, park a vehicle within 30 m of its supply crate and gather. The crate should end up empty and its contents in the vehicle. Park more than 30 m away and the crate should keep its contents. The HQ box should never be emptied.
+6. Turn `auqol_loot_enabled` off: vehicles lose the action, and the crate still works with Antistasi's own radius.
 
 ### 7. Withstand
 

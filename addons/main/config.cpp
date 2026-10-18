@@ -79,6 +79,7 @@ class CfgFunctions {
             class lootInitObject {};
             class lootAddAction {};
             class lootGather {};
+            class lootCaches {};
         };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";

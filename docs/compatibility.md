@@ -26,7 +26,7 @@ With only CBA loaded, every feature works on vanilla mechanics. The ejection fal
 | No total weight limit | `maxSoldierLoad` in config | n/a | n/a | n/a | ACE dragging and carrying of objects is untouched |
 | No recoil | `setUnitRecoilCoefficient 0` on the local player | n/a | n/a | n/a | ACE has no recoil feature |
 
-Loot and Withstand use only Antistasi Ultimate: `SCRT_fnc_loot_gatherLoot`, the `lootActionID` variable and the action text of `SCRT_fnc_loot_addActionLoot`, the `lootCrateDistance` parameter, the faction's `lootCrate` class, and the `A3A_selfReviveTimeout` value `A3A_fnc_selfRevive` reads. Without Antistasi both features do nothing.
+Loot and Withstand use only Antistasi Ultimate: `SCRT_fnc_loot_gatherLoot`, the `lootActionID` variable and the action text of `SCRT_fnc_loot_addActionLoot`, the `lootCrateDistance` parameter, the faction's `lootCrate` and `ammobox` classes, the `boxX` HQ box, the `A3A_canGarage` variable, and the `A3A_selfReviveTimeout` value `A3A_fnc_selfRevive` reads. Without Antistasi both features do nothing.
 
 ## ACE APIs used
 

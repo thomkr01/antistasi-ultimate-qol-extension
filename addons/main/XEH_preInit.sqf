@@ -106,6 +106,13 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
     [10, 2000, 500, 0], 1
 ] call CBA_fnc_addSetting;
 
+[
+    "auqol_loot_caches", "CHECKBOX",
+    ["Also loot item caches within 30 m", "Enemy item caches (the supply crates at outposts, bases and airports) within 30 m of the vehicle or loot crate are emptied into it too."],
+    [_category, "Loot gathering"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 // --- Antistasi "Withstand" self-revive cooldown (read on each client, so the setting script applies it everywhere)
 private _withstandChanged = { if (auqol_ready) then { call AUQOL_fnc_withstandApply } };
 

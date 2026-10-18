@@ -33,5 +33,10 @@ if ([getPosATL _object, _enemyRadius] call A3A_fnc_enemyNearCheck) exitWith {
     } forEach ([_radius, _object] call SCRT_fnc_common_getNearPlayers);
 };
 
+// Same 10 s cooldown Antistasi applies, checked here so caches are not emptied for a refused run.
+if (serverTime - (_object getVariable ["lastLooted", -10]) >= 10 && auqol_loot_caches) then {
+    [_object] call AUQOL_fnc_lootCaches;
+};
+
 [format ["Gathering loot into %1 (radius %2, enemy check %3)", typeOf _object, _radius, _enemyRadius], true] call AUQOL_fnc_log;
 [_object, _radius, getPosATL _object] spawn SCRT_fnc_loot_gatherLoot;
