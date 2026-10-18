@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.1.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -66,6 +66,23 @@ Your uniform, vest and backpack hold more, by a multiplier of 1000 by default.
 - Applied on the server to the containers players are wearing, as the engine requires. Changing gear or respawning re-applies it. A dropped container goes back to its normal capacity, so anyone who picks it up gets the normal amount.
 - **Total load cap:** the game caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change it per unit, so AUQOL raises it to 9999 in config. That applies to every unit, AI included, and has no in-game switch.
 - **Settings:** `auqol_capacity_enabled` (on) and `auqol_capacity_multiplier` (1 to 1000, default 1000). Both are server-wide.
+
+## 7. Loot from any vehicle
+
+Every vehicle works like Antistasi's loot crate, so you don't have to buy and haul the crate around.
+
+- **Same action as the crate:** "Gather Scattered Loot", a 2-second hold, on foot within 5 m. It is added to every land vehicle, aircraft and boat, but not static weapons.
+- **Same behaviour as the crate:** the server runs Antistasi's own crate function. Loot from dead bodies, dropped weapons and surrender crates goes into the vehicle. Money is split between rebel players, unlocked items follow the mission's parameter, there is a 10-second cooldown, and gathering stops if enemies in combat are within the radius.
+- **One radius for both:** vehicles and the loot crate use `auqol_loot_radius`, 10 to 2000 m, default 500. Antistasi's own crate parameter only goes to 400.
+- **Settings:** `auqol_loot_enabled` (on) and `auqol_loot_radius`. Both are server-wide. Turning loot off removes the vehicle action and puts the crate back on Antistasi's radius.
+
+## 8. Short Withstand cooldown
+
+Antistasi's Withstand self-revive normally has a 5-minute cooldown. AUQOL sets it to 1 second.
+
+- The time is adjustable from 1 to 300 seconds (`auqol_withstand_timeout`, default 1). `auqol_withstand_enabled` (on) switches it, and off means Antistasi's 300 s.
+- Antistasi ties Withstand's after-effects (grey screen, aim penalty) to the same timer, so they also end after 1 second.
+- The mission's Withstand self-revive parameter still has to be turned on.
 
 ## Status
 

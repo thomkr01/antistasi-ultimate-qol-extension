@@ -37,10 +37,10 @@ PASS  Event handlers: names exist and the parameter positions used match the wik
 PASS  Locality (heuristic): local-argument commands are guarded
 PASS  CBA_A3: every CBA function, event and config class used exists
 PASS  ACE3: every ACE function, variable, constant and class used exists
-PASS  Antistasi Ultimate: garage functions, variables and data layout used exist
-hemtt check --pedantic --error-on-all: 1 addon config rapified, 27 SQF files compiled, no warnings
+PASS  Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist
+hemtt check --pedantic --error-on-all: 1 addon config rapified, 32 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.1.0.zip
 ```
 
 ### Not covered by static checks
@@ -57,7 +57,7 @@ Run this in single player first, then on a dedicated server with a second client
 ### 1. Startup and diagnostics
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.0.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+2. Check the RPT for the `[AUQOL] Version 1.1.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
 3. Open Addon Options and check the 12 settings listed in the README.
 
 ### 2. Enemy crew ejection
@@ -89,5 +89,19 @@ Run this in single player first, then on a dedicated server with a second client
 
 1. Fill all containers. You should get past 1000 mass (`loadAbs player`) and stop near 9999, the `maxSoldierLoad` cap AUQOL sets.
 2. `call AUQOL_fnc_diagnostics` should show `maxSoldierLoad=9999`.
+
+### 6. Loot from vehicles
+
+1. Kill a few enemies, walk up to any vehicle on foot and hold "Gather Scattered Loot". Their gear and dropped weapons should end up in the vehicle's inventory and the bodies should be stripped.
+2. Set `auqol_loot_radius` to 2000 and check that bodies far away are gathered too. Set it to 10 and check that they aren't.
+3. Buy a loot crate. It should show one "Gather Scattered Loot" action, not two, and use the same radius as the vehicles.
+4. Use it twice within 10 seconds: the second try should say it was used recently. With an enemy in combat inside the radius it should say enemies are nearby.
+5. Turn `auqol_loot_enabled` off: vehicles lose the action, and the crate still works with Antistasi's own radius.
+
+### 7. Withstand
+
+1. In a mission with the Withstand self-revive parameter on, get downed and press H with a first aid kit.
+2. Get downed again right away. The countdown hint should say Withstand is ready, and H should work again after about 1 second.
+3. Turn `auqol_withstand_enabled` off. The next cooldown should be 5 minutes.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

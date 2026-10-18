@@ -25,6 +25,8 @@ With only CBA loaded, every feature works on vanilla mechanics. The ejection fal
 | Weightless running | `setUnitTrait ["loadCoef", 0]` | Antistasi sets `loadCoef` 1.2–1.4 by role in `A3A_fnc_unitTraits` after respawn. The 5-second re-check re-applies 0 and remembers Antistasi's value for when the setting is turned off. | n/a | n/a | ACE movement rebuilds `loadCoef` from `ace_movement_loadCoef` on every loadout change, so that base is set to 0 too. ACE fatigue reads carried mass from `ace_movement_totalLoad`, which AUQOL keeps at 0 from its duty factor hook. |
 | Carrying capacity | `setMaxLoad` on worn containers, run on the server | Antistasi's loadout screen draws its bars from config capacity, so it can show more than 100% | n/a | n/a | ACE dragging and carrying of objects is untouched |
 
+Loot and Withstand use only Antistasi Ultimate: `SCRT_fnc_loot_gatherLoot`, the `lootActionID` variable and the action text of `SCRT_fnc_loot_addActionLoot`, the `lootCrateDistance` parameter, the faction's `lootCrate` class, and the `A3A_selfReviveTimeout` value `A3A_fnc_selfRevive` reads. Without Antistasi both features do nothing.
+
 ## ACE APIs used
 
 | Function or variable | Public? | Used for |

@@ -1,6 +1,15 @@
 # Changelog
 
-## 1.0.0 (unreleased)
+Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
+
+## 1.1.0
+
+- Loot from any vehicle: every vehicle gets the loot crate's "Gather Scattered Loot" action, and vehicles and the crate share one radius up to 2000 m (`auqol_loot_enabled`, `auqol_loot_radius`).
+- Antistasi Withstand self-revive cooldown set to 1 second, adjustable to 300 (`auqol_withstand_enabled`, `auqol_withstand_timeout`).
+- Total soldier load limit raised to 9999 in the main addon. The optional `auqol_maxload` addon is gone.
+- Simpler version numbers: three parts, no build number.
+
+## 1.0.0
 
 First version.
 

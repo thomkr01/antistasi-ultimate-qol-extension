@@ -94,6 +94,38 @@ private _capacityChanged = { if (auqol_ready && {isServer}) then { call AUQOL_fn
     [1, 1000, 1000, 0], 1, _capacityChanged
 ] call CBA_fnc_addSetting;
 
+// --- Loot gathering (Antistasi Ultimate). The server picks the radius, so both are server-forced.
+[
+    "auqol_loot_enabled", "CHECKBOX",
+    ["Gather loot from vehicles", "Adds the loot crate's 'Gather Scattered Loot' action to every vehicle, and makes the vehicle and the loot crate use the radius below. Off: vehicles lose the action and the crate goes back to Antistasi's own radius."],
+    [_category, "Loot gathering"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_loot_radius", "SLIDER",
+    ["Loot gather radius (m)", "How far around the vehicle or loot crate loot is gathered from, 10 to 2000 m. Antistasi's enemies-nearby check uses the same radius."],
+    [_category, "Loot gathering"],
+    [10, 2000, 500, 0], 1
+] call CBA_fnc_addSetting;
+
+// --- Antistasi "Withstand" self-revive cooldown (read on each client, so the setting script applies it everywhere)
+private _withstandChanged = { if (auqol_ready) then { call AUQOL_fnc_withstandApply } };
+
+[
+    "auqol_withstand_enabled", "CHECKBOX",
+    ["Shorter Withstand cooldown", "Replaces the 5-minute cooldown of Antistasi's Withstand self-revive with the time below. Needs the mission's Withstand self-revive parameter."],
+    [_category, "Withstand"],
+    true, 1, _withstandChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_withstand_timeout", "SLIDER",
+    ["Withstand cooldown (s)", "Seconds before Withstand can be used again, 1 to 300. Antistasi's default is 300."],
+    [_category, "Withstand"],
+    [1, 300, 1, 0], 1, _withstandChanged
+] call CBA_fnc_addSetting;
+
 // --- Diagnostics
 [
     "auqol_debug", "CHECKBOX",

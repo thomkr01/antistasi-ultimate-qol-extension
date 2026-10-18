@@ -149,7 +149,8 @@ SQF_KEYWORDS = {"private", "params", "if", "then", "else", "exitWith", "forEach"
                 "case", "default", "true", "false", "nil", "call", "spawn", "select", "count", "continue",
                 "from", "to", "step", "for", "with", "isNil", "isNull", "not", "and", "or"}
 MAGIC = {"_this", "_x", "_y", "_forEachIndex", "_thisEventHandler", "_thisSetting"}
-EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player"}
+EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player",
+                    "BIS_fnc_holdActionAdd", "BIS_fnc_holdActionRemove", "SCRT_fnc_loot_gatherLoot"}
 
 
 def check_wiki(wiki):
@@ -298,7 +299,23 @@ def check_antistasi(au):
     getfuel = next((au / "A3A" / "addons" / "garage").rglob("fn_getFuel.sqf")).read_text()
     if 'getFuelCargo _vehicle, _vehicle getVariable ["ace_refuel_currentFuelCargo"' not in getfuel:
         problems.append("garage fuel state layout changed (fn_getFuel.sqf)")
-    check("Antistasi Ultimate: garage functions, variables and data layout used exist", problems)
+    # Loot gathering: the crate's function, action, radius parameter and class AUQOL mirrors.
+    loot = au / "A3A" / "addons" / "scrt" / "Loot"
+    gather = (loot / "fn_loot_gatherLoot.sqf").read_text()
+    if 'params ["_vehicle", "_radius"' not in gather:
+        problems.append("SCRT_fnc_loot_gatherLoot parameters changed")
+    addaction = (loot / "fn_loot_addActionLoot.sqf").read_text()
+    for needed in ('"lootActionID"', "STR_antistasi_actions_loot_around_text", "holdaction_box_ca.paa", "lootCrateDistance"):
+        if needed not in addaction:
+            problems.append(f"{needed} not found in fn_loot_addActionLoot.sqf")
+    for needed in ("class lootCrateDistance", '["lootCrate", "A3AP_Box_Syndicate_Ammo_F"]', "class A3AP_Box_Syndicate_Ammo_F"):
+        if needed not in src:
+            problems.append(f"{needed} not found in Antistasi Ultimate")
+    # Withstand: the cooldown A3A_fnc_selfRevive reads from missionNamespace.
+    selfrevive = next((au / "A3A" / "addons" / "core").rglob("fn_selfRevive.sqf")).read_text()
+    if 'missionNamespace getVariable ["A3A_selfReviveTimeout", 300]' not in selfrevive:
+        problems.append("A3A_fnc_selfRevive no longer reads missionNamespace A3A_selfReviveTimeout")
+    check("Antistasi Ultimate: garage, loot and Withstand functions, variables and data layout used exist", problems)
 
 
 def main():

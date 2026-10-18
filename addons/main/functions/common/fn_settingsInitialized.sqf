@@ -11,6 +11,7 @@ if (auqol_ready) exitWith {};
 auqol_ready = true;
 
 call AUQOL_fnc_serviceApplyAll;
+call AUQOL_fnc_withstandApply;
 
 if (isServer) then {
     // Antistasi garage fuel sources only drain when a vehicle is pulled out, so a slow check is enough.

@@ -77,6 +77,17 @@ class CfgFunctions {
             class capacityApply {};
             class capacityApplyAll {};
         };
+        class loot {
+            file = "\z\auqol\addons\main\functions\loot";
+            class lootIsTarget {};
+            class lootInitObject {};
+            class lootAddAction {};
+            class lootGather {};
+        };
+        class withstand {
+            file = "\z\auqol\addons\main\functions\withstand";
+            class withstandApply {};
+        };
         class ace {
             file = "\z\auqol\addons\main\compat\ace";
             class aceRefuelApply {};

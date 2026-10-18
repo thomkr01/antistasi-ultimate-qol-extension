@@ -69,6 +69,28 @@ These only ever affect the local player's unit. AI is not changed.
 
 Containers you drop or swap go back to their normal capacity. Their contents stay as they are, so a container may now hold more than its normal capacity until items are removed. The multiplier is clamped to 1–1000, and the slider only allows integers, so there are no overflow or invalid values: the largest vanilla backpack times 1000 is well within float precision.
 
+## Loot gathering
+
+Needs Antistasi Ultimate. Without it the action is not added.
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_loot_enabled` | Checkbox | On | Server | Adds the loot crate's "Gather Scattered Loot" hold action to every land vehicle, aircraft and boat (not static weapons), and makes vehicles and the loot crate use `auqol_loot_radius`. Off: vehicles lose the action and the crate uses Antistasi's `lootCrateDistance` parameter again. |
+| `auqol_loot_radius` | Slider 10–2000, integer | 500 | Server | Gather radius in metres around the vehicle or crate. Antistasi's crate parameter only goes to 400. |
+
+The action is the crate's own: same text, icon, 2-second hold, on foot within 5 m. Completing it runs Antistasi's `SCRT_fnc_loot_gatherLoot` on the server, so everything else is the crate's behaviour: dead bodies, weapon holders and surrender crates in the radius are emptied into the vehicle, money items are split between rebel players, already-unlocked items follow the mission's "loot crate ignores unlocked items" parameter, there is a 10-second cooldown per vehicle, and it refuses while enemies in combat mode are within the radius. Items are added even past the vehicle's normal cargo capacity, as with the crate.
+
+## Withstand
+
+Needs Antistasi Ultimate with the mission's Withstand self-revive parameter on.
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_withstand_enabled` | Checkbox | On | Server | Replace the Withstand cooldown. Off: Antistasi's 300 s default. |
+| `auqol_withstand_timeout` | Slider 1–300, integer | 1 | Server | Seconds before Withstand can be used again. The after-effects (desaturated screen, aim penalty) last the same time, because Antistasi ties them to the cooldown. |
+
+A cooldown already running when you change the setting finishes at its old length.
+
 ## Diagnostics
 
 | Setting | Type | Default | Scope | Description |

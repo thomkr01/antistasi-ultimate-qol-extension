@@ -42,7 +42,10 @@ private _lines = [
     format ["Capacity: %1 x%2 | maxSoldierLoad=%3",
         ("auqol_capacity_enabled" call _setting) call _onOff,
         missionNamespace getVariable ["auqol_capacity_multiplier", 1],
-        getNumber (configFile >> "CfgInventoryGlobalVariable" >> "maxSoldierLoad")]
+        getNumber (configFile >> "CfgInventoryGlobalVariable" >> "maxSoldierLoad")],
+    format ["Loot from vehicles: %1, radius %2 m (Antistasi loot function found: %3)",
+        ("auqol_loot_enabled" call _setting) call _onOff, missionNamespace getVariable ["auqol_loot_radius", 0], !isNil "SCRT_fnc_loot_gatherLoot"],
+    format ["Withstand cooldown: %1, %2 s", ("auqol_withstand_enabled" call _setting) call _onOff, missionNamespace getVariable ["A3A_selfReviveTimeout", 300]]
 ];
 
 if (isServer) then {
