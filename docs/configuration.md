@@ -62,7 +62,7 @@ These only ever affect the local player's unit. AI is not changed.
 | System | Affected? | Why |
 | --- | --- | --- |
 | Vanilla uniform, vest and backpack containers | Yes | `setMaxLoad` on each worn container. It runs on the server, as the command requires, and persists for JIP. |
-| Vanilla total soldier load (`CfgInventoryGlobalVariable >> maxSoldierLoad`, 1000) | Not by the main addon | It is a static config value, and the wiki states unit max load cannot be set by script. The optional `@auqol_maxload` addon sets it to 1,000,000, but for every unit, AI included. That also makes weight count for almost nothing in vanilla stamina for everyone, and it has no runtime switch. |
+| Vanilla total soldier load (`CfgInventoryGlobalVariable >> maxSoldierLoad`, 1000) | Yes, to 9999 | It is a static config value, and the wiki states unit max load cannot be set by script, so `config.cpp` sets it. It applies to every unit, AI included, and also lowers how much weight drains vanilla stamina for everyone. It has no runtime switch: remove the mod to undo it. |
 | ACE carrying and dragging of objects (`ace_dragging_weightCoefficient`) | No | That is a separate, global ACE setting for objects you carry by hand, not inventory capacity. Server admins can change it in ACE's own settings. |
 | Antistasi arsenal restrictions | No | These are unlock counts, not capacity. |
 | Antistasi logistics (vehicle cargo nodes) | No | Vehicle cargo slots are a separate mechanic. |

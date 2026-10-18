@@ -7,7 +7,7 @@
     and is clamped to 1..1000.
 
     The engine's total soldier load limit (CfgInventoryGlobalVariable >> maxSoldierLoad) is static
-    config and cannot be changed per unit by script; see the optional auqol_maxload addon.
+    config and cannot be changed per unit by script; config.cpp raises it to 9999 for every unit.
 
     Arguments:
     0: Player unit <OBJECT>

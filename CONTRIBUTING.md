@@ -21,7 +21,6 @@ addons/main/
   functions/player      sway, stamina, weight
   functions/capacity    carrying capacity
   compat/ace            ACE refuel, rearm, sway and fatigue integration
-optionals/maxload       optional maxSoldierLoad patch
 tests/static_checks.py  static validation
 tools/build.sh|ps1      check + build
 ```

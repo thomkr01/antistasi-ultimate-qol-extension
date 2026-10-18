@@ -95,7 +95,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - An overturned vehicle with no damage is left to the engine, which ejects crews from upside-down vehicles on its own.
 - ACE rearm's "magazine supply" mode is a stockpile of specific magazines and is not made infinite.
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.
-- The engine caps a soldier's total load at `maxSoldierLoad` (1000 by default). Script can't change that per unit. The optional `@auqol_maxload` addon raises it for every unit, AI included. See [docs/configuration.md](docs/configuration.md#carrying-capacity).
+- The engine caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change that per unit, so AUQOL raises it to 9999 in config for every unit, AI included, and it has no in-game switch. See [docs/configuration.md](docs/configuration.md#carrying-capacity).
 - Antistasi's loadout screen draws its capacity bars from config values, so with the multiplier on it can show more than 100%.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 

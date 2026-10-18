@@ -19,6 +19,12 @@ class CfgPatches {
     };
 };
 
+// Total soldier load cap (vanilla 1000). Static config, so it applies to every unit, AI included.
+// Load order after vanilla comes through cba_main -> cba_common -> A3_Data_F_AoW_Loadorder.
+class CfgInventoryGlobalVariable {
+    maxSoldierLoad = 9999;
+};
+
 class Extended_PreInit_EventHandlers {
     class auqol_main {
         init = "call compileScript ['\z\auqol\addons\main\XEH_preInit.sqf']";

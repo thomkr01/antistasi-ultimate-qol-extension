@@ -89,7 +89,7 @@ private _capacityChanged = { if (auqol_ready && {isServer}) then { call AUQOL_fn
 
 [
     "auqol_capacity_multiplier", "SLIDER",
-    ["Carrying capacity multiplier", "Container capacity multiplier, 1 to 1000. The engine's total soldier load limit (maxSoldierLoad) is a static config value and is not raised by this setting; see the optional auqol_maxload addon."],
+    ["Carrying capacity multiplier", "Container capacity multiplier, 1 to 1000. The engine's total soldier load limit (maxSoldierLoad) is a static config value (9999 in this mod) and is not changed by this setting."],
     [_category, "Carrying capacity"],
     [1, 1000, 1000, 0], 1, _capacityChanged
 ] call CBA_fnc_addSetting;

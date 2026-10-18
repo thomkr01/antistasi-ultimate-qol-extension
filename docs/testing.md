@@ -10,7 +10,7 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | --- | --- | --- |
 | Config preprocess and rapify | `hemtt check --pedantic --error-on-all` | Config syntax errors, bad macros, unknown includes |
 | SQF compile and lints | `hemtt check --pedantic --error-on-all` | SQF syntax errors and HEMTT's SQF lints, with warnings treated as errors |
-| PBO build and signing | `hemtt release` | Packaging problems. Produces `@auqol` and `optionals/@auqol_maxload`. |
+| PBO build and signing | `hemtt release` | Packaging problems. Produces `@auqol`. |
 | In-game test scripts compile | `tools/check_ingame_scripts.sh` | Syntax errors in `tests/ingame/*.sqf` |
 | CfgFunctions consistency | `tests/static_checks.py` | Missing function files, unregistered `fn_` files, calls to undefined or unused `AUQOL_fnc_` functions |
 | Dependencies and paths | `tests/static_checks.py` | `requiredAddons` must be exactly `cba_main`. XEH script paths and the PBO prefix must match. |
@@ -38,9 +38,9 @@ PASS  Locality (heuristic): local-argument commands are guarded
 PASS  CBA_A3: every CBA function, event and config class used exists
 PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage functions, variables and data layout used exist
-hemtt check --pedantic --error-on-all: 2 addon configs rapified, 27 SQF files compiled, no warnings
+hemtt check --pedantic --error-on-all: 1 addon config rapified, 27 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 3 SQF files compiled, no warnings
-hemtt release: 2 PBOs built (auqol_main, auqol_maxload), signed with HEMTT's generated key
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key
 ```
 
 ### Not covered by static checks
@@ -87,7 +87,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### 5. Carrying capacity limits
 
-1. Fill all containers. Check whether the inventory stops near a total of 1000 mass (`loadAbs player`). If it does, that is the engine's `maxSoldierLoad` cap.
-2. Optionally load `auqol_maxload` and confirm you can go past 1000. Note that it applies to every unit.
+1. Fill all containers. You should get past 1000 mass (`loadAbs player`) and stop near 9999, the `maxSoldierLoad` cap AUQOL sets.
+2. `call AUQOL_fnc_diagnostics` should show `maxSoldierLoad=9999`.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

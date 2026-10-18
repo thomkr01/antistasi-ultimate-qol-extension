@@ -8,7 +8,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **CBA_A3 is the only hard dependency** (`requiredAddons[] = {"cba_main"}`).
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL*, and can be toggled during a mission.
+- **Every feature is on by default and has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL*, and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers, never `remoteExec`.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
@@ -64,7 +64,7 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 Your uniform, vest and backpack hold more, by a multiplier of 1000 by default.
 
 - Applied on the server to the containers players are wearing, as the engine requires. Changing gear or respawning re-applies it. A dropped container goes back to its normal capacity, so anyone who picks it up gets the normal amount.
-- **Engine limit:** the game caps a soldier's total load at `maxSoldierLoad`, which script can't change per unit. The optional `@auqol_maxload` addon raises that cap for every unit, AI included.
+- **Total load cap:** the game caps a soldier's total load at `maxSoldierLoad` (vanilla 1000). Script can't change it per unit, so AUQOL raises it to 9999 in config. That applies to every unit, AI included, and has no in-game switch.
 - **Settings:** `auqol_capacity_enabled` (on) and `auqol_capacity_multiplier` (1 to 1000, default 1000). Both are server-wide.
 
 ## Status

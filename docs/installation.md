@@ -8,8 +8,6 @@
 4. Multiplayer: load `@auqol` on the server, every client and every headless client. Copy `keys/auqol_<version>.bikey` into the server's `keys` folder if you verify signatures.
 5. Start Antistasi Ultimate as usual. No mission file needs editing.
 
-Optional: to raise the engine's total soldier load limit, copy `auqol_maxload.pbo` and its `.bisign` from `@auqol/optionals/@auqol_maxload/addons/` into `@auqol/addons/` (and its key into the server `keys` folder). Read [configuration.md](configuration.md#carrying-capacity) first, because it affects every unit.
-
 ## Building from source
 
 Install [HEMTT](https://github.com/BrettMayson/HEMTT) 1.22 or newer and Python 3, then run:
@@ -19,7 +17,7 @@ tools/build.sh            # Linux / macOS
 pwsh tools/build.ps1      # Windows
 ```
 
-The script runs the static checks, `hemtt check`, and then `hemtt release`. The output is `releases/auqol-latest.zip`, containing `@auqol` and `optionals/@auqol_maxload`. Use `hemtt dev` for a quick unsigned build in `.hemttout/dev`.
+The script runs the static checks, `hemtt check`, and then `hemtt release`. The output is `releases/auqol-latest.zip`, containing `@auqol`. Use `hemtt dev` for a quick unsigned build in `.hemttout/dev`.
 
 ## Troubleshooting
 
