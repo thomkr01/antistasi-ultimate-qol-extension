@@ -109,6 +109,16 @@ def check_config_paths():
         problems.append('auqol_main must require exactly {"cba_main"}')
     check("config.cpp: XEH paths exist, PBO prefix matches, CBA is the only hard dependency", problems)
 
+    # FILEMAP.md must mention every code folder and top-level doc, so it stays in step with the repo.
+    filemap = (ROOT / "FILEMAP.md").read_text()
+    problems = []
+    folders = [p.relative_to(ADDON).as_posix() + "/" for p in sorted(ADDON.glob("*/*")) if p.is_dir()]
+    docs = [p.relative_to(ROOT).as_posix() for p in sorted(ROOT.glob("*.md")) + sorted((ROOT / "docs").glob("*.md"))]
+    for name in folders + docs:
+        if f"`{name}" not in filemap:
+            problems.append(f"{name} missing from FILEMAP.md")
+    check("FILEMAP.md lists every code folder and doc", problems)
+
 
 # --- Settings ----------------------------------------------------------------------------------
 

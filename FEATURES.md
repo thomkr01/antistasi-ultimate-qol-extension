@@ -94,4 +94,4 @@ Antistasi's Withstand self-revive normally has a 5-minute cooldown. AUQOL sets i
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. None of it has been tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Crew ejection, Withstand and item caches have not been reported yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

@@ -2,6 +2,24 @@
 
 The Arma 3 engine can't run in CI or in the environment this mod was written in. Validation is split into static checks, which run automatically, and in-game tests, which a person has to run. Nothing in this repository claims an in-game result that nobody observed.
 
+## In-game results
+
+Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
+
+| Feature | Result |
+| --- | --- |
+| No weapon sway | Works |
+| No recoil | Works |
+| Unlimited stamina and weightless running | Works |
+| No total weight limit | Works |
+| Infinite service stock | Works |
+| Loot from vehicles and the loot crate | Works |
+| Enemy crew ejection | Not reported yet |
+| Short Withstand cooldown | Not reported yet |
+| Item caches within 30 m | Not reported separately |
+
+Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
+
 ## Static checks
 
 Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci.yml`) runs the same steps on every push.
@@ -14,6 +32,7 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | In-game test scripts compile | `tools/check_ingame_scripts.sh` | Syntax errors in `tests/ingame/*.sqf` |
 | CfgFunctions consistency | `tests/static_checks.py` | Missing function files, unregistered `fn_` files, calls to undefined or unused `AUQOL_fnc_` functions |
 | Dependencies and paths | `tests/static_checks.py` | `requiredAddons` must be exactly `cba_main`. XEH script paths and the PBO prefix must match. |
+| File map | `tests/static_checks.py` | Every code folder and doc must be listed in `FILEMAP.md` |
 | Settings | `tests/static_checks.py` | Duplicate settings, settings missing from README or `configuration.md`, `auqol_` globals read but never declared |
 | Command existence | `tests/static_checks.py --wiki` | Every bare identifier in the addon and test scripts must be a real Arma 3 command or a known symbol. This catches invented commands. |
 | Event handler names and parameters | `tests/static_checks.py --wiki` | `Dammaged`, `Fuel`, `GetIn` and `Service` must exist, and the parameter positions the code reads must match the wiki |
@@ -58,7 +77,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
 2. Check the RPT for the `[AUQOL] Version 1.4.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
-3. Open Addon Options and check the 12 settings listed in the README.
+3. Open Addon Options and check the 17 settings listed in the README.
 
 ### 2. Enemy crew ejection
 

@@ -12,5 +12,6 @@ include = [
     "mod.cpp",
     "README.md",
     "FEATURES.md",
+    "CHANGELOG.md",
     "LICENSE",
 ]

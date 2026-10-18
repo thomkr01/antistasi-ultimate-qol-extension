@@ -18,11 +18,15 @@ addons/main/
   functions/common      logging, diagnostics, side check, settings-ready entry point
   functions/eject       crew ejection
   functions/service     service stock (vanilla + Antistasi garage)
-  functions/player      sway, stamina, weight
+  functions/player      sway, stamina, weight, recoil
+  functions/loot        loot from vehicles and item caches
+  functions/withstand   Withstand cooldown
   compat/ace            ACE refuel, rearm, sway and fatigue integration
 tests/static_checks.py  static validation
 tools/build.sh|ps1      check + build
 ```
+
+The full map is in [FILEMAP.md](FILEMAP.md). Keep it, README.md, FEATURES.md, CHANGELOG.md and docs/ up to date in the same commit as any code change.
 
 New functions go in a `functions/<area>/fn_<name>.sqf` file and get a `class <name> {};` line in `CfgFunctions`. The static checks fail if either is missing.
 

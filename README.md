@@ -2,7 +2,7 @@
 
 A standalone Arma 3 addon that adds quality-of-life features to Antistasi Ultimate without editing any mission file. It needs CBA_A3. ACE3, RHS and CUP are optional, and the mod detects them at runtime.
 
-A full description of each feature and its rules is in [FEATURES.md](FEATURES.md).
+A full description of each feature and its rules is in [FEATURES.md](FEATURES.md). [FILEMAP.md](FILEMAP.md) lists where everything is in the repo.
 
 | Feature | What it does |
 | --- | --- |
