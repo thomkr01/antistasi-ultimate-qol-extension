@@ -3,7 +3,8 @@
     Server. Empties enemy item caches (the faction "ammobox" crates Antistasi spawns at outposts, bases
     and airports) within 30 m of the looting vehicle or crate into a weapon holder next to it. Antistasi's
     gather function then picks the holder up like any dropped gear, so its unlocked-item and money rules
-    apply to the cache contents too. The cache box itself stays where it is, empty.
+    apply to the cache contents too. The emptied box is deleted; Antistasi's zone despawn only touches
+    its caches while they are alive, so a deleted one is simply skipped.
 
     Arguments:
     0: Vehicle or loot crate <OBJECT>
@@ -35,10 +36,7 @@ private _holder = createVehicle ["GroundWeaponHolder", getPosATL _object, [], 0,
     { _holder addWeaponWithAttachmentsCargoGlobal [_x, 1] } forEach weaponsItemsCargo _cache;
     { _holder addItemCargoGlobal [_x, 1] } forEach itemCargo _cache;
     { _holder addBackpackCargoGlobal [_x, 1] } forEach backpackCargo _cache;
-    clearMagazineCargoGlobal _cache;
-    clearWeaponCargoGlobal _cache;
-    clearItemCargoGlobal _cache;
-    clearBackpackCargoGlobal _cache;
+    deleteVehicle _cache;
 } forEach _caches;
 
 [format ["Emptied %1 cache(s) near %2 for looting", count _caches, typeOf _object], true] call AUQOL_fnc_log;
