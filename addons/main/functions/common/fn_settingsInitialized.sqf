@@ -35,7 +35,14 @@ if (hasInterface) then {
 
     // Antistasi re-applies role traits (loadCoef) after respawn and role changes without an event;
     // this re-check is three cheap getters every 5 seconds and only writes when a value drifted.
-    [{ call AUQOL_fnc_playerApply }, 5] call CBA_fnc_addPerFrameHandler;
+    [{ call AUQOL_fnc_playerApply; call AUQOL_fnc_squadReactApply }, 5] call CBA_fnc_addPerFrameHandler;
+
+    // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
+    addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];
+
+    // Antistasi moves its vehicle markers once a minute; the pass returns at once when the feature is off.
+    // The squad launcher check shares the same 1 s timer; both return at once when switched off.
+    [{ call AUQOL_fnc_mapVehicleMarkers; call AUQOL_fnc_squadLaunchers }, 1] call CBA_fnc_addPerFrameHandler;
 };
 
 call AUQOL_fnc_diagnostics;

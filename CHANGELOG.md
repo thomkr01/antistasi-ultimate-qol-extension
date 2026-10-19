@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.6.0
+
+- Faster squad reactions: the AI in your group get spot time, spot distance, aiming speed and commanding raised to at least 0.8 (`auqol_squad_reaction`, `auqol_squad_reactionSkill`). Accuracy is unchanged.
+- The Reveal target key (T) now alerts your squad: your whole group knows about the enemy you look at, and your AI target it when you lead (`auqol_squad_revealKey`).
+- Squad AI switch to a loaded AT or AA launcher as soon as they know about an enemy vehicle they can see and hit (`auqol_squad_launchers`).
+- Live vehicle markers: Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute (`auqol_map_liveVehicles`).
+- All four are on by default.
+
 ## 1.5.0
 
 - Squad perks: no sway, unlimited stamina, weightless running and no recoil also apply to the AI in your group (`auqol_player_squad`, on by default). Each still follows its own player setting.

@@ -52,6 +52,27 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 
 With `auqol_player_squad` off these only affect the local player's unit. With it on they also cover the AI in your own group, re-checked every 5 seconds so new recruits are included. AI outside your group are never changed. An AI that leaves your group keeps the values it had (Antistasi normally deletes dismissed AI).
 
+## Squad reactions
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_squad_reaction` | Checkbox | On | Server | Raises the `spotTime`, `spotDistance`, `aimingSpeed` and `commanding` skills of the AI in your group (local to your machine) to at least the value below. `aimingAccuracy` and `aimingShake` are left at Antistasi's value. Off restores the values AUQOL replaced. |
+| `auqol_squad_reactionSkill` | Slider 0.3–1 | 0.8 | Server | The floor for those four skills. Antistasi sets rebel skill to `0.1 + 0.1 × rebel skill multiplier + 0.015 × FIA skill`, so recruits start around 0.2 to 0.4. The server's AI difficulty still scales the final value. |
+| `auqol_squad_revealKey` | Checkbox | On | Server | On the engine's Reveal target action (`revealTarget`, T by default): if `cursorTarget` (or `cursorObject`) is a living hostile soldier or vehicle, every unit of your group local to you gets `reveal` 4 on it, and when you lead the group your AI get `doTarget` on it. No `doFire`, so the combat mode decides whether they shoot. |
+| `auqol_squad_launchers` | Checkbox | On | Server | Every second, an AI of your group with a loaded launcher whose ammo `aiAmmoUsageFlags` include 128 or 512 (ground vehicles, 500 m) or 256 (air, 2000 m) checks its known enemy targets (`targets`). The first vehicle in range with a clear line of sight (`checkVisibility` above 0.5) makes it `selectWeapon` the launcher and `doTarget` the vehicle. Skipped in vehicles, while incapacitated, or with the launcher already in hand. |
+
+These only touch AI in your own group. High-command squads, garrisons and enemies are never changed.
+
+## Map
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's `A3A_fnc_vehicleMarkers` puts a local marker on each player's map for convoy objectives, mission vehicles, supply boxes and revealed enemy vehicles, and moves it every 60 s. With this on, each player's machine moves those markers to their vehicle every second. |
+
+**How the markers are found.** Antistasi names each one after its text followed by a random number and gives it a NATO vehicle icon (`n_`, `b_` or `o_` plus `motor_inf`, `mech_inf`, `armor`, `plane`, `uav`, `air`, `naval` or `unknown`). A marker of that shape is paired with the nearest unpaired living vehicle within 150 m of it; if none is near yet it is tried again every second. When Antistasi deletes the marker, AUQOL forgets it. Off: the markers fall back to Antistasi's once-a-minute update.
+
+**What stays as it is.** Player markers (Antistasi updates them every second already), zone markers (they change when a zone changes hands) and intercepted support markers (owned by the server, updated every 5 s).
+
 ## Rebel loadouts
 
 | Setting | Type | Default | Scope | Description |

@@ -3,6 +3,9 @@
 auqol_ready = false;
 auqol_service_cache = createHashMap;
 auqol_aceRearmSources = [];
+auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> its vehicle
+auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
+auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
 
 private _category = "Antistasi Ultimate QoL by TchicX";
 
@@ -89,6 +92,45 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
     ["Apply to AI in your squad", "The no sway, unlimited stamina, weightless running and no recoil settings above also apply to the AI in your own group (the ones local to your machine). Under ACE the AI get the vanilla versions, since ACE sway and fatigue only run for players."],
     [_category, "Player"],
     true, 1, _playerChanged
+] call CBA_fnc_addSetting;
+
+// --- Squad reactions (applied on each player's machine to the AI in their group)
+private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply } };
+
+[
+    "auqol_squad_reaction", "CHECKBOX",
+    ["Faster squad reactions", "The AI in your group spot enemies sooner, pass sightings to each other faster and turn onto targets quicker: their spot time, spot distance, aiming speed and commanding skills are raised to at least the value below. Accuracy is not changed."],
+    [_category, "Squad reactions"],
+    true, 1, _squadChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_reactionSkill", "SLIDER",
+    ["Minimum reaction skill", "The floor for those four skills, 0.3 to 1. Skills already higher are left alone. Antistasi recruits start around 0.2 to 0.4."],
+    [_category, "Squad reactions"],
+    [0.3, 1, 0.8, 2], 1, _squadChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_revealKey", "CHECKBOX",
+    ["Reveal target key alerts your squad", "Pressing Reveal target (T by default) while looking at an enemy gives every unit in your group full knowledge of it, and if you lead the group your AI target it at once. They fire under their current combat mode, so Hold fire still holds."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_launchers", "CHECKBOX",
+    ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+// --- Map (client only, server-forced like the rest)
+[
+    "auqol_map_liveVehicles", "CHECKBOX",
+    ["Live vehicle markers", "Markers Antistasi puts on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of jumping once a minute."],
+    [_category, "Map"],
+    true, 1
 ] call CBA_fnc_addSetting;
 
 // --- Antistasi rebel loadout editor (client UI, server-forced like the rest)

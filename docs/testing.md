@@ -17,9 +17,11 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Enemy crew ejection | Not reported yet |
 | Short Withstand cooldown | Not reported yet |
 | Item caches within 30 m | Works (1.4.0). 1.4.1 now deletes the empty box, not yet reported. |
-| Squad perks (1.5.0) | Not tested yet |
+| Squad perks (1.5.0) | "Seems fine" (2026-10-19) |
 | Copy from user (1.5.0) | Works (reported 2026-10-18) |
-| AI stuck recovery (1.5.0) | Not tested yet |
+| AI stuck recovery (1.5.0) | "Seems fine" (2026-10-19) |
+| Squad reactions, T key, squad launchers (1.6.0) | Not tested yet |
+| Live vehicle markers (1.6.0) | Not tested yet |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -42,13 +44,13 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | Locality (heuristic) | `tests/static_checks.py --wiki` | A file using a local-argument command (per the wiki) must contain a `local`, `isServer` or `hasInterface` guard |
 | CBA API | `tests/static_checks.py --cba` | Every `CBA_fnc_` function used must exist. So must `CBA_settingsInitialized`, the XEH config classes, the `InitPost` class event, and the `unit` and `loadout` player events. |
 | ACE API | `tests/static_checks.py --ace` | Every `ace_*_fnc_` function used must exist. Every `ace_*` variable or setting name must exist as a `GVAR` in that ACE component, `REFUEL_INFINITE_FUEL` must be -10, the jerry can class must exist, and the RHS/CUP CfgPatches names must be ones ACE uses. |
-| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. |
+| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. For live vehicle markers: the marker name format, icon types, text and 60 s loop of `A3A_fnc_vehicleMarkers`. |
 
 The checks were themselves tested by mutation. Adding an invented command, an invented event handler, a missing CBA function, a misspelled ACE variable, an undefined `AUQOL_fnc_` call and an undeclared global each made the matching check fail.
 
 ### Results of the last run
 
-Run on 2026-10-18 for 1.5.0 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
+Run on 2026-10-19 for 1.6.0 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
 
 ```
 PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
@@ -60,16 +62,17 @@ PASS  Event handlers: names exist and the parameter positions used match the wik
 PASS  Locality (heuristic): local-argument commands are guarded
 PASS  CBA_A3: every CBA function, event and config class used exists
 PASS  ACE3: every ACE function, variable, constant and class used exists
-PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor and unit state names used exist
-hemtt check --pedantic --error-on-all: 1 addon config rapified, 38 SQF files compiled, no warnings
+PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist
+hemtt check --pedantic --error-on-all: 1 addon config rapified, 42 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 4 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.5.0.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.6.0.zip
 ```
 
 The `expectedDestination` planning modes the stuck check relies on ("DoNotPlan", "LEADER DIRECT", "FORMATION PLANNED", "DoNotPlanFormation") are not in the parsed wiki data, so they were checked by hand against the BI wiki page for `expectedDestination`. The Random button IDC 44150 used for "Copy from user" (`IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM` in the game's `defineResinclDesign.inc`, which no source here contains) was taken from a Bohemia forums thread that disables that button by this IDC. The static check only confirms Antistasi blanks the Random button; the IDC itself is confirmed in game by test 9.
 
 ### Not covered by static checks
 
+- **The Reveal target action name** `revealTarget` used with `addUserActionEventHandler` is from the BI wiki's input action list, which is not in the parsed wiki data or any source here. Test 11 confirms it in game.
 - **Runtime behaviour.** No SQF was executed. Logic errors that compile cleanly can only show up in game.
 - **The Windows build script** (`tools/build.ps1`) was written but not run: no PowerShell was available. The GitHub Actions workflow has not run yet either, because no repository existed when this was written.
 - **RHS and CUP** were not loaded. Their coverage rests on their service trucks using vanilla and ACE config fields, as ACE3's compat configs show. See [service-audit.md](service-audit.md#rhs-and-cup).
@@ -162,5 +165,17 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 10. **Vehicles and RHS:** wedge an AI-driven RHS truck (no player inside) against a building with a move order. Expect step 1, then a hop of up to 25 m. A vehicle is never teleported.
 11. **Scopes:** set the scope to "Friendly AI near players" and "All friendly AI" on a dedicated server with a headless client; check the RPT of each machine: each unit appears only in its owner's RPT.
 12. **Long session:** play an hour with the default scope and run `diag_activeScripts` now and then: the numbers should not grow because of AUQOL.
+
+### 11. Squad reactions, T key and launchers
+
+1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
+2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all, the Reveal target action name may be wrong; please report it.
+3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher within about a second. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
+
+### 12. Live vehicle markers
+
+1. Start a convoy mission (or wait for a revealed enemy vehicle) and open the map. The vehicle's marker should move smoothly every second instead of jumping once a minute.
+2. Turn `auqol_map_liveVehicles` off: the marker goes back to jumping once a minute.
+3. When the vehicle is destroyed, the marker disappears as before (within Antistasi's minute).
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
