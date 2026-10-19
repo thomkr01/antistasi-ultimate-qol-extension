@@ -24,6 +24,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Live vehicle markers (1.6.0) | Not tested yet |
 | Faster reactions for all friendly AI (1.7.0) | Not tested yet |
 | Safer stuck recovery and leaner scans (1.8.0) | Not tested yet |
+| Edge-case fixes (1.8.1) | Not tested yet, see test 13 |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -37,6 +38,7 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | SQF compile and lints | `hemtt check --pedantic --error-on-all` | SQF syntax errors and HEMTT's SQF lints, with warnings treated as errors |
 | PBO build and signing | `hemtt release` | Packaging problems. Produces `@auqol`. |
 | In-game test scripts compile | `tools/check_ingame_scripts.sh` | Syntax errors in `tests/ingame/*.sqf` |
+| Regression guards | `tests/static_checks.py` | The 1.8.1 safeguards are still in the code: the loot sender and caller check comes before any cache is emptied or gather runs, nested container weapons are filtered, reaction skills are saved once and publicly, sway and recoil restore saved values, ejection rechecks the setting and hands pending checks to a new owner, stuck movement needs a recent closest point, marker pairing matches the icon and re-pairs markers Antistasi moved. Each guard was confirmed to fail on the 1.8.0 code. They prove the code is there, not that it works in game. |
 | CfgFunctions consistency | `tests/static_checks.py` | Missing function files, unregistered `fn_` files, calls to undefined or unused `AUQOL_fnc_` functions |
 | Dependencies and paths | `tests/static_checks.py` | `requiredAddons` must be exactly `cba_main`. XEH script paths and the PBO prefix must match. |
 | File map | `tests/static_checks.py` | Every code folder and doc must be listed in `FILEMAP.md` |
@@ -46,28 +48,29 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | Locality (heuristic) | `tests/static_checks.py --wiki` | A file using a local-argument command (per the wiki) must contain a `local`, `isServer` or `hasInterface` guard |
 | CBA API | `tests/static_checks.py --cba` | Every `CBA_fnc_` function used must exist. So must `CBA_settingsInitialized`, the XEH config classes, the `InitPost` class event, and the `unit` and `loadout` player events. |
 | ACE API | `tests/static_checks.py --ace` | Every `ace_*_fnc_` function used must exist. Every `ace_*` variable or setting name must exist as a `GVAR` in that ACE component, `REFUEL_INFINITE_FUEL` must be -10, the jerry can class must exist, and the RHS/CUP CfgPatches names must be ones ACE uses. |
-| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. For live vehicle markers: the marker name format, icon types, text and 60 s loop of `A3A_fnc_vehicleMarkers`. |
+| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. For live vehicle markers: the marker name format, icon types and the order of its vehicle-kind rules, text and 60 s loop of `A3A_fnc_vehicleMarkers`. For the loot request: `CfgRemoteExec` allows all functions (mode 2) and the cooldown message key exists. |
 
 The checks were themselves tested by mutation. Adding an invented command, an invented event handler, a missing CBA function, a misspelled ACE variable, an undefined `AUQOL_fnc_` call and an undeclared global each made the matching check fail.
 
 ### Results of the last run
 
-Run on 2026-10-19 for 1.7.1 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
+Run on 2026-10-19 for 1.8.1 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist` `b414af7`, HEMTT 1.22.0:
 
 ```
 PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
 PASS  config.cpp: XEH paths exist, PBO prefix matches, CBA is the only hard dependency
 PASS  FILEMAP.md lists every code folder and doc
 PASS  CBA settings: unique, documented in README and docs, no undeclared auqol_ globals
+PASS  Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing
 PASS  SQF: every command used exists in the Arma 3 wiki command list
 PASS  Event handlers: names exist and the parameter positions used match the wiki
 PASS  Locality (heuristic): local-argument commands are guarded
 PASS  CBA_A3: every CBA function, event and config class used exists
 PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist
-hemtt check --pedantic --error-on-all: 1 addon config rapified, 42 SQF files compiled, no warnings
-tools/check_ingame_scripts.sh: 4 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.7.1.zip
+hemtt check --pedantic --error-on-all: 1 addon config rapified, 45 SQF files compiled, no warnings
+tools/check_ingame_scripts.sh: 5 SQF files compiled, no warnings
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.8.1.zip
 ```
 
 The `expectedDestination` planning modes the stuck check relies on ("DoNotPlan", "LEADER DIRECT", "FORMATION PLANNED", "DoNotPlanFormation") are not in the parsed wiki data, so they were checked by hand against the BI wiki page for `expectedDestination`. The Random button IDC 44150 used for "Copy from user" (`IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM` in the game's `defineResinclDesign.inc`, which no source here contains) was taken from a Bohemia forums thread that disables that button by this IDC. The static check only confirms Antistasi blanks the Random button; the IDC itself is confirmed in game by test 9.
@@ -180,5 +183,17 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 1. Start a convoy mission (or wait for a revealed enemy vehicle) and open the map. The vehicle's marker should follow it every second while it drives, instead of jumping once a minute. A parked vehicle's marker should stay still.
 2. Turn `auqol_map_liveVehicles` off: the marker goes back to jumping once a minute.
 3. When the vehicle is destroyed, the marker disappears as before (within Antistasi's minute).
+
+### 13. Edge cases fixed in 1.8.1
+
+Static checks only show the fixes are in the code. These need a person in game, ideally on a dedicated server with a second client and a headless client.
+
+1. **Loot request:** hold "Gather Scattered Loot" on a vehicle: it works as before. Hold it twice within 10 s (or with two players at once): the second gets Antistasi's cooldown line and caches are emptied once. With `auqol_debug` on, a request sent while dead, in a vehicle or more than 10 m away logs "Refused loot request". Test on a hosted game too: the host's own request must work.
+2. **Copy from user, nested items:** run `tests/ingame/loadout_test.sqf` (works anywhere, no Antistasi needed): every line must say PASS. Then in the loadout editor carry an unlocked rifle with a locked optic and locked magazine in your backpack and press Copy from user: the rifle stays in the backpack without the optic and magazine, and the chat line names both.
+3. **Reaction skills and the headless client:** on a dedicated server with a headless client, note a garrison unit's `spotTime` before AUQOL raises it (turn `auqol_squad_reaction` off, read it, turn it on). Let Antistasi hand the group to the HC (or back), then turn the setting off: the value must return to the noted one, not 0.8.
+4. **Sway and recoil restore:** run `player setCustomAimCoef 0.5`, turn `auqol_player_noSway` on and then off: `getCustomAimCoef player` reads 0.5 again. Same with `player setUnitRecoilCoefficient 0.7` and `auqol_player_noRecoil`. Respawn and change loadout with both on: values stay 0, and turning off afterwards gives the right value back.
+5. **Pending ejection:** shoot the wheels of a moving enemy truck and turn `auqol_eject_enabled` off within a second: nobody is ejected. With a headless client, damage an HC-owned vehicle while it is changing owner: the crew is still ejected once.
+6. **Stuck, circling:** put a squad AI on a move order to a point behind a long wall with no gap that it walks along back and forth. After about 90 s plus one timeout it is reported stuck and recovery starts. A unit taking a long but working detour (around a large compound, under 90 s) is not reported. Formation followers walking with you are never reported.
+7. **Vehicle markers in a convoy:** watch a convoy of several vehicles on the map. Every marker follows its own vehicle. If one ever follows the wrong vehicle, it should correct itself within about a minute, staying on Antistasi's position rather than jumping back.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

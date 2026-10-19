@@ -40,7 +40,7 @@ $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("auqol-ingame-" + [guid]::Ne
 New-Item -ItemType Directory -Force -Path (Join-Path $tmp ".hemtt"), (Join-Path $tmp "addons/tests") | Out-Null
 Copy-Item tests/ingame/*.sqf (Join-Path $tmp "addons/tests")
 Set-Content -LiteralPath (Join-Path $tmp 'addons/tests/$PBOPREFIX$') -Value 'z\auqoltest\addons\tests'
-Set-Content -LiteralPath (Join-Path $tmp "addons/tests/config.cpp") -Value 'class CfgPatches { class auqoltest_tests { units[] = {}; weapons[] = {}; requiredAddons[] = {}; }; };'
+Set-Content -LiteralPath (Join-Path $tmp "addons/tests/config.cpp") -Value 'class CfgPatches { class auqoltest_tests { units[] = {}; weapons[] = {}; requiredVersion = 2.12; requiredAddons[] = {}; }; };'
 Set-Content -LiteralPath (Join-Path $tmp ".hemtt/project.toml") -Value "name = `"AUQOL in-game test scripts`"`nprefix = `"auqoltest`"`nmainprefix = `"z`"`n`n[version]`nmajor = 1`nminor = 0`npatch = 0`nbuild = 0`ngit_hash = 0"
 Push-Location $tmp
 try { hemtt check --pedantic --error-on-all; if ($LASTEXITCODE -ne 0) { throw "in-game test scripts failed to compile" } }

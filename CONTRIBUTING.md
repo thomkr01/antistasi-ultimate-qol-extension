@@ -2,9 +2,10 @@
 
 ## Ground rules
 
+- Compatibility first: build every change to work alongside as many other mods as possible, and it must always work with Antistasi Ultimate, RHS, CUP and ACE3.
 - Use only commands, event handlers and functions you can point to in the Arma 3 wiki, CBA_A3, ACE3 or Antistasi Ultimate source. `tests/static_checks.py` enforces this for commands, event handlers, CBA and ACE functions, ACE variables and the Antistasi garage symbols.
 - Keep features event-driven. A timer needs a comment saying why no event exists, and it must not run per frame.
-- Respect locality. Do work where the object is local, or send a named CBA event to its owner. Don't add `remoteExec`.
+- Respect locality. Do work where the object is local, or send a named CBA event to its owner. Don't add `remoteExec`, except where the server must know which machine sent a request (`remoteExecutedOwner`); the loot request is the only such case today.
 - Optional mods are detected at runtime, through `isNil` on functions or their CBA settings. Never add them to `requiredAddons`.
 - Don't modify or override Antistasi, CBA, ACE, RHS or CUP functions or configs.
 

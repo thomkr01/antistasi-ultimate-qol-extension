@@ -11,7 +11,9 @@
 
 params ["_vehicle"];
 
-if (!alive _vehicle || {!local _vehicle} || {!([_vehicle] call AUQOL_fnc_ejectIsImmobilized)}) exitWith {};
+// Called after a wait, so everything is checked again: the setting may have been turned off meanwhile.
+if (!auqol_eject_enabled || {!alive _vehicle} || {!local _vehicle} || {_vehicle getVariable ["auqol_noEject", false]}
+    || {!([_vehicle] call AUQOL_fnc_ejectIsImmobilized)}) exitWith {};
 
 private _units = (crew _vehicle) select { [_x] call AUQOL_fnc_ejectIsEligible };
 {

@@ -9,7 +9,8 @@
     (Antistasi's teamPlayer side: garrisons, static and turret gunners, high-command squads). Runs on
     every machine every 5 s for its own AI, which also catches units Antistasi spawns later and
     skills Antistasi sets after spawn. Each unit costs four skill reads; it only writes when a value
-    is below the floor, and units no longer covered get back the values AUQOL replaced.
+    is below the floor, and units no longer covered get back the values AUQOL replaced. The saved values are a public
+    unit variable, so they survive a change of owner (server <-> headless client).
 
     Arguments: none
     Return Value: none
@@ -26,15 +27,19 @@ private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
     private _unit = _x;
     private _saved = _unit getVariable "auqol_reactSkills";
     if (auqol_squad_reaction && {auqol_squad_reactionAll || {isPlayer leader group _unit}}) then {
-        if (isNil "_saved") then { _saved = _skills apply { _unit skill _x } };
+        // Saved once, before the first write, and public: skills travel with the unit when it moves
+        // between the server and a headless client, so the new owner must get the baseline too rather
+        // than read the raised values as the original ones.
+        if (isNil "_saved" && {_skills findIf { _unit skill _x < auqol_squad_reactionSkill } != -1}) then {
+            _unit setVariable ["auqol_reactSkills", _skills apply { _unit skill _x }, true];
+        };
         {
             if (_unit skill _x < auqol_squad_reactionSkill) then { _unit setSkill [_x, auqol_squad_reactionSkill] };
         } forEach _skills;
-        _unit setVariable ["auqol_reactSkills", _saved];
     } else {
         if (!isNil "_saved") then {
             { _unit setSkill [_x, _saved select _forEachIndex] } forEach _skills;
-            _unit setVariable ["auqol_reactSkills", nil];
+            _unit setVariable ["auqol_reactSkills", nil, true];
         };
     };
 } forEach (allUnits select {

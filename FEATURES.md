@@ -1,15 +1,16 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.5.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.8.1. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
 - **Standalone addon.** No Antistasi mission files are edited. Everything hooks in from outside, through CBA and engine events.
 - **CBA_A3 is the only hard dependency** (`requiredAddons[] = {"cba_main"}`).
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
+- **Compatible by design.** Every change is built to work alongside as many other mods as possible, and must always work with Antistasi Ultimate, RHS, CUP and ACE3.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
 - **Every feature is on by default except no recoil, the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
-- **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers, never `remoteExec`.
+- **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers. The one exception is the loot request, a `remoteExecCall` to the server, because only that tells the server which machine sent it.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
 
@@ -18,7 +19,7 @@ When an enemy AI land vehicle is immobilized, its living enemy AI crew get out a
 - **Immobilized** means the engine reports the vehicle can no longer move (`canMove` is false: tracks, wheels or engine destroyed). By default an empty fuel tank also counts (`auqol_eject_outOfFuel`). A vehicle that is only stopped or parked is not affected.
 - **Who gets out:** only living AI on a side hostile to the rebels.
 - **Who stays in:** players, friendly AI, captives, surrendered units (Antistasi convoy prisoners and POWs), ACE-handcuffed or ACE-surrendering units, and units or vehicles tagged with `auqol_noEject`. UAVs and static weapons are ignored.
-- **No repeats or loops.** Triggering is event-driven, from the engine's damage, fuel and get-in events. There is no per-frame scan. Each vehicle has one pending check at a time and waits until it has nearly stopped, for at most a few retries. Ejected units are unassigned from the vehicle, so they don't climb back in.
+- **No repeats or loops.** Triggering is event-driven, from the engine's damage, fuel and get-in events. There is no per-frame scan. Each vehicle has one pending check at a time and waits until it has nearly stopped, for at most a few retries. Right before ejecting, the setting, the vehicle and the crew are checked again, so turning the feature off stops a pending ejection. If the vehicle changes owner during the wait (for example to a headless client), the check is handed to the new owner. Ejected units are unassigned from the vehicle, so they don't climb back in.
 - **Correct locality.** The vehicle's owner decides. Each unit is moved out on the machine that owns it, which covers headless clients.
 - **Settings:** `auqol_eject_enabled` and `auqol_eject_outOfFuel`, both server-wide and on by default.
 
@@ -41,6 +42,7 @@ Weapon sway is removed for your own character only. AI and other players are unc
 
 - **Vanilla:** the aim coefficient is set to 0.
 - **ACE:** when ACE sway is on, a sway factor of 0 is added through ACE's own API, so ACE doesn't override it.
+- Turning it off puts back the aim coefficient the unit had before AUQOL changed it.
 - **Setting:** `auqol_player_noSway`, server-wide, on by default.
 
 ## 4. Unlimited stamina
@@ -63,7 +65,7 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 
 Removes weapon recoil for your own character. AI is unchanged.
 
-- Sets the recoil coefficient to 0, and back to 1 when turned off.
+- Sets the recoil coefficient to 0. Turning it off puts back the value the unit had before, not a fixed 1.
 - **Setting:** `auqol_player_noRecoil`, server-wide, **off** by default.
 
 ## 7. No total weight limit
@@ -81,6 +83,7 @@ Every vehicle works like Antistasi's loot crate, so you don't have to buy and ha
 - **Same behaviour as the crate:** the server runs Antistasi's own crate function. Loot from dead bodies, dropped weapons and surrender crates goes into the vehicle. Money is split between rebel players, unlocked items follow the mission's parameter, and there is a 10-second cooldown.
 - **One radius for both:** vehicles and the loot crate use `auqol_loot_radius`, 10 to 2000 m, default 2000. Antistasi's own crate parameter only goes to 400.
 - **Item caches:** enemy item caches (the supply crates at outposts, bases and airports) within 30 m of the vehicle or crate are emptied into it too, with the same unlocked-item and money rules, and the empty box is deleted. `auqol_loot_caches`, on by default.
+- **Checked on the server:** the server only acts on a request from the machine of the player who held the action, while that player is alive, on foot and within 10 m of a vehicle or crate that has the action. Repeat requests for the same object within 10 s are refused, so caches can't be emptied twice or by a bad request.
 - **Separate enemy check:** gathering is refused while an enemy in combat is within `auqol_loot_enemyRadius` of the vehicle, 10 to 2000 m, default 100. So you can gather from 2000 m while only nearby enemies block it.
 - **Settings:** `auqol_loot_enabled` (on), `auqol_loot_radius` and `auqol_loot_enemyRadius`. All are server-wide. Turning loot off removes the vehicle action and puts the crate back on Antistasi's radius.
 
@@ -106,7 +109,7 @@ The AI in your own group get the same no sway, unlimited stamina, weight-indepen
 In Antistasi's Set Rebel Loadout arsenal, the empty third button in the bottom bar becomes "Copy from user".
 
 - It loads the loadout you were wearing when you opened the editor into the role you are editing. Press Save to keep it, as with any edit.
-- Only items the arsenal has unlimited (shown with the infinity sign) are copied, the same rule the editor uses. A locked weapon, uniform, vest, backpack, helmet, facewear or assigned item leaves that slot to Antistasi's random pick; locked attachments, magazines and container items are just dropped. A chat line lists what was skipped.
+- Only items the arsenal has unlimited (shown with the infinity sign) are copied, the same rule the editor uses. A locked weapon, uniform, vest, backpack, helmet, facewear or assigned item leaves that slot to Antistasi's random pick; locked attachments, magazines and container items are just dropped. That includes weapons stored in the uniform, vest or backpack: each attachment and loaded magazine is checked on its own, and ammo counts and item quantities are kept. A chat line lists what was skipped.
 - Every slot it fills gets its override switch turned on (the green slot icons), so recruits wear exactly that.
 - Antistasi already forces the "set loadout" on recruits for every slot whose icon is green; black slots are rolled at random. AUQOL does not change that.
 - `auqol_loadout_copyFromUser` (on).
@@ -127,7 +130,7 @@ Friendly AI that should be moving but aren't get freed automatically, cheapest f
 - on foot it is on the ground, not swimming and not on a ladder. In a vehicle only the AI driver of a land vehicle that can still move and has fuel counts, and only with no player aboard. Passengers, static weapons, aircraft and boats are skipped;
 - in groups led by AI (patrols, garrisons, high-command squads) it is not on a HOLD, GUARD, SENTRY, LOITER, DISMISS or SCRIPTED waypoint and not on a looping patrol route.
 
-Then, if it neither moves `auqol_stuck_minProgress` metres (default 3) nor gets that much closer to its destination within `auqol_stuck_timeout` seconds (default 30), it is stuck.
+Then, if it neither moves `auqol_stuck_minProgress` metres (default 3) nor gets that much closer to its destination within `auqol_stuck_timeout` seconds (default 30), it is stuck. Moving only counts while the unit keeps reaching new closest points to a fixed destination: once it has not got any closer for three timeouts (90 s by default), moving around (circling an obstacle, going back and forth) stops counting and only getting closer does. Detours shorter than that are left alone, and units following a moving destination (their leader) keep the plain movement rule.
 
 **Before moving a unit** (steps 3 and 4) every check above runs again at that moment, plus one more: the unit must not be in COMBAT behaviour. If anything fails, nothing is moved.
 
@@ -152,7 +155,7 @@ The AI in your own group, and by default every friendly AI, spot enemies sooner,
 - Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
 - `auqol_squad_reactionAll` (on) extends it to every friendly AI: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Off: only AI in groups a player leads.
 - Each machine checks the friendly AI it runs every 5 seconds (four skill reads per unit, writes only when a value is too low), so newly spawned garrisons get it within 5 seconds. Enemy AI are never changed.
-- `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced.
+- `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced, also for units that moved between the server and a headless client in the meantime.
 
 ## 14. Reveal target key (T) alerts your squad
 

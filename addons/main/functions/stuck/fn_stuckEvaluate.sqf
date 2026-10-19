@@ -6,8 +6,13 @@
     has its tracking cleared. Within 8 m of the destination (25 m when driving) the unit has arrived and
     is dropped.
 
-    Progress: moving auqol_stuck_minProgress metres from where the current window started, or getting
-    that much closer to the destination. No progress for auqol_stuck_timeout seconds means stuck.
+    Progress: getting auqol_stuck_minProgress metres closer to the destination than the unit has been
+    so far, or moving that far from where the current window started. Moving only counts while the
+    unit has reached a new closest point within the last three timeouts, so a unit circling an obstacle
+    or shuttling back and forth is not reset forever, while a detour of up to three timeouts is fine.
+    A destination that moves (a leader to follow, a new order) restarts the closest-point record, so
+    formation followers keep the plain movement rule. No progress for auqol_stuck_timeout seconds
+    means stuck.
     Each recovery step then gets another timeout window to work before the next enabled step is tried.
     After the last step: one failed round, a cooldown, and after auqol_stuck_maxAttempts rounds the unit
     is left alone until it moves again by itself.
@@ -44,21 +49,31 @@ if (_dist <= ([25, 8] select _onFoot)) exitWith {
 
 // New, or not seen for a while (left the scope, was busy), or moved to another group: start fresh.
 if (isNil "_state" || {_now - (_state get "seen") > 15} || {(_state get "group") isNotEqualTo _group}) then {
-    _state = createHashMapFromArray [["pos", _pos], ["dist", _dist], ["since", _now], ["stage", 0],
+    _state = createHashMapFromArray [["pos", _pos], ["dest", _dest], ["best", _dist], ["bestAt", _now], ["since", _now], ["stage", 0],
         ["rounds", 0], ["nextTry", 0], ["gaveUp", false], ["group", _group]];
     _unit setVariable ["auqol_stuck", _state];
 };
 _state set ["seen", _now];
 
 private _minProgress = auqol_stuck_minProgress;
-if (_pos distance (_state get "pos") >= _minProgress || {(_state get "dist") - _dist >= _minProgress}) exitWith {
+if (_dest distance2D (_state get "dest") > _minProgress) then {
+    _state set ["dest", _dest];
+    _state set ["best", _dist];
+    _state set ["bestAt", _now];
+};
+private _closer = _dist <= (_state get "best") - _minProgress;
+if (_closer) then {
+    _state set ["best", _dist];
+    _state set ["bestAt", _now];
+};
+private _moved = _pos distance (_state get "pos") >= _minProgress && {_now - (_state get "bestAt") < 3 * auqol_stuck_timeout};
+if (_closer || _moved) exitWith {
     private _stage = _state get "stage";
     if (_stage > 0 || {_state get "rounds" > 0}) then {
         private _how = ["by itself", "after refreshing its order", "after rejoining formation", "after a short hop", "after the teleport"] select _stage;
         [_unit, "is moving again " + _how, "result"] call AUQOL_fnc_stuckNotify;
     };
     _state set ["pos", _pos];
-    _state set ["dist", _dist];
     _state set ["since", _now];
     _state set ["stage", 0];
     _state set ["rounds", 0];
@@ -78,7 +93,6 @@ for "_i" from _stage to 3 do {
 };
 
 _state set ["pos", _pos];
-_state set ["dist", _dist];
 _state set ["since", _now];
 
 if (_next == -1) exitWith {
@@ -116,6 +130,6 @@ _state set ["stage", _next];
 private _done = [_unit, _next, _dest] call AUQOL_fnc_stuckRecover;
 // Measure the next window from where the step left the unit, so a hop or teleport alone is not progress.
 _state set ["pos", getPosASL _veh];
-_state set ["dist", _veh distance2D _dest];
+_state set ["best", _veh distance2D _dest];
 if (!_done) then { _state set ["since", _now - auqol_stuck_timeout] }; // nothing happened: next step on the next check
 [_unit, format ["recovery step %1: %2%3", _next, ["refresh move order", "rejoin formation", "short safe hop", "teleport to squad leader"] select (_next - 1), ["", " (not carried out: no safe spot, or the unit got busy)"] select !_done], "detect"] call AUQOL_fnc_stuckNotify;

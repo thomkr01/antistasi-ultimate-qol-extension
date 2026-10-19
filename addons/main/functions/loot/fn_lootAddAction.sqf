@@ -1,7 +1,8 @@
 /*
     Author: AUQOL
     Adds the "Gather Scattered Loot" hold action, a copy of Antistasi's SCRT_fnc_loot_addActionLoot
-    (same text, icon, 2 s hold, 5 m range), except that the server picks the radius.
+    (same text, icon, 2 s hold, 5 m range), except that the server picks the radius and checks the
+    request (AUQOL_fnc_lootGather).
 
     Arguments:
     0: Object <OBJECT>
@@ -24,7 +25,8 @@ _id = [_object,
     _condition,
     "vehicle player == player && {_caller distance _target < 5}",
     {}, {},
-    { ["auqol_loot_gather", [_this select 0]] call CBA_fnc_serverEvent },
+    // remoteExec, not a CBA event: only remoteExecutedOwner tells the server which machine sent the request.
+    { [_this select 0, _this select 1] remoteExecCall ["AUQOL_fnc_lootGather", 2] },
     {}, [], 2, 5, false, false
 ] call BIS_fnc_holdActionAdd;
 

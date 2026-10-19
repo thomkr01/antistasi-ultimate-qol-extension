@@ -85,6 +85,7 @@ class CfgFunctions {
             file = "\z\auqol\addons\main\functions\loadout";
             class loadoutCopyInit {};
             class loadoutCopyFromUser {};
+            class loadoutFilter {};
         };
         class stuck {
             file = "\z\auqol\addons\main\functions\stuck";
