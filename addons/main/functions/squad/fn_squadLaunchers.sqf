@@ -10,7 +10,7 @@
     Rounds are not wasted: a vehicle out of the fight (AUQOL_fnc_squadIsOutOfFight) is never picked, and vehicles another gunner already
     has under its launcher come last, so two rounds go to two vehicles. A gunner whose vehicle dropped
     out of the fight gets the next one, or puts the launcher away and its group forgets the wreck.
-    Besides the passes below, it runs 1 s after each launcher round of a local AI has hit (XEH_postInit).
+    A unit treating itself (AUQOL_fnc_squadSelfTreat) finishes first. Besides the passes below, it runs 1 s after each launcher round of a local AI has hit (XEH_postInit).
 
     Smart combat AI (AUQOL_fnc_combatTick) also calls it with the members of an AI group that knows about an enemy vehicle.
 
@@ -29,7 +29,7 @@ if (isNil "_units") then {
 {
     private _unit = _x;
     private _launcher = secondaryWeapon _unit;
-    if (_launcher == "" || {!isNull objectParent _unit} || {lifeState _unit == "INCAPACITATED"} || {_unit getVariable ["incapacitated", false]}) then { continue };
+    if (_launcher == "" || {time < _unit getVariable ["auqol_treatUntil", 0]} || {!isNull objectParent _unit} || {lifeState _unit == "INCAPACITATED"} || {_unit getVariable ["incapacitated", false]}) then { continue };
 
     // A gunner with the launcher out keeps its target while that target is still in the fight.
     private _holding = currentWeapon _unit == _launcher;

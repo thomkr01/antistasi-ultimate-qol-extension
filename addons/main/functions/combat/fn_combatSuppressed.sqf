@@ -5,7 +5,8 @@
     - auqol_combat_revealShooter: the unit's group learns where the fire came from, so it can answer
       it instead of scanning for it. reveal only ever raises knowledge.
     - auqol_combat_takeCover: a standing AI on foot crouches, or goes prone under heavy fire, and goes
-      back to its own stance choice 10 s after the last close round. Never prone with auqol_combat_noProne. Only units whose stance is left to
+      back to its own stance choice 10 s after the last close round, unless it sits behind outdoor cover
+      that smart combat picked, where it stays crouched and smart combat's fire team pass takes the stance over. Never prone with auqol_combat_noProne. Only units whose stance is left to
       the AI ("Auto") are touched, so stance orders from players, Antistasi or other mods win. Groups led
       by a player are skipped: their stance is the player's call.
     It also starts smart combat tactics for the unit's group (AUQOL_fnc_combatStart).
@@ -49,6 +50,13 @@ private _restore = {
     private _left = (_unit getVariable ["auqol_combatCoverUntil", 0]) - time;
     if (_left > 0 && {local _unit} && auqol_combat_takeCover) exitWith { [_restore, _this, _left] call CBA_fnc_waitAndExecute };
     _unit setVariable ["auqol_combatCover", nil];
-    if (local _unit && {unitPos _unit in ["Middle", "Down"]}) then { _unit setUnitPos "AUTO" };
+    if (!local _unit || {!(unitPos _unit in ["Middle", "Down"])}) exitWith {};
+    // Behind outdoor cover that smart combat picked: stay crouched, and the fire team pass now owns the stance.
+    private _dest = _unit getVariable "auqol_tacDest";
+    if (!isNil "_dest" && {_unit distance2D _dest < 2.5} && {!(_unit getVariable ["auqol_tacIndoor", false])}) exitWith {
+        _unit setUnitPos "MIDDLE";
+        _unit setVariable ["auqol_tacStance", true];
+    };
+    _unit setUnitPos "AUTO";
 };
 [_restore, [_unit, _restore], 10] call CBA_fnc_waitAndExecute;

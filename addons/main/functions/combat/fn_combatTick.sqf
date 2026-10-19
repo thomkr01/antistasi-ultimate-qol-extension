@@ -74,7 +74,10 @@ if (_ePos isEqualTo [0, 0, 0]) exitWith {};
 if (_group getVariable ["A3A_reactingToKill", false]) exitWith {};
 
 private _members = (units _group - [_leader]) select { [_x] call AUQOL_fnc_combatIsEligible };
-{ [_x] call AUQOL_fnc_combatRelease } forEach ((units _group - [_leader]) select { !(_x in _members) && {!isNil {_x getVariable "auqol_tacTeam"}} });
+// A unit only busy treating itself keeps its team and spot: a release would order it back into formation mid-treatment.
+{ [_x] call AUQOL_fnc_combatRelease } forEach ((units _group - [_leader]) select {
+    !(_x in _members) && {!isNil {_x getVariable "auqol_tacTeam"}} && {time >= _x getVariable ["auqol_treatUntil", 0]}
+});
 if (_members isEqualTo []) exitWith {};
 
 {

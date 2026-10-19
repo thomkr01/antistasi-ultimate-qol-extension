@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.15.1
+
+Fixes from checking every feature against every other feature. None of it tested in game yet.
+
+- T key on a soldier: a squad gunner holding his launcher takes his rifle instead of firing a rocket at him.
+- A unit treating itself is no longer pulled away by the T key focus, the launcher switch, or smart combat ordering it back into formation mid-treatment.
+- Smart combat: a soldier behind outdoor cover no longer stands up for a few seconds when its "get low under fire" timer runs out; it stays crouched and the fire team pass takes the stance over.
+
 ## 1.15.0
 
 Launchers stop wasting rounds, plus fixes from an internal review of how the features work together. None of it tested in game yet.
