@@ -5,10 +5,11 @@
     - auqol_combat_revealShooter: the unit's group learns where the fire came from, so it can answer
       it instead of scanning for it. reveal only ever raises knowledge.
     - auqol_combat_takeCover: a standing AI on foot crouches, or goes prone under heavy fire, and goes
-      back to its own stance choice 10 s after the last close round. Only units whose stance is left to
+      back to its own stance choice 10 s after the last close round. Never prone with auqol_combat_noProne. Only units whose stance is left to
       the AI ("Auto") are touched, so stance orders from players, Antistasi or other mods win. Groups led
       by a player are skipped: their stance is the player's call.
-    Both stand down when LAMBS Danger or Vcom AI is loaded and auqol_combat_yieldToAIMods is on, since
+    It also starts smart combat tactics for the unit's group (AUQOL_fnc_combatStart).
+    Everything stands down when LAMBS Danger or Vcom AI is loaded and auqol_combat_yieldToAIMods is on, since
     those mods already react to suppression.
 
     Arguments:
@@ -24,6 +25,8 @@ if (!local _unit || {!auqol_ready} || {isPlayer _unit} || {!alive _unit} || {cap
 if (auqol_combat_yieldToAIMods && auqol_combat_aiModLoaded) exitWith {};
 if (time < _unit getVariable ["auqol_combatNext", 0]) exitWith {};
 _unit setVariable ["auqol_combatNext", time + 2];
+[_unit] call AUQOL_fnc_combatGroupHook;
+[group _unit] call AUQOL_fnc_combatStart;
 
 private _enemy = [_instigator, _shooter] select isNull _instigator;
 if (auqol_combat_revealShooter && {alive _enemy}) then { (group _unit) reveal [_enemy, 1.5] };
@@ -36,7 +39,7 @@ if (_ours && {!(unitPos _unit in ["Middle", "Down"])}) exitWith {};
 if (!_ours && {unitPos _unit != "Auto" || {stance _unit != "STAND"}}) exitWith {};
 _unit setVariable ["auqol_combatCoverUntil", time + 10];
 
-_unit setUnitPos (["MIDDLE", "DOWN"] select (getSuppression _unit > 0.8));
+_unit setUnitPos (["MIDDLE", "DOWN"] select (!auqol_combat_noProne && {getSuppression _unit > 0.8}));
 if (_ours) exitWith {};
 _unit setVariable ["auqol_combatCover", true];
 

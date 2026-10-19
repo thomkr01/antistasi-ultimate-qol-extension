@@ -123,6 +123,13 @@ class CfgFunctions {
         class combat {
             file = "\z\auqol\addons\main\functions\combat";
             class combatSuppressed {};
+            class combatGroupHook {};
+            class combatStart {};
+            class combatTick {};
+            class combatIsEligible {};
+            class combatFindCover {};
+            class combatThrow {};
+            class combatRelease {};
         };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";

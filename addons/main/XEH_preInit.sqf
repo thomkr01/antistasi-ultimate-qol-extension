@@ -19,6 +19,7 @@ auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], d
 auqol_perf_nextReport = 0;
 auqol_anim_ladderKeyHeld = false; // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
+auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
 auqol_combat_aiModLoaded = isClass (configFile >> "CfgPatches" >> "lambs_danger") || {isClass (configFile >> "CfgPatches" >> "VCOM_AI")};
 
 private _category = "Antistasi Ultimate QoL by TchicX";
@@ -213,7 +214,63 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     [1, 4, 2.5, 2], 1
 ] call CBA_fnc_addSetting;
 
-// --- Smart combat AI (runs where each AI is local, from its Suppressed event)
+// --- Smart combat AI (runs where each AI group is local, from its EnemyDetected and Suppressed events)
+[
+    "auqol_combat_tactics", "CHECKBOX",
+    ["Squads fight from cover", "AI groups in contact fight as two fire teams: one moves to the next covered spot (behind walls, rocks, trees, or inside buildings) while the other covers it, then they swap. Antistasi keeps steering the group; only members move between cover, and they rejoin formation when the fight ends. Not for groups led by a player."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_buildings", "CHECKBOX",
+    ["Use and clear buildings", "Building positions count as cover, so AI fight from inside houses, and an enemy inside a building within 80 m is cleared: up to two movers take the positions nearest to it."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_flank", "CHECKBOX",
+    ["Flank", "In groups of four or more, the second fire team advances on a line swung out to one side of the enemy instead of straight at it."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_suppressiveFire", "CHECKBOX",
+    ["Suppressive fire", "Covering AI that can't see the enemy fire at where it was last seen, to keep its head down while their team moves."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_grenades", "CHECKBOX",
+    ["Hand grenades at hidden enemies", "An AI 12 to 35 m from an enemy it can't see (behind cover or inside a building) throws a hand grenade at it, if it has one and no friend is near that spot. At most once every 40 s per AI."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_smoke", "CHECKBOX",
+    ["Smoke when there is no cover", "An AI that has to move with no cover near and the enemy within 200 m throws a smoke grenade toward it first. At most once a minute per group."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_range", "SLIDER",
+    ["Contact range (m)", "Tactics run while the group knows of an enemy within this distance, 100 to 1000 m, and stop 30 s after the last one."],
+    [_category, "Smart combat AI"],
+    [100, 1000, 500, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_noProne", "CHECKBOX",
+    ["Never make AI go prone", "AUQOL's own stance changes stop at crouching. Use this with a no-prone AI mod. Stance orders from you, Antistasi or other mods are never overridden either way."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 [
     "auqol_combat_revealShooter", "CHECKBOX",
     ["AI under fire learn where it comes from", "When rounds pass close to an AI, its group gets to know the shooter, so it answers the fire instead of scanning for it. Applies to every AI, both sides."],
@@ -223,14 +280,14 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 
 [
     "auqol_combat_takeCover", "CHECKBOX",
-    ["Suppressed AI get low", "A standing AI on foot crouches when rounds pass close, or goes prone under heavy fire, and goes back to its own stance choice 10 s after the last close round. Only AI whose stance is left to the AI are touched; AI in a group led by a player are skipped."],
+    ["Suppressed AI get low", "A standing AI on foot crouches when rounds pass close, or goes prone under heavy fire (unless 'Never make AI go prone' is on), and goes back to its own stance choice 10 s after the last close round. Only AI whose stance is left to the AI are touched; AI in a group led by a player are skipped."],
     [_category, "Smart combat AI"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_yieldToAIMods", "CHECKBOX",
-    ["Leave suppression to LAMBS or Vcom", "When LAMBS Danger or Vcom AI is loaded, the two reactions above stay off, since those mods already react to suppression."],
+    ["Leave combat AI to LAMBS or Vcom", "When LAMBS Danger or Vcom AI is loaded, every smart combat AI setting above stays off, since those mods already run their own combat AI."],
     [_category, "Smart combat AI"],
     true, 1
 ] call CBA_fnc_addSetting;

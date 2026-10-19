@@ -26,7 +26,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
 | Faster pistol swap | Switching to or from your handgun plays twice as fast (adjustable). |
 | Faster ladders | You climb ladders 1.5 times as fast, and 2.5 times while holding the Fast ladder climbing key (Left Shift by default). |
-| Smart combat AI | AI that come under close fire learn where it came from, and standing AI crouch or go prone until the fire stops. Stands down when LAMBS Danger or Vcom AI is loaded. |
+| Smart combat AI | AI squads in a fight move as two fire teams from cover to cover (walls, rocks, trees, inside buildings), clear buildings, flank, lay suppressive fire, throw grenades at hidden enemies and smoke when caught in the open. AI under close fire learn where it came from and get low. Antistasi keeps steering its groups. Stands down when LAMBS Danger or Vcom AI is loaded. |
 
 Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
 
@@ -75,9 +75,17 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_anim_ladder` | Checkbox | On | Server | Climbing ladders plays faster, and faster still while you hold the Fast ladder climbing key (Left Shift by default, Controls > Configure Addons). |
 | `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | The ladder speed. |
 | `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | The ladder speed while the key is held. |
+| `auqol_combat_tactics` | Checkbox | On | Server | AI groups in contact fight as two fire teams that take turns moving to covered spots. Not for groups led by a player. |
+| `auqol_combat_buildings` | Checkbox | On | Server | Building positions count as cover, and an enemy inside a building within 80 m is cleared by up to two AI. |
+| `auqol_combat_flank` | Checkbox | On | Server | In groups of four or more, the second fire team swings out to one side of the enemy. |
+| `auqol_combat_suppressiveFire` | Checkbox | On | Server | Covering AI that can't see the enemy fire at where it was last seen. |
+| `auqol_combat_grenades` | Checkbox | On | Server | AI 12 to 35 m from an enemy they can't see throw a hand grenade at it. |
+| `auqol_combat_smoke` | Checkbox | On | Server | AI with no cover near and the enemy within 200 m throw smoke first. |
+| `auqol_combat_range` | Slider 100–1000 m | 500 | Server | How close a known enemy must be for the tactics to run. |
+| `auqol_combat_noProne` | Checkbox | On | Server | AUQOL never makes AI go prone (for no-prone AI mods). |
 | `auqol_combat_revealShooter` | Checkbox | On | Server | AI that come under close fire make their group aware of the shooter. Every AI, both sides. |
 | `auqol_combat_takeCover` | Checkbox | On | Server | Standing AI on foot crouch under close fire, or go prone under heavy fire, then go back to their own stance 10 s after the last close round. Groups led by a player are skipped. |
-| `auqol_combat_yieldToAIMods` | Checkbox | On | Server | Turn the two smart combat reactions off while LAMBS Danger or Vcom AI is loaded. |
+| `auqol_combat_yieldToAIMods` | Checkbox | On | Server | Turn all smart combat AI off while LAMBS Danger or Vcom AI is loaded. |
 | `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's vehicle markers follow their vehicle (checked every second while the map or GPS is open, every 10 s otherwise; moved when the vehicle moved more than 5 m). |
 | `auqol_freeze_parked` | Checkbox | On | Server | Empty parked vehicles stop being simulated while no player is within 500 m and wake when one comes closer (Arma's dynamic simulation). |
 | `auqol_freeze_wrecks` | Checkbox | On | Server | The same for destroyed vehicles that have come to rest. |
@@ -125,7 +133,7 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Live vehicle markers | n/a | Moves the markers of Antistasi's `A3A_fnc_vehicleMarkers` | Any vehicle | Any vehicle | Yes |
 | Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |
 | Faster AI animations, pistol swap, ladders | `setAnimSpeedCoef` | Yes | Any unit and any animation that follows the vanilla state names | Same | Ladder and pistol boosts register in ACE Advanced Fatigue's animation-speed exclusions. ACE medical's reset of a medic is re-applied within 15 s. |
-| Smart combat AI | `Suppressed` event, `reveal`, `setUnitPos` | Only touches AI whose stance is "Auto", so Antistasi's own stance orders win. Its smoke, cover-when-hit and call-for-help reactions are left to it. | Any unit | Any unit | Yes |
+| Smart combat AI | `EnemyDetected` and `Suppressed` events, `doMove`, `doFollow`, `setUnitPos`, `doSuppressiveFire`, `forceWeaponFire` | Never touches group waypoints, behaviour, combat mode, formation or speed, so Antistasi's PATCOM keeps steering its groups. Skips garrisons, statics and every unit Antistasi has busy, and pauses during Antistasi's kill reaction. | Any unit, any grenades (found by ammo type) | Same | Yes |
 | AI stuck recovery | Engine AI commands | Leaves garrisons, patrols, HOLD/GUARD waypoints, incapacitated, surrendered, healing and rearming units alone | Any infantry or land vehicle | Any infantry or land vehicle | Respects ACE unconscious state (`lifeState`). |
 
 Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
@@ -181,7 +189,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.
 - Animation speed (`setAnimSpeedCoef`) doesn't change reloading or other upper-body animations; that is an engine limit. Faster AI animations therefore don't speed up AI reloads.
 - The pistol swap and ladder boosts recognise animations by their vanilla-style names (a weapon switch with `wpst` on one side, any state with `ladder` in it). Addon animations named differently play at normal speed.
-- Smart combat AI is a light version: it does not flank, throw grenades or retreat. Antistasi already makes AI throw smoke, take cover when hit and call for support, and LAMBS does the heavier tactics if you want them.
+- Smart combat AI moves group members, never the leader, so the group still goes where Antistasi (or the mission) sends it; members fight from cover around that. Cover is judged by a line from where the group believes the enemy is, so cover against a second enemy elsewhere is not guaranteed. It does not retreat or call for help: Antistasi does that.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).
