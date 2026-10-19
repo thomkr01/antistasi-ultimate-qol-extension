@@ -2,6 +2,18 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.8.0
+
+- Loot gathering: the enemy check radius default is now 100 m (was 500 m). The gather radius stays 2000 m.
+- AI stuck recovery is more conservative. Units that are captive, attached, remote controlled, in an inventory, healing or scripted (`Acts_`) animation, or on a SCRIPTED waypoint are never watched. Right before a hop or teleport the unit is checked again, and is not moved if it is now fighting, in COMBAT behaviour, healing, rearming, surrendering, on a static weapon or in a vehicle (teleport).
+- Fewer recurring scans:
+  - Stuck recovery keeps a list of each machine's friendly AI for the wider scopes, rebuilt every 30 s and pruned every check, instead of filtering every unit each time.
+  - Launchers are checked when your group spots a new enemy and on the T key, with a 5 s fallback (was every second).
+  - Live vehicle markers: new markers come from the marker-created event (full scan every 30 s as fallback), and a marker is only moved when its vehicle moved more than 5 m.
+  - Player perks follow unit, loadout and group changes and recruits joining, with a 15 s fallback (was every 5 s).
+  - Garage fuel: each class's full value is cached; nothing is written for sources already full.
+- Withstand and crew ejection reported working in game.
+
 ## 1.7.1
 
 - Live vehicle markers: the 1-second pass no longer searches the whole map marker list for every tracked marker to see whether Antistasi deleted it. Same behaviour, less work on maps with many markers.

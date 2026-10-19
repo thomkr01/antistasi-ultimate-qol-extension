@@ -81,7 +81,7 @@ Every vehicle works like Antistasi's loot crate, so you don't have to buy and ha
 - **Same behaviour as the crate:** the server runs Antistasi's own crate function. Loot from dead bodies, dropped weapons and surrender crates goes into the vehicle. Money is split between rebel players, unlocked items follow the mission's parameter, and there is a 10-second cooldown.
 - **One radius for both:** vehicles and the loot crate use `auqol_loot_radius`, 10 to 2000 m, default 2000. Antistasi's own crate parameter only goes to 400.
 - **Item caches:** enemy item caches (the supply crates at outposts, bases and airports) within 30 m of the vehicle or crate are emptied into it too, with the same unlocked-item and money rules, and the empty box is deleted. `auqol_loot_caches`, on by default.
-- **Separate enemy check:** gathering is refused while an enemy in combat is within `auqol_loot_enemyRadius` of the vehicle, 10 to 2000 m, default 500. So you can gather from 2000 m while only nearby enemies block it.
+- **Separate enemy check:** gathering is refused while an enemy in combat is within `auqol_loot_enemyRadius` of the vehicle, 10 to 2000 m, default 100. So you can gather from 2000 m while only nearby enemies block it.
 - **Settings:** `auqol_loot_enabled` (on), `auqol_loot_radius` and `auqol_loot_enemyRadius`. All are server-wide. Turning loot off removes the vehicle action and puts the crate back on Antistasi's radius.
 
 ## 9. Short Withstand cooldown
@@ -98,7 +98,7 @@ The AI in your own group get the same no sway, unlimited stamina, weight-indepen
 
 - Each of the four follows its own player setting, so no recoil still stays off unless you turn it on.
 - `auqol_player_squad` (on) switches the squad part. Turning it off puts your AI back to normal.
-- Applied on your machine to the AI local to it (your recruits are), within 5 seconds of joining.
+- Applied on your machine to the AI local to it (your recruits are), as soon as they join.
 - Under ACE the AI get the vanilla commands, because ACE sway and Advanced Fatigue only run for players.
 
 ## 11. "Copy from user" in the rebel loadout editor
@@ -115,18 +115,21 @@ In Antistasi's Set Rebel Loadout arsenal, the empty third button in the bottom b
 
 Friendly AI that should be moving but aren't get freed automatically, cheapest fix first.
 
-**Who is watched** (`auqol_stuck_scope`): the AI in each player's own group (default), friendly AI within `auqol_stuck_scopeRadius` of any player, or all friendly AI. Each machine only checks the AI it owns, every 5 seconds, so the server, headless clients and players never act on the same unit twice.
+**Who is watched** (`auqol_stuck_scope`): the AI in each player's own group (default), friendly AI within `auqol_stuck_scopeRadius` of any player, or all friendly AI. Each machine only checks the AI it owns, every 5 seconds, so the server, headless clients and players never act on the same unit twice. For the wider scopes each machine keeps a list of its friendly AI, rebuilt every 30 seconds; dead, deleted, transferred or no longer friendly units leave it at the next check.
 
 **When a unit counts as stuck.** It needs somewhere to go and nothing else to do:
 
 - the engine says it has a destination (`expectedDestination`), more than 8 m away on foot or 25 m when driving. Units that are "not moving" or doing a direct move such as getting in or resupplying are skipped;
 - its only order is a move, or following its leader. Stop and Hold, attack, heal, get in, rearm and other commands are left alone, as are units with movement or pathfinding AI switched off;
 - it is not fighting: no attack target, not suppressed, no known enemy within 300 m;
-- it is not unconscious, incapacitated or surrendered, and not healing someone or rearming from bodies (Antistasi's own flags);
+- it is not unconscious, incapacitated, surrendered or captive, and not healing someone or rearming from bodies (Antistasi's own flags);
+- it is not attached to anything, not remote controlled by Zeus, and not playing an inventory, healing or scripted animation (the `Acts_` animations missions use for hostages and cutscenes);
 - on foot it is on the ground, not swimming and not on a ladder. In a vehicle only the AI driver of a land vehicle that can still move and has fuel counts, and only with no player aboard. Passengers, static weapons, aircraft and boats are skipped;
-- in groups led by AI (patrols, garrisons, high-command squads) it is not on a HOLD, GUARD, SENTRY, LOITER or DISMISS waypoint and not on a looping patrol route.
+- in groups led by AI (patrols, garrisons, high-command squads) it is not on a HOLD, GUARD, SENTRY, LOITER, DISMISS or SCRIPTED waypoint and not on a looping patrol route.
 
 Then, if it neither moves `auqol_stuck_minProgress` metres (default 3) nor gets that much closer to its destination within `auqol_stuck_timeout` seconds (default 30), it is stuck.
+
+**Before moving a unit** (steps 3 and 4) every check above runs again at that moment, plus one more: the unit must not be in COMBAT behaviour. If anything fails, nothing is moved.
 
 **Recovery steps**, each given another timeout window to work before the next one:
 
@@ -165,13 +168,14 @@ An AI in your group with a loaded AT or AA launcher takes it out as soon as an e
 
 - Known: the unit knows about it, from its own (faster) spotting, its squad, or your T key.
 - Shootable: the unit has a clear line of sight to it, and it is in range: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Which targets a launcher can hit comes from its ammo's AI usage flags, so RHS and CUP launchers work.
-- Checked every second. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
+- Checked the moment your group spots a new enemy, when you press T, and every 5 seconds for targets that only become visible later. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
 - `auqol_squad_launchers` (on).
 
 ## 16. Live vehicle markers
 
-Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehicles your side has spotted, but moves those markers only once a minute. AUQOL moves them to their vehicle every second.
+Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehicles your side has spotted, but moves those markers only once a minute. AUQOL checks them every second and moves a marker whenever its vehicle has moved more than 5 m.
 
+- New markers are picked up from the game's marker-created event, so AUQOL does not search the whole map's markers every second; a full search every 30 seconds catches anything missed.
 - Antistasi still decides which markers exist and when they disappear. AUQOL reveals nothing new.
 - Player markers already update every second and zone markers change when a zone changes hands, so they are left alone. Intercepted enemy support markers keep Antistasi's 5-second update, because the server owns them.
 - `auqol_map_liveVehicles` (on).

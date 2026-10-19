@@ -6,6 +6,12 @@ auqol_aceRearmSources = [];
 auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> its vehicle
 auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
+auqol_map_pending = createHashMap; // new markers waiting for their text -> time first seen
+auqol_map_nextScan = 0;
+auqol_stuck_units = []; // friendly AI local to this machine, for the wider stuck scopes
+auqol_stuck_nextScan = 0;
+auqol_stuck_listScope = -1;
+auqol_garage_full = createHashMap; // vehicle class -> full garage fuel value (0: not a fuel source)
 
 private _category = "Antistasi Ultimate QoL by TchicX";
 
@@ -266,7 +272,7 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
     "auqol_loot_enemyRadius", "SLIDER",
     ["Enemy check radius (m)", "Gathering is refused while an enemy in combat mode is this close to the vehicle or crate, 10 to 2000 m."],
     [_category, "Loot gathering"],
-    [10, 2000, 500, 0], 1
+    [10, 2000, 100, 0], 1
 ] call CBA_fnc_addSetting;
 
 [

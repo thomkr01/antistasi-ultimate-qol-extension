@@ -196,8 +196,8 @@ def check_wiki(wiki):
         used_mission.update(re.findall(r'addMissionEventHandler \["(\w+)"', code))
     problems = []
     for name in used_object:
-        if name not in events.get("standard", {}):
-            problems.append(f"object event handler {name} not in the wiki")
+        if name not in events.get("standard", {}) and name not in events.get("group", {}):
+            problems.append(f"object or group event handler {name} not in the wiki")
     for name in used_mission:
         if name not in events.get("mission", {}):
             problems.append(f"mission event handler {name} not in the wiki")
@@ -206,6 +206,10 @@ def check_wiki(wiki):
         ("standard", "Fuel"): ["vehicle", "hasFuel"],
         ("standard", "GetIn"): ["vehicle"],
         ("mission", "Service"): ["serviceVehicle", "servicedVehicle", "serviceType"],
+        ("mission", "MarkerCreated"): ["marker"],
+        ("mission", "MarkerDeleted"): ["marker"],
+        ("group", "EnemyDetected"): ["group", "newTarget"],
+        ("group", "UnitJoined"): ["group", "newUnit"],
     }
     for (kind, name), params in expected_params.items():
         path = events.get(kind, {}).get(name)
