@@ -1,6 +1,7 @@
 /*
     Author: AUQOL
-    Launcher switch for the AI in the local player's group, run every second. An AI with a loaded
+    Launcher switch for the AI in the local player's group. Runs when the group spots a new enemy
+    (EnemyDetected, AUQOL_fnc_squadGroupHooks), on the Reveal target key, and every 5 s as a fallback. An AI with a loaded
     launcher that knows about an enemy vehicle it can see and its launcher can engage (by the
     ammunition's aiAmmoUsageFlags: 256 air, 128 or 512 ground vehicles) within range takes the
     launcher out at once and targets it. Knowledge comes from the unit's own spotting, the squad, or

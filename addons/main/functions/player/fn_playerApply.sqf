@@ -2,10 +2,10 @@
     Author: AUQOL
     Applies the local-player settings to the current player unit and, with "Apply to AI in your
     squad", to the AI in the player's group that are local to this machine (client only). Called on
-    setting changes, on player unit change (respawn, team switch) and every 5 seconds, which also
-    picks up new recruits; every branch only writes when the value differs, and only restores values
-    AUQOL itself changed. ACE sway, fatigue and movement only run for the player, so AI always get
-    the vanilla commands.
+    setting changes, player unit change (respawn, team switch, and again 3 s later), loadout and group
+    changes, an AI joining the group, and every 15 seconds as a fallback; every branch only writes when
+    the value differs, and only restores values AUQOL itself changed. ACE sway, fatigue and movement
+    only run for the player, so AI always get the vanilla commands.
 
     - No sway: setCustomAimCoef 0. Skipped while ACE sway is active (ACE overwrites the coefficient;
       AUQOL's ACE sway factor handles it, see AUQOL_fnc_aceRegisterFactors).

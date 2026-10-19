@@ -14,6 +14,8 @@
        AUQOL_fnc_stuckFindPosition, then step 1 again.
     4: Infantry only: move next to the squad leader onto a checked spot, then follow it. The evaluate
        step only offers this when the leader is within auqol_stuck_maxDistance.
+    Steps 3 and 4 check the unit again with AUQOL_fnc_stuckIsEligible (including the stricter checks for
+    moving: not in COMBAT behaviour) immediately before moving it, and do nothing when it fails.
     Health, gear, group, rank and role are untouched: the unit is only moved and re-ordered.
 
     Arguments:
@@ -61,7 +63,7 @@ switch (_step) do {
             _spot = [_veh, (getPosATL _veh) vectorAdd (_dir vectorMultiply (_range * _x)), _range / 3] call AUQOL_fnc_stuckFindPosition;
             if (_spot isNotEqualTo []) exitWith {};
         } forEach [1, 0.6, 0.3];
-        if (_spot isEqualTo []) exitWith { false };
+        if (_spot isEqualTo [] || {!([_unit, true] call AUQOL_fnc_stuckIsEligible)}) exitWith { false };
         if (_onFoot) then { _unit setPosATL _spot } else { _veh setVehiclePosition [_spot, [], 0, "NONE"] };
         call _fnc_refresh;
         true
@@ -69,7 +71,7 @@ switch (_step) do {
     case 4: {
         if (!_onFoot || _leader isEqualTo _unit || {!alive _leader}) exitWith { false };
         private _spot = [_unit, getPosATL vehicle _leader, 15] call AUQOL_fnc_stuckFindPosition;
-        if (_spot isEqualTo []) exitWith { false };
+        if (_spot isEqualTo [] || {!([_unit, true] call AUQOL_fnc_stuckIsEligible)}) exitWith { false };
         _unit setPosATL _spot;
         _unit doFollow _leader;
         true

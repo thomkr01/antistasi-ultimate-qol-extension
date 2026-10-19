@@ -89,6 +89,7 @@ class CfgFunctions {
         class stuck {
             file = "\z\auqol\addons\main\functions\stuck";
             class stuckMonitor {};
+            class stuckIsEligible {};
             class stuckEvaluate {};
             class stuckRecover {};
             class stuckFindPosition {};
@@ -100,6 +101,7 @@ class CfgFunctions {
             class squadReactApply {};
             class squadRevealTarget {};
             class squadLaunchers {};
+            class squadGroupHooks {};
         };
         class map {
             file = "\z\auqol\addons\main\functions\map";

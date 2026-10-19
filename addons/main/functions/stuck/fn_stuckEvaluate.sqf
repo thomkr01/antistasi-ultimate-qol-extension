@@ -2,19 +2,9 @@
     Author: AUQOL
     Stuck check and recovery step for one local AI unit, called every 5 s by AUQOL_fnc_stuckMonitor.
 
-    A unit is only watched while it has somewhere to go and nothing else to do:
-    - alive, AI, local, not incapacitated (Antistasi "incapacitated"), surrendered, healing someone
-      (Antistasi "helping") or rearming from bodies (Antistasi "rearming");
-    - movement and pathfinding AI enabled, not stopped (Stop / Hold, garrison doStop), and no command
-      other than a move (currentCommand "" or "MOVE": attack, heal, get in, rearm and so on are left alone);
-    - a destination from expectedDestination other than "DoNotPlan" (not moving) or "LEADER DIRECT"
-      (get in, supply). Within 8 m of it (25 m when driving) the unit has arrived and is dropped;
-    - on foot: on the ground, not swimming, not on a ladder. In a vehicle: the AI driver of a land
-      vehicle that can move, with no player on board. Passengers and static weapons are skipped;
-    - not fighting: no attack target, not suppressed, no known enemy within 300 m;
-    - for AI-led groups (patrols, garrisons, HC squads): not on a HOLD, GUARD, SENTRY, LOITER or
-      DISMISS waypoint and not on a CYCLE patrol route.
-    Anything else clears the unit's tracking.
+    Eligibility (what is watched and what is skipped) is AUQOL_fnc_stuckIsEligible; an ineligible unit
+    has its tracking cleared. Within 8 m of the destination (25 m when driving) the unit has arrived and
+    is dropped.
 
     Progress: moving auqol_stuck_minProgress metres from where the current window started, or getting
     that much closer to the destination. No progress for auqol_stuck_timeout seconds means stuck.
@@ -30,33 +20,13 @@
 
 params ["_unit"];
 
+if (!local _unit || {!([_unit] call AUQOL_fnc_stuckIsEligible)}) exitWith { _unit setVariable ["auqol_stuck", nil] };
+
 private _veh = vehicle _unit;
 private _onFoot = _veh isEqualTo _unit;
 private _group = group _unit;
 private _leader = leader _group;
 (expectedDestination _unit) params [["_dest", []], ["_mode", "DoNotPlan"]];
-
-private _eligible = alive _unit && {local _unit} && {!isPlayer _unit}
-    && {!(_unit getVariable ["incapacitated", false])} && {!(_unit getVariable ["surrendered", false])}
-    && {!(_unit getVariable ["helping", false])} && {!(_unit getVariable ["rearming", false])}
-    && {lifeState _unit in ["HEALTHY", "INJURED"]}
-    && {_unit checkAIFeature "MOVE"} && {_unit checkAIFeature "PATH"}
-    && {!stopped _unit} && {currentCommand _unit in ["", "MOVE"]}
-    && {!(_mode in ["DoNotPlan", "LEADER DIRECT"])} && {_dest isNotEqualTo []}
-    && {if (_onFoot) then {
-            isTouchingGround _unit && {!surfaceIsWater getPosASL _unit} && {!("ladder" in toLower animationState _unit)}
-        } else {
-            driver _veh isEqualTo _unit && {_veh isKindOf "LandVehicle"} && {!(_veh isKindOf "StaticWeapon")}
-            && {canMove _veh} && {fuel _veh > 0} && {(crew _veh) findIf { isPlayer _x } == -1}
-        }}
-    && {isNull getAttackTarget _unit} && {getSuppression _unit == 0} && {_unit distance (_unit findNearestEnemy _unit) > 300}
-    && {isPlayer _leader || {
-            private _waypoints = waypoints _group;
-            _waypoints findIf { waypointType _x == "CYCLE" } == -1
-            && {!(waypointType [_group, currentWaypoint _group] in ["HOLD", "GUARD", "SENTRY", "LOITER", "DISMISS"])}
-        }};
-
-if (!_eligible) exitWith { _unit setVariable ["auqol_stuck", nil] };
 
 private _now = time;
 private _pos = getPosASL _veh;
@@ -148,4 +118,4 @@ private _done = [_unit, _next, _dest] call AUQOL_fnc_stuckRecover;
 _state set ["pos", getPosASL _veh];
 _state set ["dist", _veh distance2D _dest];
 if (!_done) then { _state set ["since", _now - auqol_stuck_timeout] }; // nothing happened: next step on the next check
-[_unit, format ["recovery step %1: %2%3", _next, ["refresh move order", "rejoin formation", "short safe hop", "teleport to squad leader"] select (_next - 1), ["", " (no safe spot found)"] select !_done], "detect"] call AUQOL_fnc_stuckNotify;
+[_unit, format ["recovery step %1: %2%3", _next, ["refresh move order", "rejoin formation", "short safe hop", "teleport to squad leader"] select (_next - 1), ["", " (not carried out: no safe spot, or the unit got busy)"] select !_done], "detect"] call AUQOL_fnc_stuckNotify;

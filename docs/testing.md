@@ -14,8 +14,8 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | No total weight limit | Works |
 | Infinite service stock | Works |
 | Loot from vehicles and the loot crate | Works |
-| Enemy crew ejection | Not reported yet |
-| Short Withstand cooldown | Not reported yet |
+| Enemy crew ejection | Works (reported 2026-10-19) |
+| Short Withstand cooldown | Works (reported 2026-10-19) |
 | Item caches within 30 m | Works (1.4.0). 1.4.1 now deletes the empty box, not yet reported. |
 | Squad perks (1.5.0) | "Seems fine" (2026-10-19) |
 | Copy from user (1.5.0) | Works (reported 2026-10-18) |
@@ -23,6 +23,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Squad reactions, T key, squad launchers (1.6.0) | Not tested yet |
 | Live vehicle markers (1.6.0) | Not tested yet |
 | Faster reactions for all friendly AI (1.7.0) | Not tested yet |
+| Safer stuck recovery and leaner scans (1.8.0) | Not tested yet |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -109,7 +110,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, recoil coef `1` (no recoil is off by default) and a total carry limit of 10000000.
 2. Aim down sights while standing after a sprint: there should be no sway. Sprint for several minutes: there should be no exhaustion. Fill a backpack with heavy items and sprint: no slowdown or forced walking.
-3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within 5 s.
+3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within about 3 s.
 4. Toggle each player setting off. Sway, stamina and loadCoef should return to normal: aim coef 1, stamina on, and loadCoef back to the role's value.
 5. Turn `auqol_player_noRecoil` on and fire a full magazine: the muzzle should not climb. Turn it off and recoil should come back.
 6. **With ACE3:** the stamina bar should stay full while sprinting with a full load, and there should be no sway, with ACE sway on and off.
@@ -125,7 +126,7 @@ Run this in single player first, then on a dedicated server with a second client
 1. Kill a few enemies, walk up to any vehicle on foot and hold "Gather Scattered Loot". Their gear and dropped weapons should end up in the vehicle's inventory and the bodies should be stripped.
 2. Set `auqol_loot_radius` to 2000 and check that bodies far away are gathered too. Set it to 10 and check that they aren't.
 3. Buy a loot crate. It should show one "Gather Scattered Loot" action, not two, and use the same radius as the vehicles.
-4. Use it twice within 10 seconds: the second try should say it was used recently. With an enemy in combat within 500 m it should say enemies are nearby. With one at 1000 m it should still gather, including bodies out to 2000 m.
+4. Use it twice within 10 seconds: the second try should say it was used recently. With an enemy in combat within 100 m it should say enemies are nearby. With one at 300 m it should still gather, including bodies out to 2000 m.
 5. Capture or clear an outpost, park a vehicle within 30 m of its supply crate and gather. The crate should disappear and its contents end up in the vehicle. Park more than 30 m away and the crate should keep its contents. The HQ box should never be emptied.
 6. Turn `auqol_loot_enabled` off: vehicles lose the action, and the crate still works with Antistasi's own radius.
 
@@ -137,7 +138,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### 8. Squad perks
 
-1. Recruit two AI into your squad. Within 5 s, run in the debug console: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected for the AI: `0`, `false`, `0`.
+1. Recruit two AI into your squad. Right after they join, run in the debug console: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected for the AI: `0`, `false`, `0`.
 2. Turn `auqol_player_squad` off. The AI should go back to `1`, `true` and their previous loadCoef. Your own values stay as they were.
 3. Turn `auqol_player_noRecoil` on with the squad setting on: `unitRecoilCoefficient` of the AI should read `0`.
 4. **With ACE3:** the AI still read `0`, `false`, `0` (they use the vanilla commands).
@@ -158,7 +159,7 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 2. **Rock or terrain:** order a squad AI into a gap between rocks or onto a steep slope it can't climb. Expect the same sequence with "blocked by terrain" or "cannot find a way to its destination".
 3. **Can't follow the squad:** walk somewhere a squad AI can't path to (over a fence line with no gap) and wait. Expect "cannot keep up with its squad", step 1, step 2 (rejoin formation), then step 3 toward you.
 4. **Not stuck:** order a squad AI to Stop or Hold, put AI in a garrison, and stand still with your squad around you. None of them should ever be reported.
-5. **Busy:** during a firefight, while a medic heals someone, while AI reload, board or leave a vehicle, swim or parachute: no reports.
+5. **Busy:** during a firefight, while a medic heals someone, while AI reload, board or leave a vehicle, swim or parachute: no reports. With the teleport on, a unit that enters combat (enemy spotted, COMBAT behaviour) between its stuck report and the hop or teleport must not be moved; the step reports "not carried out".
 6. **Down or captive:** incapacitated, surrendered or dead units are never reported; a deleted unit leaves no error in the RPT.
 7. **Group change:** move a stuck AI to another group (or dismiss it): its tracking restarts; it is not handled twice.
 8. **Repeated failure:** turn `auqol_stuck_reposition` off and run `stuck_test.sqf` again. Expect three failed rounds, 60 s apart, then "leaving it alone until it moves". Delete the walls: once it moves it is watched normally again.
@@ -171,12 +172,12 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 
 1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
 2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all, the Reveal target action name may be wrong; please report it.
-3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher within about a second. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
+3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher as soon as the squad spots it, at most about 5 s if it was spotted behind cover first. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
 4. Go to a garrisoned outpost with a static gunner. On the server (or host) debug console run `(allUnits select { side group _x == teamPlayer && !(isPlayer leader group _x) }) apply { _x skill "spotTime" }` within 5 s of them spawning: every value at least 0.8. Turn `auqol_squad_reactionAll` off: within 5 s they go back, your own squad keeps 0.8.
 
 ### 12. Live vehicle markers
 
-1. Start a convoy mission (or wait for a revealed enemy vehicle) and open the map. The vehicle's marker should move smoothly every second instead of jumping once a minute.
+1. Start a convoy mission (or wait for a revealed enemy vehicle) and open the map. The vehicle's marker should follow it every second while it drives, instead of jumping once a minute. A parked vehicle's marker should stay still.
 2. Turn `auqol_map_liveVehicles` off: the marker goes back to jumping once a minute.
 3. When the vehicle is destroyed, the marker disappears as before (within Antistasi's minute).
 

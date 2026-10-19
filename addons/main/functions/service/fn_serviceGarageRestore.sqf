@@ -9,6 +9,9 @@
     the garage's own update functions. Ammo and repair sources are on/off in the garage and never
     deplete, so they are not touched. Does nothing when the garage is not present.
 
+    Only the garage's source category is read (fuel, ammo and repair source vehicles, not the whole
+    garage), each class's full value is cached, and nothing is written for a source that is already full.
+
     Arguments: none
     Return Value: none
 */
@@ -32,16 +35,14 @@ private _registered = false;
     private _fuelData = (_y param [4, []]) param [0, []];
     if (!(_fuelData isEqualType []) || {count _fuelData < 3} || {_uid in _otherSources}) then { continue };
 
-    private _cfg = configFile >> "CfgVehicles" >> _class;
-    private _index = 1;
-    private _full = 1;
-    if (_hasAce) then {
-        _index = 2;
-        _full = [_cfg >> "ace_refuel_fuelCargo", "NUMBER", getNumber (_cfg >> "transportFuel")] call CBA_fnc_getConfigEntry;
-    } else {
-        if (getNumber (_cfg >> "transportFuel") <= 0) then { _full = 0 };
-    };
+    // Full value per class, looked up in config once and cached; a class that holds no fuel is skipped.
+    private _full = auqol_garage_full getOrDefaultCall [_class, {
+        private _cfg = configFile >> "CfgVehicles" >> _class;
+        [parseNumber (getNumber (_cfg >> "transportFuel") > 0),
+            [_cfg >> "ace_refuel_fuelCargo", "NUMBER", getNumber (_cfg >> "transportFuel")] call CBA_fnc_getConfigEntry] select _hasAce
+    }, true];
     if (_full <= 0) then { continue };
+    private _index = [1, 2] select _hasAce;
 
     if ((_fuelData select _index) < _full) then {
         _fuelData set [_index, _full];
