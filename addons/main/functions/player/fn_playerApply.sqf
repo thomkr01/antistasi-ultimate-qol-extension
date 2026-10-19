@@ -7,14 +7,14 @@
     the value differs, and only restores values AUQOL itself changed. ACE sway, fatigue and movement
     only run for the player, so AI always get the vanilla commands.
 
-    - No sway: setCustomAimCoef 0. Skipped while ACE sway is active (ACE overwrites the coefficient;
+    - No sway: setCustomAimCoef 0; the value it had before is saved and put back when turned off. Skipped while ACE sway is active (ACE overwrites the coefficient;
       AUQOL's ACE sway factor handles it, see AUQOL_fnc_aceRegisterFactors).
     - Unlimited stamina: enableStamina false. Skipped under ACE Advanced Fatigue, which disables
       vanilla stamina itself and is handled by AUQOL's duty factor.
     - Weightless: loadCoef trait 0 (equipment weight multiplier for stamina). ACE movement rebuilds
       loadCoef from its saved base value ace_movement_loadCoef on every loadout change, so that base
       is set to 0 as well.
-    - No recoil: setUnitRecoilCoefficient 0, restored to 1 when turned off.
+    - No recoil: setUnitRecoilCoefficient 0; the value it had before is put back when turned off.
 
     Arguments: none
     Return Value: none
@@ -36,12 +36,14 @@ if (isNull _player) exitWith {};
     if !(_isPlayer && {missionNamespace getVariable ["ace_common_enableSway", false]} && {!isNil "ace_common_fnc_addSwayFactor"}) then {
         if (auqol_player_noSway && _on) then {
             if (getCustomAimCoef _unit != 0) then {
+                // Keep the first value only: a later drift (another script) must not replace the baseline.
+                if (isNil {_unit getVariable "auqol_swaySet"}) then { _unit setVariable ["auqol_swaySet", getCustomAimCoef _unit] };
                 _unit setCustomAimCoef 0;
-                _unit setVariable ["auqol_swaySet", true];
             };
         } else {
-            if (_unit getVariable ["auqol_swaySet", false]) then {
-                _unit setCustomAimCoef 1;
+            private _original = _unit getVariable "auqol_swaySet";
+            if (!isNil "_original") then {
+                _unit setCustomAimCoef _original;
                 _unit setVariable ["auqol_swaySet", nil];
             };
         };
@@ -65,12 +67,13 @@ if (isNull _player) exitWith {};
     // --- Recoil
     if (auqol_player_noRecoil && _on) then {
         if (unitRecoilCoefficient _unit != 0) then {
+            if (isNil {_unit getVariable "auqol_recoilSet"}) then { _unit setVariable ["auqol_recoilSet", unitRecoilCoefficient _unit] };
             _unit setUnitRecoilCoefficient 0;
-            _unit setVariable ["auqol_recoilSet", true];
         };
     } else {
-        if (_unit getVariable ["auqol_recoilSet", false]) then {
-            _unit setUnitRecoilCoefficient 1;
+        private _original = _unit getVariable "auqol_recoilSet";
+        if (!isNil "_original") then {
+            _unit setUnitRecoilCoefficient _original;
             _unit setVariable ["auqol_recoilSet", nil];
         };
     };

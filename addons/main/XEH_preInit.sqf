@@ -3,7 +3,7 @@
 auqol_ready = false;
 auqol_service_cache = createHashMap;
 auqol_aceRearmSources = [];
-auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> its vehicle
+auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> [its vehicle, position AUQOL or Antistasi last gave it]
 auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
 auqol_map_pending = createHashMap; // new markers waiting for their text -> time first seen
@@ -185,7 +185,7 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
 
 [
     "auqol_stuck_minProgress", "SLIDER",
-    ["Minimum progress (m)", "Moving this far, or getting this much closer to its destination, within the time above counts as progress, 0.5 to 20 m."],
+    ["Minimum progress (m)", "Getting this much closer to its destination, or moving this far, within the time above counts as progress, 0.5 to 20 m. Moving stops counting once the unit has not got any closer for three times the time above (circling, back and forth)."],
     [_category, "AI stuck recovery"],
     [0.5, 20, 3, 1], 1
 ] call CBA_fnc_addSetting;

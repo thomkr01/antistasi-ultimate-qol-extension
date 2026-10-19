@@ -16,10 +16,10 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `functions/service/` | Infinite service stock: config detection (`fn_serviceConfig`), vanilla refills from the `Service` event, applying to all vehicles, the Antistasi garage fuel restore. |
 | `functions/player/fn_playerApply.sqf` | No sway, unlimited stamina, weightless running and no recoil for the local player, and for the AI in their group when `auqol_player_squad` is on. |
 | `functions/squad/` | Squad reactions: raising the reaction skills of squad and friendly AI on each machine (`fn_squadReactApply`), the Reveal target (T) key (`fn_squadRevealTarget`), the switch to AT or AA launchers (`fn_squadLaunchers`) and the player group's `EnemyDetected` and `UnitJoined` hooks (`fn_squadGroupHooks`). |
-| `functions/map/fn_mapVehicleMarkers.sqf` | Live vehicle markers: recognises the markers Antistasi's `A3A_fnc_vehicleMarkers` makes (new ones from `MarkerCreated`, full scan every 30 s) and moves them to their vehicle when it moved more than 5 m. |
-| `functions/loadout/` | "Copy from user" in Antistasi's rebel loadout editor: adding the button when the editor opens (`fn_loadoutCopyInit`) and copying the player's loadout, unlocked items only (`fn_loadoutCopyFromUser`). |
+| `functions/map/fn_mapVehicleMarkers.sqf` | Live vehicle markers: recognises the markers Antistasi's `A3A_fnc_vehicleMarkers` makes (new ones from `MarkerCreated`, full scan every 30 s), pairs each with a vehicle of the matching icon kind, re-pairs one that Antistasi moved elsewhere, and moves them to their vehicle when it moved more than 5 m. |
+| `functions/loadout/` | "Copy from user" in Antistasi's rebel loadout editor: adding the button when the editor opens (`fn_loadoutCopyInit`), copying the player's loadout (`fn_loadoutCopyFromUser`) and removing locked items from a loadout, including attachments and magazines on weapons stored in containers (`fn_loadoutFilter`). |
 | `functions/stuck/` | AI stuck detection and recovery: the 5 s pass over the chosen scope with its tracked unit list (`fn_stuckMonitor`), the eligibility and before-moving checks (`fn_stuckIsEligible`), per-unit progress and step choice (`fn_stuckEvaluate`), the four recovery steps (`fn_stuckRecover`), safe-spot search (`fn_stuckFindPosition`), messages (`fn_stuckNotify`) and the debug-console test helper (`fn_stuckSimulate`). |
-| `functions/loot/` | Loot from any vehicle: which objects get the action (`fn_lootIsTarget`), adding it (`fn_lootInitObject`, `fn_lootAddAction`), the server run (`fn_lootGather`) and emptying nearby item caches (`fn_lootCaches`). |
+| `functions/loot/` | Loot from any vehicle: which objects get the action (`fn_lootIsTarget`), adding it (`fn_lootInitObject`, `fn_lootAddAction`), the server run, which checks the sender, player and object first (`fn_lootGather`) and emptying nearby item caches (`fn_lootCaches`). |
 | `functions/withstand/fn_withstandApply.sqf` | Antistasi Withstand cooldown. |
 | `compat/ace/` | ACE3 only: infinite refuel sources, limited rearm top-up, sway and fatigue factors. |
 
@@ -46,6 +46,6 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `.hemtt/project.toml` | HEMTT project: prefix, version source, files included in the release. |
 | `tools/build.sh` | Runs the static checks, `hemtt check` and `hemtt release`. `tools/build.ps1` is the Windows version. |
 | `tools/check_ingame_scripts.sh` | Compiles the in-game test scripts. |
-| `tests/static_checks.py` | Checks functions, settings and docs, Arma commands and events, and every CBA, ACE and Antistasi name the code uses against their sources. |
-| `tests/ingame/*.sqf` | Debug-console scripts for testing ejection, service stock, player features and AI stuck recovery (`stuck_test.sqf`) in game. |
+| `tests/static_checks.py` | Checks functions, settings and docs, Arma commands and events, every CBA, ACE and Antistasi name the code uses against their sources, and regression guards for fixed edge cases. |
+| `tests/ingame/*.sqf` | Debug-console scripts for testing ejection, service stock, player features, AI stuck recovery (`stuck_test.sqf`) and the Copy from user filter (`loadout_test.sqf`) in game. |
 | `.github/workflows/ci.yml` | CI: checks and build on every push. Publishes a GitHub release when `main` has a new version. |

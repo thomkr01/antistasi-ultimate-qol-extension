@@ -153,6 +153,52 @@ def check_settings():
     return names
 
 
+# --- Regression checks for fixed edge cases ----------------------------------------------------
+
+def check_regressions():
+    """Static guards for the 1.8.1 fixes. They prove the safeguard is in the code, not that it works in game."""
+    def code(rel):
+        return strip_comments((ADDON / rel).read_text())
+    problems = []
+    gather = code("functions/loot/fn_lootGather.sqf")
+    guard = gather.find("remoteExecutedOwner == owner _caller")
+    for later in ("AUQOL_fnc_lootCaches", "spawn SCRT_fnc_loot_gatherLoot", "auqol_lootRequested"):
+        if guard == -1 or gather.find(later) < guard:
+            problems.append(f"lootGather: sender check must come before {later}")
+    for needed in ("isPlayer _caller", "isNull objectParent _caller", "_caller distance _object"):
+        if needed not in gather[:max(guard, 0) + 200]:
+            problems.append(f"lootGather: caller check {needed} missing")
+    if gather.find('"auqol_lootRequested", -10]') > gather.find("AUQOL_fnc_lootCaches"):
+        problems.append("lootGather: duplicate-request check must come before emptying caches")
+    action = code("functions/loot/fn_lootAddAction.sqf")
+    if 'remoteExecCall ["AUQOL_fnc_lootGather", 2]' not in action or "CBA_fnc_serverEvent" in action:
+        problems.append("lootAddAction: request must go by remoteExecCall with the caller")
+    loadout = code("functions/loadout/fn_loadoutFilter.sqf")
+    if "[_class] call _filterWeapon" not in loadout:
+        problems.append("loadoutFilter: weapons stored in containers must go through _filterWeapon")
+    react = code("functions/squad/fn_squadReactApply.sqf")
+    if 'setVariable ["auqol_reactSkills", _skills apply { _unit skill _x }, true]' not in react \
+            or 'if (isNil "_saved"' not in react:
+        problems.append("squadReactApply: original skills must be saved once and publicly")
+    player = code("functions/player/fn_playerApply.sqf")
+    for bad in ("setCustomAimCoef 1", "setUnitRecoilCoefficient 1"):
+        if bad in player:
+            problems.append(f"playerApply: restores a fixed value ({bad}) instead of the saved one")
+    crew = code("functions/eject/fn_ejectCrew.sqf")
+    evaluate = code("functions/eject/fn_ejectEvaluate.sqf")
+    if "auqol_eject_enabled" not in crew:
+        problems.append("ejectCrew: must recheck auqol_eject_enabled after the wait")
+    if '"auqol_eject_evaluate"' not in evaluate or '"auqol_eject_evaluate"' not in code("XEH_postInit.sqf"):
+        problems.append("ejectEvaluate: pending check must be handed to the new owner")
+    stuck = code("functions/stuck/fn_stuckEvaluate.sqf")
+    if '_now - (_state get "bestAt") < 3 * auqol_stuck_timeout' not in stuck:
+        problems.append("stuckEvaluate: movement without a new closest point must stop counting as progress")
+    markers = code("functions/map/fn_mapVehicleMarkers.sqf")
+    if "([_x] call _iconOf) == _icon" not in markers or "auqol_map_pending set [_x, time];\n            continue;" not in markers:
+        problems.append("mapVehicleMarkers: pairing must match the icon and re-pair markers Antistasi moved")
+    check("Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing", problems)
+
+
 # --- Wiki-backed checks ------------------------------------------------------------------------
 
 SQF_KEYWORDS = {"private", "params", "if", "then", "else", "exitWith", "forEach", "while", "do", "switch",
@@ -366,6 +412,16 @@ def check_antistasi(au):
                    '"_naval"', '"_unknown"', 'sleep 60;'):
         if needed not in markers:
             problems.append(f"{needed} not found in fn_vehicleMarkers.sqf")
+    # Loot request: remoteExecCall to an AUQOL function needs the mission to allow mod functions.
+    remote = (au / "A3A" / "addons" / "maps" / "MissionDescription" / "CfgRemoteExec.hpp").read_text()
+    if not re.search(r"class Functions\s*\{\s*mode = 2;", remote):
+        problems.append("Antistasi CfgRemoteExec no longer allows all functions (loot request uses remoteExecCall)")
+    if "STR_antistasi_actions_looter_cooldown_text" not in gather:
+        problems.append("STR_antistasi_actions_looter_cooldown_text not found in fn_loot_gatherLoot.sqf")
+    # Marker pairing mirrors the icon rules in this order.
+    order = [markers.find(f'_veh isKindOf "{c}"') for c in ("Truck", "Wheeled_APC_F", "Tank", "Plane_Base_F", "UAV_02_base_F", "Helicopter", "Boat_F")]
+    if -1 in order or order != sorted(order):
+        problems.append("fn_vehicleMarkers.sqf vehicle icon rules changed (AUQOL_fnc_mapVehicleMarkers mirrors them)")
     check("Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist", problems)
 
 
@@ -380,6 +436,7 @@ def main():
     check_functions()
     check_config_paths()
     check_settings()
+    check_regressions()
     for label, path, fn in (("Arma 3 wiki", args.wiki, check_wiki), ("CBA_A3", args.cba, check_cba),
                             ("ACE3", args.ace, check_ace), ("Antistasi Ultimate", args.antistasi, check_antistasi)):
         if path and path.is_dir():

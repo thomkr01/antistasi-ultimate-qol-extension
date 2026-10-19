@@ -2,6 +2,19 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.8.1
+
+Fixes for edge cases found in a review of 1.8.0. Nothing from 1.8.0 changed otherwise; none of these fixes has been tested in game yet.
+
+- Loot: the server now checks every request before it empties caches or gathers: it must come from the machine of the player who held the action, and that player must be alive, on foot and within 10 m of a vehicle or crate that has the action. The request is sent with `remoteExecCall` for this, the only one in the mod. A second request for the same object within 10 s is refused, so double sends can no longer empty caches twice or start two gathers.
+- Copy from user: weapons stored in the uniform, vest or backpack are now checked like weapons in hand: as their base class, then each attachment and loaded magazine on its own. Before, a locked optic or magazine on a stored weapon was copied along. Ammo counts and quantities are kept. New regression test `tests/ingame/loadout_test.sqf`.
+- Faster AI reactions: the original skills are saved once and as a public unit variable, so a unit moving between the server and a headless client no longer takes the raised values as its originals, and turning the feature off restores the real ones.
+- No sway and no recoil: turning them off now puts back the value the unit had before, instead of always 1.
+- Crew ejection: a pending ejection rechecks the setting, vehicle and crew right before it runs, so turning the feature off stops it. If the vehicle changes owner during the wait, the check is handed to the new owner instead of being dropped.
+- AI stuck recovery: a unit that keeps moving without getting closer to a fixed destination (circling an obstacle, going back and forth) is now detected once it has not got closer for three timeouts. Shorter detours and formation followers behave as before.
+- Live vehicle markers: a marker is only paired with a vehicle of the matching kind (the icon Antistasi chose), and a marker that Antistasi's own minute update moves away from its paired vehicle is re-paired from there, so a wrong pairing fixes itself without the marker jumping.
+- Rule added to the contributing guide: build for compatibility with as many mods as possible, and always with Antistasi Ultimate, RHS, CUP and ACE3.
+
 ## 1.8.0
 
 - Loot gathering: the enemy check radius default is now 100 m (was 500 m). The gather radius stays 2000 m.

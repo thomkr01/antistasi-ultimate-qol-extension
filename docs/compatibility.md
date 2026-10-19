@@ -4,7 +4,7 @@
 
 | Mod | Required? | How it is referenced |
 | --- | --- | --- |
-| CBA_A3 | **Yes** | `requiredAddons[] = {"cba_main"}`, the same dependency class ACE3 declares. It provides the settings (`CBA_fnc_addSetting`), XEH (`Extended_PreInit_EventHandlers`, `Extended_PostInit_EventHandlers`, `CBA_fnc_addClassEventHandler`), events (`CBA_fnc_addEventHandler`, `CBA_fnc_targetEvent`, `CBA_fnc_serverEvent`, `CBA_fnc_addPlayerEventHandler`) and timers (`CBA_fnc_addPerFrameHandler` with a delay, `CBA_fnc_waitAndExecute`, `CBA_fnc_waitUntilAndExecute`). |
+| CBA_A3 | **Yes** | `requiredAddons[] = {"cba_main"}`, the same dependency class ACE3 declares. It provides the settings (`CBA_fnc_addSetting`), XEH (`Extended_PreInit_EventHandlers`, `Extended_PostInit_EventHandlers`, `CBA_fnc_addClassEventHandler`), events (`CBA_fnc_addEventHandler`, `CBA_fnc_targetEvent`, `CBA_fnc_addPlayerEventHandler`) and timers (`CBA_fnc_addPerFrameHandler` with a delay, `CBA_fnc_waitAndExecute`, `CBA_fnc_waitUntilAndExecute`). |
 | Antistasi Ultimate | No (the target mission) | Runtime only: `teamPlayer`, the unit variable `surrendered`, `A3A_hasAce`, and garage globals (`HR_GRG_Vehicles`, `HR_GRG_Sources`, `HR_GRG_fnc_broadcastStateUpdate`, `HR_GRG_fnc_declairSources`). Each is checked with `isNil` or a default before use. |
 | ACE3 | No | Runtime only, guarded by `isNil` on each function and by ACE's own `*_enabled` settings. |
 | RHS (AFRF, USAF, GREF, SAF) | No | No direct references. Their service vehicles use vanilla and ACE config fields, see [service-audit.md](service-audit.md#rhs-and-cup). |
@@ -62,4 +62,6 @@ If an ACE function is missing, AUQOL logs one warning and leaves that ACE path u
 | Copy from user | UI only; edits Antistasi's editor state on the client and restores `rebelLoadouts` straight away | The player's own client. Antistasi's Save button publishes the result as usual. |
 | Stuck checks and recovery | `expectedDestination`, `doMove`, `doFollow`, `doWatch`, `setCurrentWaypoint` (local arg); `doStop`, `setPosATL`, `setVehiclePosition` (global) | The machine the AI is local to: each machine only checks its own AI, so one unit is never handled twice. Messages to a player on another machine go through the `auqol_stuck_message` CBA target event. |
 
-AUQOL uses no `remoteExec` of its own. All cross-machine calls are named CBA events with fixed handlers, so a client can't make another machine run arbitrary code through them.
+Cross-machine calls are named CBA events with fixed handlers, with one exception: the loot request is `remoteExecCall ["AUQOL_fnc_lootGather", 2]`, because a CBA server event does not tell the server who sent it and `remoteExecutedOwner` does. Antistasi Ultimate's `CfgRemoteExec` allows all functions (mode 2), the same way its own loot crate calls `SCRT_fnc_loot_gatherLoot`, and the static checks fail if that changes. The server checks the sender, the player and the object before anything is moved or deleted. With mode 2 any client can still call any function directly, so this protects against bad or stale requests, not against a cheating client.
+
+AI reaction skills are saved in a public unit variable (`auqol_reactSkills`), so a unit that Antistasi moves between the server and a headless client keeps its true original values, and the new owner restores them when the feature is turned off.
