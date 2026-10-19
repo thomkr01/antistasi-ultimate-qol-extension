@@ -12,18 +12,19 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Unlimited stamina | Your own character never tires. AI is unchanged. |
 | Weight-independent running | Carried weight no longer drains or reserves your stamina. |
 | No total weight limit | You can keep picking things up however heavy your load is. Uniform, vest and backpack keep their normal size. |
-| No recoil (optional) | Removes weapon recoil for your own character. Off by default. |
+| Recoil slider | Sets your own character's weapon recoil from 0 to 100%. 100% (vanilla) by default. |
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
-| Squad gets your perks | No sway, unlimited stamina, weightless running and no recoil also apply to the AI in your group. |
+| Squad gets your perks | No sway, unlimited stamina, weightless running and the recoil setting also apply to the AI in your group. |
+| Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. |
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
 | Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
-| T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and your AI target it at once. |
+| T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and it becomes your AI's focus. Each new press moves the focus to the new enemy. |
 | Squad launchers at once | Squad AI with a loaded AT or AA launcher take it out as soon as they know about an enemy vehicle they can see and hit. |
 | Live vehicle markers | Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute. |
 | AI stuck recovery | Friendly AI that have somewhere to go but make no progress are freed step by step: refresh the order, rejoin formation, a short safe hop, and an optional emergency teleport to the squad leader. |
 
-Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default except no recoil, the emergency teleport and the "unit got stuck" messages.
+Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
 
 ## Requirements
 
@@ -54,12 +55,13 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. |
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
-| `auqol_player_noRecoil` | Checkbox | Off | Server | No weapon recoil. |
+| `auqol_player_recoil` | Slider 0–100% | 100% | Server | Weapon recoil for your own character. 100% is vanilla, 0% is no recoil. |
 | `auqol_player_squad` | Checkbox | On | Server | Also apply the four player settings above to the AI in your group. |
 | `auqol_squad_reaction` | Checkbox | On | Server | Faster reactions for the AI in your group (spot time, spot distance, aiming speed, commanding). |
 | `auqol_squad_reactionAll` | Checkbox | On | Server | Also give the faster reactions to every friendly AI: garrisons, static and turret gunners, high-command squads. |
 | `auqol_squad_reactionSkill` | Slider 0.3–1 | 0.8 | Server | The minimum those four skills are raised to. |
-| `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and your AI target it. |
+| `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and makes it your AI's focus for 30 s; a new press replaces the focus. |
+| `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Off under ACE medical. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
 | `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's vehicle markers follow their vehicle (checked every second, moved when the vehicle moved more than 5 m). |
 | `auqol_loadout_copyFromUser` | Checkbox | On | Server | "Copy from user" button in Antistasi's rebel loadout editor. |
@@ -99,9 +101,10 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Unlimited stamina | `enableStamina` | Yes | n/a | n/a | ACE Advanced Fatigue duty factor |
 | Weightless running | `loadCoef` trait | Yes. Re-applied after Antistasi role traits. | n/a | n/a | ACE movement base `loadCoef` and fatigue carried mass |
 | No total weight limit | `maxSoldierLoad` in config | Yes | n/a | n/a | Inventory only. ACE dragging limits are untouched. |
-| No recoil | `setUnitRecoilCoefficient` | Yes | n/a | n/a | n/a (ACE has no recoil module) |
+| Recoil slider | `setUnitRecoilCoefficient` | Yes | n/a | n/a | n/a (ACE has no recoil module) |
 | Squad perks | Same commands on your group's AI | Yes | n/a | n/a | AI get the vanilla commands, since ACE sway and fatigue only run for players. |
-| Squad reactions, T key, launchers | `setSkill`, `reveal`, `doTarget`, `selectWeapon` on your group's AI | Yes. Accuracy stays at Antistasi's rebel training level. | Any launcher, by its ammo's AI usage flags | Any launcher, by its ammo's AI usage flags | Yes |
+| Squad reactions, T key, launchers | `setSkill`, `reveal`, `doTarget`, `doFire`, `selectWeapon` on your group's AI | Yes. Accuracy stays at Antistasi's rebel training level. | Any launcher, by its ammo's AI usage flags | Any launcher, by its ammo's AI usage flags | Yes |
+| Wounded AI treat themselves | Vanilla `HealSoldierSelf` action, `setDamage 0` for light leftover damage | Yes. Skips units Antistasi's medical is handling (incapacitated, `helped`, `helping`). Clears the 0.25 Antistasi's non-medic revive leaves. | Their first aid kits work (kits are found by item type) | Their first aid kits work | Off under ACE medical (ACE's medical AI treats AI) |
 | Live vehicle markers | n/a | Moves the markers of Antistasi's `A3A_fnc_vehicleMarkers` | Any vehicle | Any vehicle | Yes |
 | Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |
 | AI stuck recovery | Engine AI commands | Leaves garrisons, patrols, HOLD/GUARD waypoints, incapacitated, surrendered, healing and rearming units alone | Any infantry or land vehicle | Any infantry or land vehicle | Respects ACE unconscious state (`lifeState`). |
@@ -150,7 +153,9 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - The stuck check can't see why the engine's pathfinding failed, only that a unit with a destination made no progress. A unit that is legitimately waiting with a destination set (for example behind a closed gate a player will open) can be nudged. Raise the timeout if that happens.
 - The emergency teleport is off by default, infantry only, and only to a leader within the maximum distance. Vehicles are only ever moved by the short hop.
 - The T key and the launcher switch only cover AI in your own group. Faster reactions also cover all friendly AI unless `auqol_squad_reactionAll` is off. Enemy AI are never changed.
-- The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI target.
+- The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI focus the target, for 30 s or until it dies or you press T on another enemy.
+- Self-treatment only covers AI in your own group, on foot, with a first aid kit (or a medikit for medics) for real wounds. It is off under ACE medical, whose own AI medical handles it.
+- SQF scripts run on one thread per machine, so no mod can spread its scripts over CPU cores. AUQOL keeps its work event-driven instead, and the engine already runs AI, physics and rendering on its own threads.
 - Live vehicle markers only speed up the markers Antistasi already shows. Player markers already update every second, and zone markers change when a zone changes hands. Intercepted enemy support markers keep Antistasi's 5-second update because the server owns them. Nothing new is revealed.
 - Antistasi stores no link between a vehicle marker and its vehicle, so AUQOL pairs each marker with the nearest vehicle of the matching kind when it appears. In a tight convoy of same-kind vehicles two markers can still swap; Antistasi's own once-a-minute update then shows the swap and AUQOL re-pairs the marker, so a wrong pairing lasts at most about a minute.
 - "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.

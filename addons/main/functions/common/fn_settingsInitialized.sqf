@@ -45,8 +45,10 @@ if (hasInterface) then {
         [{ call AUQOL_fnc_playerApply }, [], 3] call CBA_fnc_waitAndExecute;
     }, true] call CBA_fnc_addPlayerEventHandler;
     ["loadout", { call AUQOL_fnc_playerApply }] call CBA_fnc_addPlayerEventHandler;
-    ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply }, true] call CBA_fnc_addPlayerEventHandler;
-    [{ call AUQOL_fnc_playerApply }, 15] call CBA_fnc_addPerFrameHandler;
+    ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }, true] call CBA_fnc_addPlayerEventHandler;
+    // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
+    // without a hit, such as the 0.25 Antistasi's revive leaves.
+    [{ call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }, 15] call CBA_fnc_addPerFrameHandler;
 
     // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
     addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];

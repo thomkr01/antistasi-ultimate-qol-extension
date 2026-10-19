@@ -14,7 +14,7 @@
     - Weightless: loadCoef trait 0 (equipment weight multiplier for stamina). ACE movement rebuilds
       loadCoef from its saved base value ace_movement_loadCoef on every loadout change, so that base
       is set to 0 as well.
-    - No recoil: setUnitRecoilCoefficient 0; the value it had before is put back when turned off.
+    - Recoil: setUnitRecoilCoefficient to the slider value below 100%; the value it had before is put back at 100%.
 
     Arguments: none
     Return Value: none
@@ -65,10 +65,11 @@ if (isNull _player) exitWith {};
     };
 
     // --- Recoil
-    if (auqol_player_noRecoil && _on) then {
-        if (unitRecoilCoefficient _unit != 0) then {
+    if (auqol_player_recoil < 1 && _on) then {
+        // Tolerance: the engine stores the coefficient as a float, so an exact compare would rewrite it every pass.
+        if (abs (unitRecoilCoefficient _unit - auqol_player_recoil) > 0.001) then {
             if (isNil {_unit getVariable "auqol_recoilSet"}) then { _unit setVariable ["auqol_recoilSet", unitRecoilCoefficient _unit] };
-            _unit setUnitRecoilCoefficient 0;
+            _unit setUnitRecoilCoefficient auqol_player_recoil;
         };
     } else {
         private _original = _unit getVariable "auqol_recoilSet";

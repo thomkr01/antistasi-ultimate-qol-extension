@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.8.1. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.9.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -9,7 +9,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Compatible by design.** Every change is built to work alongside as many other mods as possible, and must always work with Antistasi Ultimate, RHS, CUP and ACE3.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature is on by default except no recoil, the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
+- **Every feature is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers. The one exception is the loot request, a `remoteExecCall` to the server, because only that tells the server which machine sent it.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
@@ -61,12 +61,12 @@ Carried weight no longer slows you down, forces you to walk or drains stamina fa
 - **ACE:** ACE's movement load base and the load it reports to fatigue are kept at 0 as well.
 - **Setting:** `auqol_player_weightless`, server-wide, on by default.
 
-## 6. No recoil (optional)
+## 6. Recoil slider
 
-Removes weapon recoil for your own character. AI is unchanged.
+Sets how much weapon recoil your own character has, from 0% (no recoil) to 100% (vanilla). AI outside your squad is unchanged.
 
-- Sets the recoil coefficient to 0. Turning it off puts back the value the unit had before, not a fixed 1.
-- **Setting:** `auqol_player_noRecoil`, server-wide, **off** by default.
+- Below 100% the recoil coefficient is set to the slider value. Back at 100%, the value the unit had before is put back, not a fixed 1.
+- **Setting:** `auqol_player_recoil`, server-wide, **100%** by default, so nothing changes until you move it. It replaced the No recoil checkbox in 1.9.0; 0% is the same as the old setting.
 
 ## 7. No total weight limit
 
@@ -97,9 +97,9 @@ Antistasi's Withstand self-revive normally has a 5-minute cooldown. AUQOL sets i
 
 ## 10. Your squad gets your perks
 
-The AI in your own group get the same no sway, unlimited stamina, weight-independent running and no recoil as you.
+The AI in your own group get the same no sway, unlimited stamina, weight-independent running and recoil as you.
 
-- Each of the four follows its own player setting, so no recoil still stays off unless you turn it on.
+- Each of the four follows its own player setting, so recoil stays vanilla unless you lower the slider.
 - `auqol_player_squad` (on) switches the squad part. Turning it off puts your AI back to normal.
 - Applied on your machine to the AI local to it (your recruits are), as soon as they join.
 - Under ACE the AI get the vanilla commands, because ACE sway and Advanced Fatigue only run for players.
@@ -155,6 +155,7 @@ The AI in your own group, and by default every friendly AI, spot enemies sooner,
 - Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
 - `auqol_squad_reactionAll` (on) extends it to every friendly AI: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Off: only AI in groups a player leads.
 - Each machine checks the friendly AI it runs every 5 seconds (four skill reads per unit, writes only when a value is too low), so newly spawned garrisons get it within 5 seconds. Enemy AI are never changed.
+- When your group spots a new enemy, every AI in it gets the sighting at once, instead of waiting for the spoken contact report ("rifleman, 200 metres, front") to reach it through the radio queue. The voice reports still play.
 - `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced, also for units that moved between the server and a headless client in the meantime.
 
 ## 14. Reveal target key (T) alerts your squad
@@ -162,8 +163,9 @@ The AI in your own group, and by default every friendly AI, spot enemies sooner,
 Press T (the game's Reveal target key, whatever you bound it to) while looking at an enemy.
 
 - Every unit in your group gets full knowledge of that enemy (soldier or vehicle) at once.
-- If you lead the group, your AI are told to target it. They fire under their current combat mode, so Hold fire still holds.
-- Friendly, civilian, empty and dead targets are ignored. `auqol_squad_revealKey` (on).
+- They are told to fire at it when their combat mode allows firing (Fire at will or Engage at will), so Hold fire still holds.
+- If you lead the group, that enemy becomes your AI's focus for 30 s. Every second, any AI that turned to another target is put back on it. A new T press always moves the focus to the new enemy; the old one stays known, so they still deal with it afterwards.
+- Friendly, civilian, surrendered, empty and dead targets are ignored. `auqol_squad_revealKey` (on).
 
 ## 15. Squad switches to launchers at once
 
@@ -183,6 +185,17 @@ Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehi
 - Player markers already update every second and zone markers change when a zone changes hands, so they are left alone. Intercepted enemy support markers keep Antistasi's 5-second update, because the server owns them.
 - `auqol_map_liveVehicles` (on).
 
+## 17. Wounded squad AI treat themselves
+
+AI in your group that get hurt treat themselves without being told.
+
+- Really hurt means it limps and can't run (legs at 0.5 or more), any other body part is at 0.5 or more, or overall damage is above 0.25. Such a unit uses vanilla "Treat yourself" 3 s after being hit, with its first aid kit, or its medikit if it is a medic. Without either it waits for a medic, as before. RHS, CUP and other mods' first aid kits count, since kits are recognised by their item type.
+- Lightly hurt means it can run and has at most 0.25 overall damage. That is what Antistasi's revive by a non-medic and a first aid kit leave behind, and what keeps the red hurt icon up. AUQOL clears it without using a kit.
+- Left alone: units in vehicles, incapacitated units (Antistasi's revive handles them), units an Antistasi medic is coming to help or that are helping someone, captives and surrendered units.
+- Off under ACE medical, which has its own AI self-treatment (ACE's medical AI settings).
+- Checked 3 s after a hit, when a recruit joins, and every 15 seconds for damage that came without a hit.
+- `auqol_squad_selfTreat` (on).
+
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. None of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
