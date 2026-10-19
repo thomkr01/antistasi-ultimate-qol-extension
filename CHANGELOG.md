@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.7.1
+
+- Live vehicle markers: the 1-second pass no longer searches the whole map marker list for every tracked marker to see whether Antistasi deleted it. Same behaviour, less work on maps with many markers.
+
 ## 1.7.0
 
 - Faster AI reactions can cover every friendly AI, not just your squad: garrisons, static and turret gunners and high-command squads (`auqol_squad_reactionAll`, on by default). Each machine applies it to its own AI every 5 seconds. Accuracy is still unchanged.

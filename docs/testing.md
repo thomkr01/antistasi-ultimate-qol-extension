@@ -51,7 +51,7 @@ The checks were themselves tested by mutation. Adding an invented command, an in
 
 ### Results of the last run
 
-Run on 2026-10-19 for 1.7.0 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
+Run on 2026-10-19 for 1.7.1 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
 
 ```
 PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
@@ -66,7 +66,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 42 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 4 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.7.0.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.7.1.zip
 ```
 
 The `expectedDestination` planning modes the stuck check relies on ("DoNotPlan", "LEADER DIRECT", "FORMATION PLANNED", "DoNotPlanFormation") are not in the parsed wiki data, so they were checked by hand against the BI wiki page for `expectedDestination`. The Random button IDC 44150 used for "Copy from user" (`IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM` in the game's `defineResinclDesign.inc`, which no source here contains) was taken from a Bohemia forums thread that disables that button by this IDC. The static check only confirms Antistasi blanks the Random button; the IDC itself is confirmed in game by test 9.

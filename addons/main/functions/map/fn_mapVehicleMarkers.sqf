@@ -18,7 +18,8 @@ if (!hasInterface || {!auqol_ready} || {!auqol_map_liveVehicles}) exitWith {};
 
 // Drop markers Antistasi deleted, then move the rest.
 {
-    if (!(_x in allMapMarkers) || {isNull _y}) then { auqol_map_tracked deleteAt _x; continue };
+    // A deleted marker has no type; cheaper than searching allMapMarkers for each tracked marker.
+    if (markerType _x == "" || {isNull _y}) then { auqol_map_tracked deleteAt _x; continue };
     if (alive _y) then { _x setMarkerPosLocal getPos _y };
 } forEach +auqol_map_tracked;
 
