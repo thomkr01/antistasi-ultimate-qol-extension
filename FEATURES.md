@@ -141,6 +141,39 @@ The unit's health, gear, group, rank and role are never changed. When every enab
 
 **Testing without a real stuck unit:** `[cursorObject] call AUQOL_fnc_stuckSimulate` in the debug console marks a unit as past the timeout. `tests/ingame/stuck_test.sqf` builds a real stuck case.
 
+## 13. Faster squad reactions
+
+The AI in your own group spot enemies sooner, tell each other faster and turn onto targets quicker.
+
+- Antistasi gives recruits low skills early in the campaign (about 0.2 to 0.4), which is why they react slowly. AUQOL raises four of them to at least `auqol_squad_reactionSkill` (default 0.8): spot time, spot distance, aiming speed and commanding (how fast sightings pass through the group).
+- Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
+- `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced. Applied within 5 seconds of a recruit joining.
+
+## 14. Reveal target key (T) alerts your squad
+
+Press T (the game's Reveal target key, whatever you bound it to) while looking at an enemy.
+
+- Every unit in your group gets full knowledge of that enemy (soldier or vehicle) at once.
+- If you lead the group, your AI are told to target it. They fire under their current combat mode, so Hold fire still holds.
+- Friendly, civilian, empty and dead targets are ignored. `auqol_squad_revealKey` (on).
+
+## 15. Squad switches to launchers at once
+
+An AI in your group with a loaded AT or AA launcher takes it out as soon as an enemy vehicle is both known and shootable.
+
+- Known: the unit knows about it, from its own (faster) spotting, its squad, or your T key.
+- Shootable: the unit has a clear line of sight to it, and it is in range: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Which targets a launcher can hit comes from its ammo's AI usage flags, so RHS and CUP launchers work.
+- Checked every second. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
+- `auqol_squad_launchers` (on).
+
+## 16. Live vehicle markers
+
+Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehicles your side has spotted, but moves those markers only once a minute. AUQOL moves them to their vehicle every second.
+
+- Antistasi still decides which markers exist and when they disappear. AUQOL reveals nothing new.
+- Player markers already update every second and zone markers change when a zone changes hands, so they are left alone. Intercepted enemy support markers keep Antistasi's 5-second update, because the server owns them.
+- `auqol_map_liveVehicles` (on).
+
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Squad perks, Copy from user and AI stuck recovery are new in 1.5.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

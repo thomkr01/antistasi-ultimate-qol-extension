@@ -95,6 +95,16 @@ class CfgFunctions {
             class stuckNotify {};
             class stuckSimulate {};
         };
+        class squad {
+            file = "\z\auqol\addons\main\functions\squad";
+            class squadReactApply {};
+            class squadRevealTarget {};
+            class squadLaunchers {};
+        };
+        class map {
+            file = "\z\auqol\addons\main\functions\map";
+            class mapVehicleMarkers {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

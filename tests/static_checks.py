@@ -355,7 +355,14 @@ def check_antistasi(au):
     for needed in ('setVariable ["incapacitated"', 'setVariable ["helping"', 'setVariable ["rearming"'):
         if needed not in src:
             problems.append(f"{needed} not found in Antistasi Ultimate")
-    check("Antistasi Ultimate: garage, loot, Withstand, loadout editor and unit state names used exist", problems)
+    # Live vehicle markers: the marker name, type and update loop AUQOL_fnc_mapVehicleMarkers recognises.
+    markers = next((au / "A3A" / "addons" / "core").rglob("fn_vehicleMarkers.sqf")).read_text()
+    for needed in ('createMarkerLocal [format ["%2%1", random 100,_text], position _veh];', '_typeX = format ["%1%2",_formatX,_typeX];',
+                   '_mrkFinal setMarkerTextLocal _text;', '"_motor_inf"', '"_mech_inf"', '"_armor"', '"_plane"', '"_uav"', '"_air"',
+                   '"_naval"', '"_unknown"', 'sleep 60;'):
+        if needed not in markers:
+            problems.append(f"{needed} not found in fn_vehicleMarkers.sqf")
+    check("Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist", problems)
 
 
 def main():
