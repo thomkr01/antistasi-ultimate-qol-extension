@@ -20,6 +20,7 @@ auqol_perf_nextReport = 0;
 auqol_anim_ladderKeyHeld = false; // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
+auqol_combat_ammoSim = createHashMap; // ammo class -> lowercase simulation, for the grenade dodge
 auqol_combat_aiModLoaded = isClass (configFile >> "CfgPatches" >> "lambs_danger") || {isClass (configFile >> "CfgPatches" >> "VCOM_AI")};
 
 private _category = "Antistasi Ultimate QoL by TchicX";
@@ -181,7 +182,7 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 // --- Player animations (local player only; the speed is sent to every machine while it lasts)
 [
     "auqol_anim_pistolSwap", "CHECKBOX",
-    ["Faster pistol swap", "Switching to or from your handgun plays faster, at the speed below. Other animations are not changed."],
+    ["Faster pistol swap", "Switching to or from your handgun plays faster, at the speed below, and the moment the pistol comes up 1.5 times faster again. Other animations are not changed."],
     [_category, "Player animations"],
     true, 1
 ] call CBA_fnc_addSetting;
@@ -209,9 +210,16 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 
 [
     "auqol_anim_ladderFastSpeed", "SLIDER",
-    ["Ladder speed with the key held", "Speed while the Fast ladder climbing key is held, 1.0 to 4.0."],
+    ["Ladder speed with the key held", "Climbing speed up the ladder while the Fast ladder climbing key is held, 1.0 to 4.0."],
     [_category, "Player animations"],
     [1, 4, 2.5, 2], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_ladderSlideSpeed", "SLIDER",
+    ["Ladder slide speed", "Speed going down the ladder while the Fast ladder climbing key is held, so you slide down, 1.0 to 6.0."],
+    [_category, "Player animations"],
+    [1, 6, 4, 2], 1
 ] call CBA_fnc_addSetting;
 
 // --- Smart combat AI (runs where each AI group is local, from its EnemyDetected and Suppressed events)
@@ -253,6 +261,62 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 [
     "auqol_combat_smoke", "CHECKBOX",
     ["Smoke when there is no cover", "An AI that has to move with no cover near and the enemy within 200 m throws a smoke grenade toward it first. At most once a minute per group."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_assault", "CHECKBOX",
+    ["Assault when close and stronger", "With the enemy within 50 m and at least twice its number, the moving team closes in on its position instead of stopping at cover."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_defend", "CHECKBOX",
+    ["Defend in place", "A group that isn't going anywhere (Antistasi defend orders, a hold, guard or sentry waypoint, no waypoint left, or a stopped leader) takes cover within 30 m of its leader instead of advancing, preferring building positions."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_antiArmor", "CHECKBOX",
+    ["Fight armor as a team", "With an enemy tank or APC known within 400 m, AI with AT launchers take them out and target it at once, and the others take cover further away from it."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_spreadTargets", "CHECKBOX",
+    ["Spread targets", "With several enemies known, the covering team splits them up: one enemy each, in turn, instead of everyone on the same one."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_shareContacts", "CHECKBOX",
+    ["Contact reports between groups", "When a group (or your squad) spots an enemy, AI groups of the same side within 300 m learn about it too and join the fight. Only knowledge is shared; where they go stays with Antistasi or the mission."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_dodge", "CHECKBOX",
+    ["Get away from grenades", "AI within 10 m of a thrown hand grenade run 12 m away from it, then rejoin their group."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_resupply", "CHECKBOX",
+    ["Share magazines", "In a fight, an AI down to its last magazine gets one from a group mate within 15 m who has four or more that fit its weapon."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_medics", "CHECKBOX",
+    ["Medics treat the wounded", "While no enemy is within 60 m, a group's medic treats the most hurt mate within 30 m who is wounded but not down. Downed units stay with Antistasi's revive. Off under ACE medical."],
     [_category, "Smart combat AI"],
     true, 1
 ] call CBA_fnc_addSetting;

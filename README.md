@@ -24,9 +24,9 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Live vehicle markers | Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute. |
 | AI stuck recovery | Friendly AI that have somewhere to go but make no progress are freed step by step: refresh the order, rejoin formation, a short safe hop, and an optional emergency teleport to the squad leader. |
 | Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
-| Faster pistol swap | Switching to or from your handgun plays twice as fast (adjustable). |
-| Faster ladders | You climb ladders 1.5 times as fast, and 2.5 times while holding the Fast ladder climbing key (Left Shift by default). |
-| Smart combat AI | AI squads in a fight move as two fire teams from cover to cover (walls, rocks, trees, inside buildings), clear buildings, flank, lay suppressive fire, throw grenades at hidden enemies and smoke when caught in the open. AI under close fire learn where it came from and get low. Antistasi keeps steering its groups. Stands down when LAMBS Danger or Vcom AI is loaded. |
+| Faster pistol swap | Switching to or from your handgun plays twice as fast, and the pistol comes up three times as fast (adjustable). |
+| Faster ladders | You climb ladders 1.5 times as fast. Hold the Fast ladder climbing key (Left Shift by default) to climb 2.5 times as fast, or to slide down at 4 times. |
+| Smart combat AI | AI squads in a fight move as two fire teams from cover to cover (walls, rocks, trees, inside buildings), clear buildings, flank, lay suppressive fire, throw grenades at hidden enemies and smoke when caught in the open, assault when stronger, defend in place, fight armor as a team, split targets, share sightings with nearby groups, dodge grenades, share magazines and send medics. AI under close fire learn where it came from and get low. Antistasi keeps steering its groups. Stands down when LAMBS Danger or Vcom AI is loaded. |
 
 Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
 
@@ -74,13 +74,22 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_anim_pistolSwapSpeed` | Slider 1–3 | 2 | Server | The pistol swap speed. |
 | `auqol_anim_ladder` | Checkbox | On | Server | Climbing ladders plays faster, and faster still while you hold the Fast ladder climbing key (Left Shift by default, Controls > Configure Addons). |
 | `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | The ladder speed. |
-| `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | The ladder speed while the key is held. |
+| `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | The climbing speed up the ladder while the key is held. |
+| `auqol_anim_ladderSlideSpeed` | Slider 1–6 | 4 | Server | The speed down the ladder while the key is held (sliding). |
 | `auqol_combat_tactics` | Checkbox | On | Server | AI groups in contact fight as two fire teams that take turns moving to covered spots. Not for groups led by a player. |
 | `auqol_combat_buildings` | Checkbox | On | Server | Building positions count as cover, and an enemy inside a building within 80 m is cleared by up to two AI. |
 | `auqol_combat_flank` | Checkbox | On | Server | In groups of four or more, the second fire team swings out to one side of the enemy. |
 | `auqol_combat_suppressiveFire` | Checkbox | On | Server | Covering AI that can't see the enemy fire at where it was last seen. |
 | `auqol_combat_grenades` | Checkbox | On | Server | AI 12 to 35 m from an enemy they can't see throw a hand grenade at it. |
 | `auqol_combat_smoke` | Checkbox | On | Server | AI with no cover near and the enemy within 200 m throw smoke first. |
+| `auqol_combat_assault` | Checkbox | On | Server | Within 50 m and at least twice the enemy's number, the moving team closes in on it. |
+| `auqol_combat_defend` | Checkbox | On | Server | Groups that aren't going anywhere take cover near their leader instead of advancing. |
+| `auqol_combat_antiArmor` | Checkbox | On | Server | Against a known tank or APC within 400 m, AT gunners target it and the rest take cover further away. |
+| `auqol_combat_spreadTargets` | Checkbox | On | Server | The covering team splits known enemies between them. |
+| `auqol_combat_shareContacts` | Checkbox | On | Server | A sighting by a group or your squad is shared with AI groups of the same side within 300 m. |
+| `auqol_combat_dodge` | Checkbox | On | Server | AI within 10 m of a thrown grenade run 12 m away from it. |
+| `auqol_combat_resupply` | Checkbox | On | Server | AI low on magazines get one from a nearby group mate. |
+| `auqol_combat_medics` | Checkbox | On | Server | Group medics treat wounded mates once no enemy is within 60 m. Off under ACE medical. |
 | `auqol_combat_range` | Slider 100–1000 m | 500 | Server | How close a known enemy must be for the tactics to run. |
 | `auqol_combat_noProne` | Checkbox | On | Server | AUQOL never makes AI go prone (for no-prone AI mods). |
 | `auqol_combat_revealShooter` | Checkbox | On | Server | AI that come under close fire make their group aware of the shooter. Every AI, both sides. |

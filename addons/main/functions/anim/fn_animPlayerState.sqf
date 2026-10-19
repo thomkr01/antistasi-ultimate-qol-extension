@@ -22,12 +22,17 @@ if (_unit isNotEqualTo player || {!auqol_ready}) exitWith {};
 _anim = toLowerANSI _anim;
 private _coef = 1;
 if (auqol_anim_ladder && {"ladder" in _anim}) then {
-    _coef = [auqol_anim_ladderSpeed, auqol_anim_ladderFastSpeed] select auqol_anim_ladderKeyHeld;
+    // With the key held: faster climbing up, sliding on the way down.
+    _coef = if (auqol_anim_ladderKeyHeld) then {
+        [auqol_anim_ladderFastSpeed, auqol_anim_ladderSlideSpeed] select ("down" in _anim)
+    } else { auqol_anim_ladderSpeed };
 };
-// Weapon switch states are "<from>_<to>"; the handgun is "wpst" in exactly one of the two.
+// Weapon switch states are "<from>_<to>", some with an "_end" part; the handgun is "wpst" in exactly
+// one of the two. The end part, where the pistol comes up, plays 1.5 times faster again.
 private _parts = _anim splitString "_";
-if (auqol_anim_pistolSwap && {count _parts == 2} && {("wpst" in (_parts select 0)) isNotEqualTo ("wpst" in (_parts select 1))}) then {
-    _coef = auqol_anim_pistolSwapSpeed;
+private _end = count _parts == 3 && {_parts select 2 == "end"};
+if (auqol_anim_pistolSwap && {count _parts == 2 || _end} && {("wpst" in (_parts select 0)) isNotEqualTo ("wpst" in (_parts select 1))}) then {
+    _coef = auqol_anim_pistolSwapSpeed * ([1, 1.5] select _end);
 };
 
 private _boosted = _unit getVariable ["auqol_animBoost", false];

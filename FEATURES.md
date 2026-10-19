@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.12.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.13.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -217,11 +217,11 @@ Every AI soldier of every faction plays its animations 25% faster by default, ad
 
 ## 20. Faster pistol swap and faster ladders
 
-Switching to or from your handgun plays twice as fast, and climbing ladders 1.5 times as fast. Hold the *Fast ladder climbing* key (Left Shift by default, under Controls > Configure Addons) to climb at 2.5 times. All three speeds can be set.
+Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Climbing ladders is 1.5 times as fast. Hold the *Fast ladder climbing* key (Left Shift by default, under Controls > Configure Addons) to climb at 2.5 times, or to slide down at 4 times. All speeds can be set.
 
 - Only your own character. Everyone else sees you at the same speed.
 - Works with ACE Advanced Fatigue, which is told to leave the speed alone while the boost lasts.
-- `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2), `auqol_anim_ladder` (on), `auqol_anim_ladderSpeed` (1.5), `auqol_anim_ladderFastSpeed` (2.5).
+- `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2), `auqol_anim_ladder` (on), `auqol_anim_ladderSpeed` (1.5), `auqol_anim_ladderFastSpeed` (2.5), `auqol_anim_ladderSlideSpeed` (4).
 
 ## 21. Smart combat AI
 
@@ -232,6 +232,14 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen.
 - **Grenades.** A soldier 12 to 35 m from an enemy he can't see throws a hand grenade, if no friend is near that spot.
 - **Smoke.** A soldier caught with no cover near throws smoke toward the enemy first.
+- **Assault.** Within 50 m and at least twice the enemy's number, the moving team closes in on it.
+- **Defend.** A group that isn't going anywhere (Antistasi defend orders, a hold waypoint, a stopped leader) takes cover around its leader, preferably in buildings, instead of advancing.
+- **Armor.** Against a known tank or APC, AT gunners take out their launchers and target it, and everyone else takes cover further away.
+- **Target spread.** The covering team splits the known enemies between them.
+- **Contact reports.** A sighting by a group, or by your squad, reaches AI groups of the same side within 300 m, so they join the fight.
+- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it.
+- **Ammo sharing.** An AI down to its last magazine gets one from a nearby group mate.
+- **Medics.** Once the enemy is more than 60 m away, a group's medic treats wounded mates. Downed soldiers stay with Antistasi's revive, and it's off under ACE medical.
 - **Reacting to fire.** When rounds pass close, the group learns where they came from, and standing soldiers crouch (or go prone under heavy fire, unless no-prone is on) until 10 s after the fire stops.
 
 Rules:
@@ -241,8 +249,19 @@ Rules:
 - **No prone.** On by default, AUQOL never puts AI prone. Stances set by a no-prone mod or by Antistasi are never overridden either way.
 - When LAMBS Danger or Vcom AI is loaded everything here stands down, since they run their own combat AI.
 - Grenades are found by what their ammo does, so RHS, CUP and any other mod's grenades work.
+- Not added: retreat and morale, because Antistasi already decides when its soldiers flee or surrender, and AUQOL taking over would fight it. Investigating heard gunfire, because that means moving the whole group, which is Antistasi's job (its PATCOM already sends groups toward contact).
 - Event-driven: a group costs nothing until it detects an enemy or is shot at, and its 3 s pass stops 30 s after the fight.
-- `auqol_combat_tactics`, `auqol_combat_buildings`, `auqol_combat_flank`, `auqol_combat_suppressiveFire`, `auqol_combat_grenades`, `auqol_combat_smoke`, `auqol_combat_revealShooter`, `auqol_combat_takeCover`, `auqol_combat_noProne`, `auqol_combat_yieldToAIMods` (all on), `auqol_combat_range` (500 m).
+- `auqol_combat_tactics`, `auqol_combat_buildings`, `auqol_combat_flank`, `auqol_combat_assault`, `auqol_combat_defend`, `auqol_combat_antiArmor`, `auqol_combat_spreadTargets`, `auqol_combat_shareContacts`, `auqol_combat_dodge`, `auqol_combat_resupply`, `auqol_combat_medics`, `auqol_combat_suppressiveFire`, `auqol_combat_grenades`, `auqol_combat_smoke`, `auqol_combat_revealShooter`, `auqol_combat_takeCover`, `auqol_combat_noProne`, `auqol_combat_yieldToAIMods` (all on), `auqol_combat_range` (500 m).
+
+## Features working together
+
+Every AUQOL feature knows about the others:
+- **Stuck recovery and smart combat.** Stuck recovery never moves a soldier that smart combat is moving to cover or away from a grenade. Smart combat has its own stuck handling for its movers: a soldier who makes no progress to its spot for 9 s gets a new one, and the stuck spot is avoided. After three failed spots it rejoins its leader for 30 s, and stuck recovery takes over from there once the fight is over.
+- **Squad launchers and smart combat.** AI groups facing armor use the same launcher switch as your squad.
+- **Your squad's sightings** (and the T key) are shared with friendly AI groups near you through the contact reports.
+- **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
+- **Smart combat leaves your squad alone,** so the T key focus, self-treatment, squad perks and launchers keep full control of it.
+- **AI animation speed** makes every smart combat move faster too, and ACE medical's reset of a medic is re-applied.
 
 ## Less background work (1.10.0)
 
@@ -255,4 +274,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, and the full smart combat AI in 1.12.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, and its remaining parts and the cross-feature links in 1.13.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

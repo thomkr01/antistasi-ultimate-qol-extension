@@ -2,6 +2,16 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.13.0
+
+The rest of the four mods' features in AUQOL's own code, and AUQOL's features made aware of each other. None of it tested in game yet.
+
+- New smart combat parts, all on: assault when close and stronger (`auqol_combat_assault`), defend in place (`auqol_combat_defend`), fight armor as a team (`auqol_combat_antiArmor`), spread targets (`auqol_combat_spreadTargets`), contact reports between groups (`auqol_combat_shareContacts`), get away from grenades (`auqol_combat_dodge`), share magazines (`auqol_combat_resupply`), medics treat the wounded (`auqol_combat_medics`).
+- Smart combat movers that get stuck on the way to a spot pick a new one after 9 s, and rest with their leader after three failures.
+- Ladders: holding the Fast ladder climbing key on the way down now slides you down (`auqol_anim_ladderSlideSpeed`, 4x).
+- Pistol swap: the moment the pistol comes up now plays 1.5 times faster again (3x by default), which it didn't before.
+- Features working together: stuck recovery never moves units smart combat is moving; AI groups facing armor use the squad launcher switch; your squad's sightings reach nearby friendly AI groups; ejected enemy crew fight from cover at once.
+
 ## 1.12.0
 
 Smart combat AI in full, none of it tested in game yet.

@@ -130,6 +130,9 @@ class CfgFunctions {
             class combatFindCover {};
             class combatThrow {};
             class combatRelease {};
+            class combatShareContact {};
+            class combatDodge {};
+            class combatSupport {};
         };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
