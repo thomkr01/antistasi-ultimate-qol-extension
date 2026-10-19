@@ -6,18 +6,19 @@
     (AUQOL_fnc_combatGroupHook) and from the player group's (AUQOL_fnc_squadGroupHooks), so friendly
     AI near you hear what your squad has spotted. Only knowledge is shared: no group gets new orders,
     and where it goes stays with Antistasi or the mission. reveal only acts where the group is local,
-    so it is sent to the machine of each receiving group's leader. One report per group every 10 s,
+    so it is sent to the machine of each receiving group's leader. One report per group every 10 s (a T key press always goes out),
     to at most 6 groups within 300 m.
 
     Arguments:
     0: Reporting group <GROUP>
     1: Detected enemy <OBJECT>
+    2: Always share, ignoring the 10 s limit <BOOL> (default: false; the T key passes true)
 
     Return Value: none
 */
 
-params ["_group", "_target"];
-if (!auqol_ready || {!auqol_combat_shareContacts} || {!alive _target} || {time < _group getVariable ["auqol_tacNextShare", 0]}) exitWith {};
+params ["_group", "_target", ["_always", false]];
+if (!auqol_ready || {!auqol_combat_shareContacts} || {!alive _target} || {!_always && {time < _group getVariable ["auqol_tacNextShare", 0]}}) exitWith {};
 if (auqol_combat_yieldToAIMods && auqol_combat_aiModLoaded) exitWith {};
 _group setVariable ["auqol_tacNextShare", time + 10];
 
