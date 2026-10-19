@@ -2,6 +2,16 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.12.0
+
+Smart combat AI in full, none of it tested in game yet.
+
+- New: squads fight from cover (`auqol_combat_tactics`, on). An AI group in contact fights as two fire teams: one moves to the next covered spot (walls, rocks, trees, sandbags, building positions) while the other covers it, then they swap. Antistasi keeps steering the group: waypoints, behaviour, combat mode, formation, speed and the leader are never touched, and units Antistasi has busy are never moved.
+- New: AI use and clear buildings (`auqol_combat_buildings`), flank (`auqol_combat_flank`), lay suppressive fire (`auqol_combat_suppressiveFire`), throw hand grenades at hidden enemies (`auqol_combat_grenades`) and smoke when caught without cover (`auqol_combat_smoke`). All on.
+- New: `auqol_combat_noProne` (on): AUQOL never makes AI go prone, for use with no-prone AI mods.
+- New: `auqol_combat_range` (500 m), how close a known enemy must be for the tactics to run.
+- `auqol_combat_yieldToAIMods` now turns all smart combat AI off while LAMBS Danger or Vcom AI is loaded.
+
 ## 1.11.0
 
 New features, none tested in game yet.

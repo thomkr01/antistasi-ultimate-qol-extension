@@ -31,8 +31,10 @@
     params ["_unit"];
     [[_unit]] call AUQOL_fnc_animAiApply;
     _unit addEventHandler ["Suppressed", { _this call AUQOL_fnc_combatSuppressed }];
+    [_unit] call AUQOL_fnc_combatGroupHook;
     _unit addEventHandler ["Local", {
         params ["_unit", "_isLocal"];
+        [_unit] call AUQOL_fnc_combatGroupHook;
         if (_isLocal) then { [[_unit]] call AUQOL_fnc_squadReactApply };
     }];
     if (!local _unit) exitWith {};
