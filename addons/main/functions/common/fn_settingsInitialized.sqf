@@ -35,6 +35,11 @@ if (isServer) then {
 [] call AUQOL_fnc_squadReactApply;
 [{ ["reaction skills", { [] call AUQOL_fnc_squadReactApply }] call AUQOL_fnc_perfRun }, 60] call CBA_fnc_addPerFrameHandler;
 
+// Faster AI animations: units are set when they spawn; this pass catches values reset by others (ACE
+// medical sets a medic back to 1) and units that became or stopped being players. One getter per unit.
+[] call AUQOL_fnc_animAiApply;
+[{ ["AI animation speed", { [] call AUQOL_fnc_animAiApply }] call AUQOL_fnc_perfRun }, 15] call CBA_fnc_addPerFrameHandler;
+
 // AI stuck checks run on every machine (server, clients, headless clients) for the AI local to it.
 // No engine event reports "no progress", so this polls; the pass returns at once when the feature is off.
 [{ ["stuck AI", { call AUQOL_fnc_stuckMonitor }] call AUQOL_fnc_perfRun }, 5] call CBA_fnc_addPerFrameHandler;
@@ -46,7 +51,16 @@ if (hasInterface) then {
     // (AUQOL_fnc_squadGroupHooks). Antistasi re-applies role traits (loadCoef) shortly after respawn
     // without an event, so a unit change re-applies again 3 s later. The 15 s pass is the fallback for
     // anything else; it is three cheap getters per unit and only writes when a value drifted.
+    // Faster pistol swap and ladders follow the player's animation state on their current unit.
     ["unit", {
+        params ["_unit"];
+        if (isNil {_unit getVariable "auqol_animEH"}) then {
+            _unit setVariable ["auqol_animEH", _unit addEventHandler ["AnimStateChanged", { _this call AUQOL_fnc_animPlayerState }]];
+        };
+        [[_unit]] call AUQOL_fnc_animAiApply;
+        // A boost left on the old unit (died on a ladder) must not keep ACE fatigue's exclusion.
+        private _exclusions = missionNamespace getVariable "ace_advanced_fatigue_setAnimExclusions";
+        if (!isNil "_exclusions") then { _exclusions deleteAt (_exclusions find "auqol") };
         call AUQOL_fnc_playerApply;
         [{ call AUQOL_fnc_playerApply }, [], 3] call CBA_fnc_waitAndExecute;
     }, true] call CBA_fnc_addPlayerEventHandler;
@@ -55,6 +69,17 @@ if (hasInterface) then {
     // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
     // without a hit, such as the 0.25 Antistasi's revive leaves.
     [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call CBA_fnc_addPerFrameHandler;
+
+    // Fast ladder climbing key. Not blocking the key: Left Shift is still sprint off the ladder.
+    ["Antistasi Ultimate QoL by TchicX", "auqol_anim_ladderFast", ["Fast ladder climbing (hold)", "While on a ladder, climb at the 'Ladder speed with the key held' setting."], {
+        auqol_anim_ladderKeyHeld = true;
+        [player, animationState player] call AUQOL_fnc_animPlayerState;
+        false
+    }, {
+        auqol_anim_ladderKeyHeld = false;
+        [player, animationState player] call AUQOL_fnc_animPlayerState;
+        false
+    }, [0x2A, [true, false, false]]] call CBA_fnc_addKeybind; // 0x2A: DIK_LSHIFT
 
     // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
     addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];

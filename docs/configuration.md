@@ -66,6 +66,35 @@ With `auqol_player_squad` off these only affect the local player's unit. With it
 
 The T key, self-treat and launcher settings only touch AI in your own group. Faster reactions cover friendly AI only; enemies are never changed.
 
+## AI animation speed
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_anim_ai` | Checkbox | On | Server | Every non-player soldier (`CAManBase`) gets `setAnimSpeedCoef` set to the speed below. That command only acts on the machine that runs it, so every machine sets it for every AI: when a unit spawns (CBA `InitPost`) and in a 15 s pass that writes only when a unit's value is different, which also re-applies it after ACE medical puts a medic back to 1. A unit that becomes a player is set back to 1 at once on its own machine and within 15 s elsewhere. Off: every unit AUQOL changed goes back to 1. No FSM, behaviour or skill is changed. |
+| `auqol_anim_aiSpeed` | Slider 1–2 | 1.25 | Server | The coefficient. 1.0 is vanilla, 2.0 twice as fast. Upper-body animations such as reloading are not affected by the engine command. |
+
+## Player animations
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_anim_pistolSwap` | Checkbox | On | Server | An `AnimStateChanged` handler on your unit speeds up weapon switch states to or from the handgun: names of the form `<from>_<to>` with `wpst` in exactly one half. The next state goes back to 1. |
+| `auqol_anim_pistolSwapSpeed` | Slider 1–3 | 2 | Server | The speed during the swap. |
+| `auqol_anim_ladder` | Checkbox | On | Server | The same handler speeds up every state with `ladder` in its name. The CBA keybind *Fast ladder climbing (hold)* (Left Shift by default, under Controls > Configure Addons > Antistasi Ultimate QoL by TchicX) switches to the faster speed below while held; it doesn't block the key, so Left Shift still sprints off the ladder. |
+| `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | Ladder speed without the key. |
+| `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | Ladder speed with the key held. |
+
+The boost is sent to every machine with a CBA global event, so others see you climb at the same speed. Under ACE Advanced Fatigue, `auqol` is added to `ace_advanced_fatigue_setAnimExclusions` while the boost lasts, which is ACE's own way to keep its 1 s loop from resetting the speed.
+
+## Smart combat AI
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_combat_revealShooter` | Checkbox | On | Server | From each AI's `Suppressed` event (a hostile round passed close), where the unit is local, at most once every 2 s per unit: the unit's group gets `reveal` 1.5 on the instigator (or the shooter for a vehicle). `reveal` never lowers knowledge. Every AI, both sides, players' squads included. |
+| `auqol_combat_takeCover` | Checkbox | On | Server | In the same event: an AI on foot that is standing with `unitPos` "Auto" gets `setUnitPos "MIDDLE"`, or `"DOWN"` when `getSuppression` is above 0.8. 10 s after the last close round it goes back to "AUTO", unless something else changed its stance meanwhile. Skipped in vehicles, for captives, incapacitated units and groups led by a player. |
+| `auqol_combat_yieldToAIMods` | Checkbox | On | Server | When `lambs_danger` or `VCOM_AI` is in CfgPatches, the two settings above do nothing, since those mods react to suppression themselves. Off: both run together with them. |
+
+Antistasi's own reactions are left as they are: on a kill in the group it calls for support, has machine gunners lay suppressing fire and others charge with smoke (`A3A_fnc_AIreactOnKill`), and badly hit units run for cover (`A3A_fnc_unitGetToCover`). AUQOL adds nothing that duplicates those.
+
 ## Map
 
 | Setting | Type | Default | Scope | Description |

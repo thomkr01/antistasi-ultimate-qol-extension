@@ -23,6 +23,10 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Squad launchers at once | Squad AI with a loaded AT or AA launcher take it out as soon as they know about an enemy vehicle they can see and hit. |
 | Live vehicle markers | Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute. |
 | AI stuck recovery | Friendly AI that have somewhere to go but make no progress are freed step by step: refresh the order, rejoin formation, a short safe hop, and an optional emergency teleport to the squad leader. |
+| Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
+| Faster pistol swap | Switching to or from your handgun plays twice as fast (adjustable). |
+| Faster ladders | You climb ladders 1.5 times as fast, and 2.5 times while holding the Fast ladder climbing key (Left Shift by default). |
+| Smart combat AI | AI that come under close fire learn where it came from, and standing AI crouch or go prone until the fire stops. Stands down when LAMBS Danger or Vcom AI is loaded. |
 
 Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
 
@@ -64,6 +68,16 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Off under ACE medical. |
 | `auqol_squad_selfTreatMedikit` | Checkbox | On | Server | Only clear that light leftover damage (the red hurt icon) on AI that carry a medikit. Off: clear it on every AI. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
+| `auqol_anim_ai` | Checkbox | On | Server | Every AI soldier plays its animations faster (moving, turning, stance changes, actions). Players are never sped up. |
+| `auqol_anim_aiSpeed` | Slider 1–2 | 1.25 | Server | The AI animation speed. 1.0 is vanilla. |
+| `auqol_anim_pistolSwap` | Checkbox | On | Server | Switching to or from your handgun plays faster. |
+| `auqol_anim_pistolSwapSpeed` | Slider 1–3 | 2 | Server | The pistol swap speed. |
+| `auqol_anim_ladder` | Checkbox | On | Server | Climbing ladders plays faster, and faster still while you hold the Fast ladder climbing key (Left Shift by default, Controls > Configure Addons). |
+| `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | The ladder speed. |
+| `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | The ladder speed while the key is held. |
+| `auqol_combat_revealShooter` | Checkbox | On | Server | AI that come under close fire make their group aware of the shooter. Every AI, both sides. |
+| `auqol_combat_takeCover` | Checkbox | On | Server | Standing AI on foot crouch under close fire, or go prone under heavy fire, then go back to their own stance 10 s after the last close round. Groups led by a player are skipped. |
+| `auqol_combat_yieldToAIMods` | Checkbox | On | Server | Turn the two smart combat reactions off while LAMBS Danger or Vcom AI is loaded. |
 | `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's vehicle markers follow their vehicle (checked every second while the map or GPS is open, every 10 s otherwise; moved when the vehicle moved more than 5 m). |
 | `auqol_freeze_parked` | Checkbox | On | Server | Empty parked vehicles stop being simulated while no player is within 500 m and wake when one comes closer (Arma's dynamic simulation). |
 | `auqol_freeze_wrecks` | Checkbox | On | Server | The same for destroyed vehicles that have come to rest. |
@@ -110,6 +124,8 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Wounded AI treat themselves | Vanilla `HealSoldierSelf` action, `setDamage 0` for light leftover damage | Yes. Skips units Antistasi's medical is handling (incapacitated, `helped`, `helping`). Clears the 0.25 Antistasi's non-medic revive leaves. | Their first aid kits work (kits are found by item type) | Their first aid kits work | Off under ACE medical (ACE's medical AI treats AI) |
 | Live vehicle markers | n/a | Moves the markers of Antistasi's `A3A_fnc_vehicleMarkers` | Any vehicle | Any vehicle | Yes |
 | Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |
+| Faster AI animations, pistol swap, ladders | `setAnimSpeedCoef` | Yes | Any unit and any animation that follows the vanilla state names | Same | Ladder and pistol boosts register in ACE Advanced Fatigue's animation-speed exclusions. ACE medical's reset of a medic is re-applied within 15 s. |
+| Smart combat AI | `Suppressed` event, `reveal`, `setUnitPos` | Only touches AI whose stance is "Auto", so Antistasi's own stance orders win. Its smoke, cover-when-hit and call-for-help reactions are left to it. | Any unit | Any unit | Yes |
 | AI stuck recovery | Engine AI commands | Leaves garrisons, patrols, HOLD/GUARD waypoints, incapacitated, surrendered, healing and rearming units alone | Any infantry or land vehicle | Any infantry or land vehicle | Respects ACE unconscious state (`lifeState`). |
 
 Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
@@ -128,7 +144,7 @@ Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 - **AI stuck recovery** checks every 5 seconds, on each machine, only the AI local to that machine. For the wider scopes it keeps a list of that machine's friendly AI, rebuilt every 30 seconds and pruned on every check, instead of going through every unit each time. A unit is watched only while it has a destination more than 8 m away (25 m in a vehicle) and nothing else to do, and is stuck after the timeout with no progress. Units that are fighting, in COMBAT behaviour, healing, rearming, surrendered or captive, on a static weapon, attached, remote controlled or playing a scripted animation are never moved, and that is checked again right before any hop or teleport. Steps are tried one per timeout window, cheapest first; after the last enabled step the round fails, a cooldown follows, and after the maximum number of rounds the unit is left alone. Tracking is a variable on the unit, so nothing piles up over a long campaign. Details in [FEATURES.md](FEATURES.md#12-ai-stuck-recovery).
 - **No total weight limit** raises the engine's total soldier load cap (`maxSoldierLoad`, vanilla 1000) to 10,000,000 in config. That cap is what stops you adding items once you carry something heavy. Each container's own size is unchanged.
 
-There are no per-frame handlers. The only timers are a 1-second check of tracked live vehicle markers and a 5-second launcher fallback on each player's machine, the 15-second player fallback re-check, a 5-second AI reaction pass on every machine, the 5-second stuck-AI check, a 10-second garage-fuel check (fuel sources only, writes only when a source is not full), and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
+There are no per-frame handlers. The AI animation speed has a 15-second pass on every machine that only writes when a unit's speed is off. The only timers are a 1-second check of tracked live vehicle markers and a 5-second launcher fallback on each player's machine, the 15-second player fallback re-check, a 5-second AI reaction pass on every machine, the 5-second stuck-AI check, a 10-second garage-fuel check (fuel sources only, writes only when a source is not full), and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
 
 ## Diagnostics
 
@@ -163,6 +179,9 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - Live vehicle markers only speed up the markers Antistasi already shows. Player markers already update every second, and zone markers change when a zone changes hands. Intercepted enemy support markers keep Antistasi's 5-second update because the server owns them. Nothing new is revealed.
 - Antistasi stores no link between a vehicle marker and its vehicle, so AUQOL pairs each marker with the nearest vehicle of the matching kind when it appears. In a tight convoy of same-kind vehicles two markers can still swap; Antistasi's own once-a-minute update then shows the swap and AUQOL re-pairs the marker, so a wrong pairing lasts at most about a minute.
 - "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.
+- Animation speed (`setAnimSpeedCoef`) doesn't change reloading or other upper-body animations; that is an engine limit. Faster AI animations therefore don't speed up AI reloads.
+- The pistol swap and ladder boosts recognise animations by their vanilla-style names (a weapon switch with `wpst` on one side, any state with `ladder` in it). Addon animations named differently play at normal speed.
+- Smart combat AI is a light version: it does not flank, throw grenades or retreat. Antistasi already makes AI throw smoke, take cover when hit and call for support, and LAMBS does the heavier tactics if you want them.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).

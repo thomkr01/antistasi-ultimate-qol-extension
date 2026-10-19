@@ -115,6 +115,15 @@ class CfgFunctions {
             file = "\z\auqol\addons\main\functions\freeze";
             class freezeVehicles {};
         };
+        class anim {
+            file = "\z\auqol\addons\main\functions\anim";
+            class animAiApply {};
+            class animPlayerState {};
+        };
+        class combat {
+            file = "\z\auqol\addons\main\functions\combat";
+            class combatSuppressed {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

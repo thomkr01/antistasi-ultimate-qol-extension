@@ -214,4 +214,11 @@ Static checks only show the fixes are in the code. These need a person in game, 
 4. **Markers:** with the map closed for a while, open it: tracked markers jump to their vehicles at once, then follow every second.
 5. **Timings:** turn `auqol_debug` on and play 5 minutes: the RPT shows `Timing:` lines for each AUQOL timer.
 
+### 15. Animations and smart combat AI (1.11.0)
+
+1. **AI speed:** run `getAnimSpeedCoef (allUnits select { !isPlayer _x } select 0)`: 1.25. Run `getAnimSpeedCoef player`: 1. Set `auqol_anim_aiSpeed` to 2: AI move visibly faster within 15 s. Turn `auqol_anim_ai` off: back to 1.
+2. **Pistol swap:** switch from your rifle to your pistol and back: both are about twice as fast. Reloading is unchanged.
+3. **Ladders:** climb a ladder: faster than vanilla. Hold Left Shift on the ladder: faster still. Step off: normal speed (`getAnimSpeedCoef player` is 1). With ACE Advanced Fatigue on, the boost holds for the whole climb. In multiplayer, another player sees you climb at the same pace.
+4. **Smart combat:** shoot near (not at) a standing enemy patrol from cover: they crouch or go prone and turn toward you. Stop firing: about 10 s later they stand again. Your own squad's stance doesn't change. With LAMBS loaded, nothing changes from vanilla LAMBS behaviour.
+
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

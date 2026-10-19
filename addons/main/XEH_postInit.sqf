@@ -9,6 +9,8 @@
     systemChat localize (_this select 0);
     playSound "A3AP_UiFailure";
 }] call CBA_fnc_addEventHandler;
+// Player animation boosts (ladder, pistol swap): setAnimSpeedCoef only acts on the machine that runs it.
+["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
 ["auqol_stuck_message", { systemChat ("[AUQOL] " + (_this select 0)) }] call CBA_fnc_addEventHandler;
 
 // Added on every machine: the handlers act only where the vehicle is local, which follows locality changes.
@@ -23,8 +25,12 @@
 
 // Faster AI reactions: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
 // set its skills) and whenever it becomes local to a new machine (server <-> headless client).
+// Faster AI animations act only on the machine that sets them, so this runs everywhere for every unit.
+// The Suppressed handler acts only where the unit is local, which follows locality changes.
 ["CAManBase", "InitPost", {
     params ["_unit"];
+    [[_unit]] call AUQOL_fnc_animAiApply;
+    _unit addEventHandler ["Suppressed", { _this call AUQOL_fnc_combatSuppressed }];
     _unit addEventHandler ["Local", {
         params ["_unit", "_isLocal"];
         if (_isLocal) then { [[_unit]] call AUQOL_fnc_squadReactApply };

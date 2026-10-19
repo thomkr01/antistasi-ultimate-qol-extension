@@ -17,6 +17,9 @@ auqol_freeze_marked = []; // vehicles AUQOL marked for dynamic simulation
 auqol_freeze_ownsSystem = false; // AUQOL switched the engine's dynamic simulation on
 auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], debug logging only
 auqol_perf_nextReport = 0;
+auqol_anim_ladderKeyHeld = false; // the fast-ladder key is held (local player)
+// LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
+auqol_combat_aiModLoaded = isClass (configFile >> "CfgPatches" >> "lambs_danger") || {isClass (configFile >> "CfgPatches" >> "VCOM_AI")};
 
 private _category = "Antistasi Ultimate QoL by TchicX";
 
@@ -154,6 +157,81 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
     "auqol_squad_launchers", "CHECKBOX",
     ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
     [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+// --- AI animation speed (setAnimSpeedCoef only acts where it runs, so every machine applies it to every AI)
+private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply } };
+
+[
+    "auqol_anim_ai", "CHECKBOX",
+    ["Faster AI animations", "Every AI soldier of every faction plays its animations faster (the speed below): moving, turning, changing stance and getting through actions, so its next decision comes sooner. No AI behaviour or FSM is changed. Players are never sped up. Reloading and other upper-body animations are not affected by the engine."],
+    [_category, "AI animation speed"],
+    true, 1, _animChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_aiSpeed", "SLIDER",
+    ["AI animation speed", "1.0 is vanilla, 2.0 is twice as fast. Takes up to 15 s to reach every AI after a change."],
+    [_category, "AI animation speed"],
+    [1, 2, 1.25, 2], 1, _animChanged
+] call CBA_fnc_addSetting;
+
+// --- Player animations (local player only; the speed is sent to every machine while it lasts)
+[
+    "auqol_anim_pistolSwap", "CHECKBOX",
+    ["Faster pistol swap", "Switching to or from your handgun plays faster, at the speed below. Other animations are not changed."],
+    [_category, "Player animations"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_pistolSwapSpeed", "SLIDER",
+    ["Pistol swap speed", "1.0 is vanilla, 3.0 is three times as fast."],
+    [_category, "Player animations"],
+    [1, 3, 2, 2], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_ladder", "CHECKBOX",
+    ["Faster ladders", "Climbing up and down ladders plays faster, at the speed below, and faster still while you hold the Fast ladder climbing key (Left Shift by default, in Controls > Configure Addons)."],
+    [_category, "Player animations"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_ladderSpeed", "SLIDER",
+    ["Ladder speed", "1.0 is vanilla, 3.0 is three times as fast."],
+    [_category, "Player animations"],
+    [1, 3, 1.5, 2], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_ladderFastSpeed", "SLIDER",
+    ["Ladder speed with the key held", "Speed while the Fast ladder climbing key is held, 1.0 to 4.0."],
+    [_category, "Player animations"],
+    [1, 4, 2.5, 2], 1
+] call CBA_fnc_addSetting;
+
+// --- Smart combat AI (runs where each AI is local, from its Suppressed event)
+[
+    "auqol_combat_revealShooter", "CHECKBOX",
+    ["AI under fire learn where it comes from", "When rounds pass close to an AI, its group gets to know the shooter, so it answers the fire instead of scanning for it. Applies to every AI, both sides."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_takeCover", "CHECKBOX",
+    ["Suppressed AI get low", "A standing AI on foot crouches when rounds pass close, or goes prone under heavy fire, and goes back to its own stance choice 10 s after the last close round. Only AI whose stance is left to the AI are touched; AI in a group led by a player are skipped."],
+    [_category, "Smart combat AI"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_combat_yieldToAIMods", "CHECKBOX",
+    ["Leave suppression to LAMBS or Vcom", "When LAMBS Danger or Vcom AI is loaded, the two reactions above stay off, since those mods already react to suppression."],
+    [_category, "Smart combat AI"],
     true, 1
 ] call CBA_fnc_addSetting;
 
