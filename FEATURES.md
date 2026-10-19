@@ -154,7 +154,7 @@ The AI in your own group, and by default every friendly AI, spot enemies sooner,
 - Antistasi gives recruits low skills early in the campaign (about 0.2 to 0.4), which is why they react slowly. AUQOL raises four of them to at least `auqol_squad_reactionSkill` (default 0.8): spot time, spot distance, aiming speed and commanding (how fast sightings pass through the group).
 - Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
 - `auqol_squad_reactionAll` (on) extends it to every friendly AI: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Off: only AI in groups a player leads.
-- Each machine checks the friendly AI it runs every 5 seconds (four skill reads per unit, writes only when a value is too low), so newly spawned garrisons get it within 5 seconds. Enemy AI are never changed.
+- A unit gets it when it spawns, again 5 seconds later once Antistasi has set its skills, when it moves between the server and a headless client, and when it joins your group. A check once a minute catches anything else. Only values that are too low are written. Enemy AI are never changed.
 - When your group spots a new enemy, every AI in it gets the sighting at once, instead of waiting for the spoken contact report ("rifleman, 200 metres, front") to reach it through the radio queue. The voice reports still play.
 - `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced, also for units that moved between the server and a headless client in the meantime.
 
@@ -173,12 +173,12 @@ An AI in your group with a loaded AT or AA launcher takes it out as soon as an e
 
 - Known: the unit knows about it, from its own (faster) spotting, its squad, or your T key.
 - Shootable: the unit has a clear line of sight to it, and it is in range: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Which targets a launcher can hit comes from its ammo's AI usage flags, so RHS and CUP launchers work.
-- Checked the moment your group spots a new enemy, when you press T, and every 5 seconds for targets that only become visible later. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
+- Checked the moment your group spots a new enemy, when you press T, and every 5 seconds for targets that only become visible later; that 5-second check is skipped while your group knows of no enemy. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
 - `auqol_squad_launchers` (on).
 
 ## 16. Live vehicle markers
 
-Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehicles your side has spotted, but moves those markers only once a minute. AUQOL checks them every second and moves a marker whenever its vehicle has moved more than 5 m.
+Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehicles your side has spotted, but moves those markers only once a minute. AUQOL checks them every second while your map or GPS is open (every 10 seconds otherwise, and at once when you open the map) and moves a marker whenever its vehicle has moved more than 5 m.
 
 - New markers are picked up from the game's marker-created event, so AUQOL does not search the whole map's markers every second; a full search every 30 seconds catches anything missed.
 - Antistasi still decides which markers exist and when they disappear. AUQOL reveals nothing new.
@@ -195,6 +195,24 @@ AI in your group that get hurt treat themselves without being told.
 - Off under ACE medical, which has its own AI self-treatment (ACE's medical AI settings).
 - Checked 3 s after a hit, when a recruit joins, and every 15 seconds for damage that came without a hit.
 - `auqol_squad_selfTreat` (on).
+
+## 18. Freeze parked vehicles and settled wrecks
+
+Empty vehicles standing still, and wrecks that have come to rest, stop being simulated while no player is within 500 m. They wake as soon as a player comes closer, so you never see one freeze. This saves CPU on the server, mostly at a busy HQ and after big fights.
+
+- Uses Arma's own dynamic simulation. The server only marks which vehicles may sleep, every 30 seconds.
+- Never marked: vehicles with living crew, moving ones, ones in the air, attached, towed or on a rope, static weapons, and anything hidden or already frozen by ACE cargo, Antistasi logistics or another mod.
+- Only players wake a frozen vehicle. AI far from every player find it as it was left.
+- `auqol_freeze_parked` (on) and `auqol_freeze_wrecks` (on).
+
+## Less background work (1.10.0)
+
+None of this changes what you see or how things play:
+- Loot and service share one handler for new objects, and dropped weapons and body gear (the most common new objects) skip it.
+- Faster AI reactions are applied by events instead of a 5-second check of every unit.
+- Live vehicle markers do the per-second work only while the map or GPS is open.
+- The 5-second launcher check only runs while your group knows of an enemy.
+- With `auqol_debug` on, each AUQOL timer's average and worst time is written to the RPT every 5 minutes.
 
 ## Status
 

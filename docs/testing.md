@@ -26,6 +26,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Self-treat, recoil slider, T key focus, instant contact sharing (1.9.0) | Not tested yet. Thomas reported the 1.6.0 T key "doesn't really work"; 1.9.0 is the fix. |
 | Safer stuck recovery and leaner scans (1.8.0) | Not tested yet |
 | Edge-case fixes (1.8.1) | Not tested yet, see test 13 |
+| Vehicle freeze and less background work (1.10.0) | Not tested yet, see test 14 |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -204,5 +205,13 @@ Static checks only show the fixes are in the code. These need a person in game, 
 5. **Pending ejection:** shoot the wheels of a moving enemy truck and turn `auqol_eject_enabled` off within a second: nobody is ejected. With a headless client, damage an HC-owned vehicle while it is changing owner: the crew is still ejected once.
 6. **Stuck, circling:** put a squad AI on a move order to a point behind a long wall with no gap that it walks along back and forth. After about 90 s plus one timeout it is reported stuck and recovery starts. A unit taking a long but working detour (around a large compound, under 90 s) is not reported. Formation followers walking with you are never reported.
 7. **Vehicle markers in a convoy:** watch a convoy of several vehicles on the map. Every marker follows its own vehicle. If one ever follows the wrong vehicle, it should correct itself within about a minute, staying on Antistasi's position rather than jumping back.
+
+### 14. Performance (1.10.0)
+
+1. **Vehicle freeze:** park an empty car, walk more than 500 m away, then run `dynamicSimulationEnabled _car` on the server: true. Come back: it behaves normally, can be driven, towed, loaded with ACE cargo and Antistasi logistics, and put in the garage. Save and reload with frozen vehicles at HQ: they are still there. Shoot down a helicopter far away: it falls and only freezes once it lies still.
+2. **Wrecks:** destroy a vehicle and leave: it is marked once it stops moving. Antistasi's garbage clean still deletes it.
+3. **Reactions:** recruit an AI and run `(units group player select 1) skill "spotTime"`: 0.8 within 5 s. A newly spawned garrison unit (server) gets it within 5 s too.
+4. **Markers:** with the map closed for a while, open it: tracked markers jump to their vehicles at once, then follow every second.
+5. **Timings:** turn `auqol_debug` on and play 5 minutes: the RPT shows `Timing:` lines for each AUQOL timer.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

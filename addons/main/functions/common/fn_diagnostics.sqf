@@ -59,6 +59,9 @@ private _lines = [
 
 if (isServer) then {
     _lines pushBack format ["ACE rearm sources topped up: %1", count auqol_aceRearmSources];
+    _lines pushBack format ["Freeze parked vehicles: %1, settled wrecks: %2 | marked now: %3 | dynamic simulation on: %4 (switched on by AUQOL: %5)",
+        ("auqol_freeze_parked" call _setting) call _onOff, ("auqol_freeze_wrecks" call _setting) call _onOff,
+        count auqol_freeze_marked, dynamicSimulationSystemEnabled, auqol_freeze_ownsSystem];
 };
 
 if (hasInterface) then {

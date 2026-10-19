@@ -61,6 +61,7 @@ If an ACE function is missing, AUQOL logs one warning and leaves that ACE path u
 | T key, launchers | `doTarget`, `doFire`, `selectWeapon` (local arg), `reveal` (local effect) | The player's own client, for the AI of their group local to it |
 | Self-treat | `action` `HealSoldierSelf`, `setDamage`, `Dammaged` handler | The player's own client, for the AI of their group local to it |
 | Live vehicle markers | `setMarkerPosLocal` (local effect) on Antistasi's local markers | Each player's own client |
+| Freeze parked vehicles and wrecks | `enableDynamicSimulation` (server only), `enableDynamicSimulationSystem` (global effect) | Server |
 | Copy from user | UI only; edits Antistasi's editor state on the client and restores `rebelLoadouts` straight away | The player's own client. Antistasi's Save button publishes the result as usual. |
 | Stuck checks and recovery | `expectedDestination`, `doMove`, `doFollow`, `doWatch`, `setCurrentWaypoint` (local arg); `doStop`, `setPosATL`, `setVehiclePosition` (global) | The machine the AI is local to: each machine only checks its own AI, so one unit is never handled twice. Messages to a player on another machine go through the `auqol_stuck_message` CBA target event. |
 
