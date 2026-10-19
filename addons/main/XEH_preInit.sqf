@@ -12,6 +12,11 @@ auqol_stuck_units = []; // friendly AI local to this machine, for the wider stuc
 auqol_stuck_nextScan = 0;
 auqol_stuck_listScope = -1;
 auqol_garage_full = createHashMap; // vehicle class -> full garage fuel value (0: not a fuel source)
+auqol_map_nextIdle = 0; // next marker pass while the map and GPS panel are closed
+auqol_freeze_marked = []; // vehicles AUQOL marked for dynamic simulation
+auqol_freeze_ownsSystem = false; // AUQOL switched the engine's dynamic simulation on
+auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], debug logging only
+auqol_perf_nextReport = 0;
 
 private _category = "Antistasi Ultimate QoL by TchicX";
 
@@ -101,7 +106,7 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
 ] call CBA_fnc_addSetting;
 
 // --- Squad reactions (applied on each player's machine to the AI in their group)
-private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply } };
+private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactApply } };
 
 [
     "auqol_squad_reaction", "CHECKBOX",
@@ -119,7 +124,7 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
 
 [
     "auqol_squad_reactionAll", "CHECKBOX",
-    ["Also for all friendly AI", "The faster reactions above also apply to every friendly AI, not just your squad: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Applied where each AI runs (server, headless client or player) every 5 seconds."],
+    ["Also for all friendly AI", "The faster reactions above also apply to every friendly AI, not just your squad: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Applied where each AI runs (server, headless client or player) when it spawns, and checked again every minute."],
     [_category, "Squad reactions"],
     true, 1, _squadChanged
 ] call CBA_fnc_addSetting;
@@ -149,6 +154,21 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
     "auqol_squad_launchers", "CHECKBOX",
     ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
     [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+// --- Performance (server: the engine's dynamic simulation is decided there)
+[
+    "auqol_freeze_parked", "CHECKBOX",
+    ["Freeze parked empty vehicles", "Empty vehicles that stand still stop being simulated while no player is within 500 m, and wake as soon as one comes closer (Arma's dynamic simulation). Saves CPU at a busy HQ. Vehicles that are attached, towed, hidden or already frozen by another mod are left alone."],
+    [_category, "Performance"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_freeze_wrecks", "CHECKBOX",
+    ["Freeze settled wrecks", "Destroyed vehicles that have come to rest stop being simulated while no player is within 500 m, and wake as soon as one comes closer. Antistasi's garbage clean still removes them as before."],
+    [_category, "Performance"],
     true, 1
 ] call CBA_fnc_addSetting;
 
@@ -316,7 +336,7 @@ private _withstandChanged = { if (auqol_ready) then { call AUQOL_fnc_withstandAp
 // --- Diagnostics
 [
     "auqol_debug", "CHECKBOX",
-    ["Verbose diagnostic logging", "Writes one RPT line per ejection, refill and loot run. Leave off during normal play."],
+    ["Verbose diagnostic logging", "Writes one RPT line per ejection, refill and loot run, and every 5 minutes the average and worst time of each AUQOL timer. Leave off during normal play."],
     [_category, "Diagnostics"],
     false, 0
 ] call CBA_fnc_addSetting;

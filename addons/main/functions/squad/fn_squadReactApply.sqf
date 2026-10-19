@@ -7,16 +7,23 @@
 
     Covers the AI in groups led by a player and, with auqol_squad_reactionAll, every friendly AI
     (Antistasi's teamPlayer side: garrisons, static and turret gunners, high-command squads). Runs on
-    every machine every 5 s for its own AI, which also catches units Antistasi spawns later and
-    skills Antistasi sets after spawn. Each unit costs four skill reads; it only writes when a value
+    every machine for its own AI. Event-driven: a unit is checked when it spawns and again 5 s later
+    (after Antistasi has set its skills), when it becomes local to this machine (server <-> headless
+    client) and when it joins a player's group. A full pass every 60 s catches skills set later and
+    units that stopped being covered. Each unit costs four skill reads; it only writes when a value
     is below the floor, and units no longer covered get back the values AUQOL replaced. The saved values are a public
     unit variable, so they survive a change of owner (server <-> headless client).
 
-    Arguments: none
+    Arguments:
+    0: Units to check <ARRAY> (optional, default: every unit on this machine)
+
     Return Value: none
 */
 
 if (!auqol_ready) exitWith {};
+
+params [["_units", nil, [[]]]];
+if (isNil "_units") then { _units = allUnits };
 
 private _friendly = missionNamespace getVariable ["teamPlayer", sideUnknown];
 if !(_friendly isEqualType sideUnknown) then { _friendly = sideUnknown };
@@ -42,7 +49,7 @@ private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
             _unit setVariable ["auqol_reactSkills", nil, true];
         };
     };
-} forEach (allUnits select {
+} forEach (_units select {
     local _x && {!isPlayer _x} && {alive _x}
     && {side group _x == _friendly || {group _x == _playerGroup} || {!isNil {_x getVariable "auqol_reactSkills"}}}
 });

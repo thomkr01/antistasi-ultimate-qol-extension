@@ -2,9 +2,10 @@
     Author: AUQOL
     Live map markers for the vehicles Antistasi marks (convoy objectives, mission vehicles, supply
     boxes and enemy vehicles your side has spotted). Antistasi's A3A_fnc_vehicleMarkers creates a
-    local marker per vehicle on each client and moves it only once every 60 s; this pass, run every
-    second on each client, moves those markers to their vehicle. Antistasi still creates and deletes
-    them, so nothing new appears on the map.
+    local marker per vehicle on each client and moves it only once every 60 s; this pass moves those
+    markers to their vehicle every second while the map or GPS panel is open, every 10 s while both
+    are closed, and once when the map is opened. Antistasi still creates and deletes them, so nothing
+    new appears on the map.
 
     A marker is recognised by the shape A3A_fnc_vehicleMarkers gives it: its name is its text followed
     by a random number, and its type is a NATO vehicle icon. Antistasi stores no link between the
@@ -27,6 +28,11 @@
 */
 
 if (!hasInterface || {!auqol_ready} || {!auqol_map_liveVehicles}) exitWith {};
+
+// Nobody sees the markers move while the map and GPS panel are closed, so then the pass only runs every 10 s.
+private _hidden = !visibleMap && {!visibleGPS};
+if (_hidden && {time < auqol_map_nextIdle}) exitWith {};
+if (_hidden) then { auqol_map_nextIdle = time + 10 };
 
 // The icon suffix A3A_fnc_vehicleMarkers picks for a vehicle, in its order (an APC is a Car, so "motor_inf").
 private _iconOf = {

@@ -64,7 +64,9 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Off under ACE medical. |
 | `auqol_squad_selfTreatMedikit` | Checkbox | On | Server | Only clear that light leftover damage (the red hurt icon) on AI that carry a medikit. Off: clear it on every AI. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
-| `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's vehicle markers follow their vehicle (checked every second, moved when the vehicle moved more than 5 m). |
+| `auqol_map_liveVehicles` | Checkbox | On | Server | Antistasi's vehicle markers follow their vehicle (checked every second while the map or GPS is open, every 10 s otherwise; moved when the vehicle moved more than 5 m). |
+| `auqol_freeze_parked` | Checkbox | On | Server | Empty parked vehicles stop being simulated while no player is within 500 m and wake when one comes closer (Arma's dynamic simulation). |
+| `auqol_freeze_wrecks` | Checkbox | On | Server | The same for destroyed vehicles that have come to rest. |
 | `auqol_loadout_copyFromUser` | Checkbox | On | Server | "Copy from user" button in Antistasi's rebel loadout editor. |
 | `auqol_stuck_enabled` | Checkbox | On | Server | Detect and recover stuck friendly AI. |
 | `auqol_stuck_scope` | List | Your squad | Server | Which AI to watch: your squad, friendly AI near players, or all friendly AI. |
@@ -86,7 +88,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_loot_caches` | Checkbox | On | Server | Also empty enemy item caches within 30 m into the vehicle or crate, then delete the empty box. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, loot run and stuck-recovery event. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, loot run and stuck-recovery event, and every 5 minutes the average and worst time of each AUQOL timer. |
 
 There is no medical or logistics stock setting because the audit found no depleting medical or logistics service stock to change. See [docs/service-audit.md](docs/service-audit.md). The full reference is in [docs/configuration.md](docs/configuration.md).
 
@@ -157,6 +159,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI focus the target, for 30 s or until it dies or you press T on another enemy.
 - Self-treatment only covers AI in your own group, on foot, with a first aid kit (or a medikit for medics) for real wounds. It is off under ACE medical, whose own AI medical handles it.
 - SQF scripts run on one thread per machine, so no mod can spread its scripts over CPU cores. AUQOL keeps its work event-driven instead, and the engine already runs AI, physics and rendering on its own threads.
+- Freezing parked vehicles and wrecks uses Arma's dynamic simulation. Only players wake a frozen vehicle, so AI more than 500 m from every player find it as it was left. If the mission or another mod already runs dynamic simulation, AUQOL keeps its distances (the default wake distance for empty vehicles is then 250 m instead of 500 m).
 - Live vehicle markers only speed up the markers Antistasi already shows. Player markers already update every second, and zone markers change when a zone changes hands. Intercepted enemy support markers keep Antistasi's 5-second update because the server owns them. Nothing new is revealed.
 - Antistasi stores no link between a vehicle marker and its vehicle, so AUQOL pairs each marker with the nearest vehicle of the matching kind when it appears. In a tight convoy of same-kind vehicles two markers can still swap; Antistasi's own once-a-minute update then shows the swap and AUQOL re-pairs the marker, so a wrong pairing lasts at most about a minute.
 - "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.

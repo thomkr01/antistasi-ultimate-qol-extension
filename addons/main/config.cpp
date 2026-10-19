@@ -48,6 +48,7 @@ class CfgFunctions {
             class diagnostics {};
             class isHostileSide {};
             class settingsInitialized {};
+            class perfRun {};
         };
         class eject {
             file = "\z\auqol\addons\main\functions\eject";
@@ -109,6 +110,10 @@ class CfgFunctions {
         class map {
             file = "\z\auqol\addons\main\functions\map";
             class mapVehicleMarkers {};
+        };
+        class freeze {
+            file = "\z\auqol\addons\main\functions\freeze";
+            class freezeVehicles {};
         };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";

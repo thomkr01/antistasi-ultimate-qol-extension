@@ -2,6 +2,17 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.10.0
+
+Performance. None of this has been tested in game yet.
+
+- New: freeze parked empty vehicles (`auqol_freeze_parked`, on) and settled wrecks (`auqol_freeze_wrecks`, on). They stop being simulated while no player is within 500 m and wake when one comes closer, using Arma's dynamic simulation. The server marks them every 30 s. Vehicles with crew, moving, attached, towed, hidden or already frozen by another mod (ACE cargo, Antistasi logistics) are never marked.
+- Faster AI reactions are now event-driven: a unit is handled when it spawns, 5 s later, when it changes owner and when it joins a player's group. The full pass over every unit runs once a minute instead of every 5 s.
+- Loot and service share one object-spawn handler, and weapon holders (dropped weapons and body gear) skip it.
+- Live vehicle markers do their per-second work only while the map or GPS panel is open, every 10 s otherwise, and at once when the map opens.
+- The 5 s launcher fallback is skipped while your group knows of no enemy.
+- `auqol_debug` now also logs each timer's runs, average and worst time every 5 minutes (`Timing:` lines in the RPT).
+
 ## 1.9.0
 
 None of this has been tested in game yet.
