@@ -9,7 +9,7 @@
       its medikit if it is a medic. Without either it waits for a medic as before.
     - Lightly hurt (can run, nothing at 0.5, overall damage 0.25 or less): this is what Antistasi's
       non-medic revive and a first aid kit leave behind, and what keeps the red hurt icon up. It is
-      cleared without using a kit.
+      cleared without using a kit; with "Require medikit" on, only if the unit carries a medikit.
     Skipped under ACE medical, whose own AI medical treats AI, and for units Antistasi's medical is
     already handling (incapacitated, being helped, helping someone), captives, surrendered units and
     units in vehicles.
@@ -52,16 +52,16 @@ private _damage = damage _unit;
 private _worstHit = selectMax (((getAllHitPointsDamage _unit) param [2, []]) + [0]);
 if (_damage == 0 && _worstHit == 0) exitWith {};
 
+private _itemTypes = items _unit apply { getNumber (configFile >> "CfgWeapons" >> _x >> "ItemInfo" >> "type") };
+
 if (_damage <= 0.25 && _worstHit < 0.5) exitWith {
+    if (auqol_squad_selfTreatMedikit && {!(619 in _itemTypes)}) exitWith {};
     _unit setDamage 0;
     [format ["Self-treat: cleared light damage on %1", name _unit], true] call AUQOL_fnc_log;
 };
 
 private _isMedic = _unit getUnitTrait "Medic";
-private _hasKit = items _unit findIf {
-    private _type = getNumber (configFile >> "CfgWeapons" >> _x >> "ItemInfo" >> "type");
-    _type == 401 || {_type == 619 && _isMedic}
-} != -1;
+private _hasKit = 401 in _itemTypes || {619 in _itemTypes && _isMedic};
 if (!_hasKit) exitWith {};
 
 _unit action ["HealSoldierSelf", _unit];

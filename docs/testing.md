@@ -184,7 +184,7 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 
 1. Shoot a squad AI in the legs (`(units group player select 1) setHitPointDamage ["HitLegs", 0.6]`, then hit it once so the event fires). Within about 3 s it should play the treat-yourself animation and use one first aid kit, then run normally. With `auqol_debug` on, the RPT shows "Self-treat:" lines.
 2. Remove its first aid kits and repeat: it should not treat itself.
-3. Get an AI downed and revive it with a non-medic. Within 15 s its red hurt icon should go away without using a kit (`damage` reads 0).
+3. Give an AI a medikit, get it downed and revive it with a non-medic. Within 15 s its red hurt icon should go away without using a kit (`damage` reads 0). Repeat with an AI without a medikit: the icon stays. Turn `auqol_squad_selfTreatMedikit` off: it goes away on that AI too.
 4. **With ACE medical:** nothing from AUQOL should happen; ACE's own medical AI decides.
 
 ### 12. Live vehicle markers

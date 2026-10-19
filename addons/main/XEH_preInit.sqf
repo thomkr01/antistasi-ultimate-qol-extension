@@ -139,6 +139,13 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_squad_selfTreatMedikit", "CHECKBOX",
+    ["Require medikit to clear the hurt icon", "On: light leftover damage (the red hurt icon, for example after a revive by a non-medic) is only cleared on AI that carry a medikit. Off: it is cleared on every AI. Treating real wounds with a first aid kit is not affected."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
     "auqol_squad_launchers", "CHECKBOX",
     ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
     [_category, "Squad reactions"],
