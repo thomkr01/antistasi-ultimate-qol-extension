@@ -1,28 +1,31 @@
 /*
     Author: AUQOL
-    Faster reactions for the AI in the local player's group: raises the sub-skills that decide how
+    Faster reactions for friendly AI local to this machine: raises the sub-skills that decide how
     quickly AI spot, share and turn onto a target (spotTime, spotDistance, aimingSpeed, commanding)
     to at least auqol_squad_reactionSkill. Accuracy (aimingAccuracy, aimingShake) is left to
-    Antistasi, which scales it with rebel training, so the squad reacts sooner but does not hit
-    better. Runs from the 5 s player re-check, which also covers new recruits; only writes when a
-    value is below the floor, and turning it off restores the values AUQOL replaced.
+    Antistasi, which scales it with rebel training, so AI react sooner but do not hit better.
+
+    Covers the AI in groups led by a player and, with auqol_squad_reactionAll, every friendly AI
+    (Antistasi's teamPlayer side: garrisons, static and turret gunners, high-command squads). Runs on
+    every machine every 5 s for its own AI, which also catches units Antistasi spawns later and
+    skills Antistasi sets after spawn. Each unit costs four skill reads; it only writes when a value
+    is below the floor, and units no longer covered get back the values AUQOL replaced.
 
     Arguments: none
     Return Value: none
 */
 
-if (!hasInterface || {!auqol_ready}) exitWith {};
+if (!auqol_ready) exitWith {};
 
-private _player = player;
-if (isNull _player) exitWith {};
-
+private _friendly = missionNamespace getVariable ["teamPlayer", sideUnknown];
+if !(_friendly isEqualType sideUnknown) then { _friendly = sideUnknown };
+private _playerGroup = if (hasInterface) then { group player } else { grpNull };
 private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
 
-// shortcut: AI that leave the group keep the raised values; Antistasi usually deletes dismissed AI anyway.
 {
     private _unit = _x;
     private _saved = _unit getVariable "auqol_reactSkills";
-    if (auqol_squad_reaction) then {
+    if (auqol_squad_reaction && {auqol_squad_reactionAll || {isPlayer leader group _unit}}) then {
         if (isNil "_saved") then { _saved = _skills apply { _unit skill _x } };
         {
             if (_unit skill _x < auqol_squad_reactionSkill) then { _unit setSkill [_x, auqol_squad_reactionSkill] };
@@ -34,4 +37,7 @@ private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
             _unit setVariable ["auqol_reactSkills", nil];
         };
     };
-} forEach (units group _player select { local _x && {!isPlayer _x} && {alive _x} });
+} forEach (allUnits select {
+    local _x && {!isPlayer _x} && {alive _x}
+    && {side group _x == _friendly || {group _x == _playerGroup} || {!isNil {_x getVariable "auqol_reactSkills"}}}
+});
