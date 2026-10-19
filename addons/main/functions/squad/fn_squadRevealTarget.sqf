@@ -6,7 +6,8 @@
     press always replaces the previous focus (the old enemy stays known), and AUQOL_fnc_squadRevealFocus
     re-issues the order every second to any AI that turned to another target, until the enemy dies.
     They fire under their current combat mode, so a Hold fire order is still respected. The launcher
-    check runs right after.
+    check runs right after, and nearby friendly AI groups are told about the enemy
+    (AUQOL_fnc_combatShareContact).
 
     Arguments: none
     Return Value: none
@@ -40,6 +41,9 @@ if (leader _group isEqualTo _player) then {
         }, 1, _group] call CBA_fnc_addPerFrameHandler];
     };
 };
+
+// Nearby friendly AI groups learn about it too (smart combat contact sharing).
+[_group, _target] call AUQOL_fnc_combatShareContact;
 
 // Knowledge just changed, so check launchers now instead of at the next pass.
 call AUQOL_fnc_squadLaunchers;

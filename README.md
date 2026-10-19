@@ -16,7 +16,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 | Squad gets your perks | No sway, unlimited stamina, weightless running and the recoil setting also apply to the AI in your group. |
-| Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. |
+| Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. AI groups in a fight use their own first aid kits too. |
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
 | Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
 | T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and it becomes your AI's focus. Each new press moves the focus to the new enemy. |
@@ -65,7 +65,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_squad_reactionAll` | Checkbox | On | Server | Also give the faster reactions to every friendly AI: garrisons, static and turret gunners, high-command squads. |
 | `auqol_squad_reactionSkill` | Slider 0.3–1 | 0.8 | Server | The minimum those four skills are raised to. |
 | `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and makes it your AI's focus for 30 s; a new press replaces the focus. |
-| `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Off under ACE medical. |
+| `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Members of AI groups in a fight treat themselves the same way (without the icon clearing). Off under ACE medical. |
 | `auqol_squad_selfTreatMedikit` | Checkbox | On | Server | Only clear that light leftover damage (the red hurt icon) on AI that carry a medikit. Off: clear it on every AI. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
 | `auqol_anim_ai` | Checkbox | On | Server | Every AI soldier plays its animations faster (moving, turning, stance changes, actions). Players are never sped up. |
@@ -84,7 +84,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_combat_smoke` | Checkbox | On | Server | AI with no cover near and the enemy within 200 m throw smoke first. |
 | `auqol_combat_assault` | Checkbox | On | Server | Within 50 m and at least twice the enemy's number, the moving team closes in on it. |
 | `auqol_combat_defend` | Checkbox | On | Server | Groups that aren't going anywhere take cover near their leader instead of advancing. |
-| `auqol_combat_antiArmor` | Checkbox | On | Server | Against a known tank or APC within 400 m, AT gunners target it and the rest take cover further away. |
+| `auqol_combat_antiArmor` | Checkbox | On | Server | Against a known tank or APC within 400 m, AT gunners target it and the rest take cover further away. Launchers also come out against other vehicles and aircraft (AA). |
 | `auqol_combat_spreadTargets` | Checkbox | On | Server | The covering team splits known enemies between them. |
 | `auqol_combat_shareContacts` | Checkbox | On | Server | A sighting by a group or your squad is shared with AI groups of the same side within 300 m. |
 | `auqol_combat_dodge` | Checkbox | On | Server | AI within 10 m of a thrown grenade run 12 m away from it. |
@@ -190,7 +190,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - The emergency teleport is off by default, infantry only, and only to a leader within the maximum distance. Vehicles are only ever moved by the short hop.
 - The T key and the launcher switch only cover AI in your own group. Faster reactions also cover all friendly AI unless `auqol_squad_reactionAll` is off. Enemy AI are never changed.
 - The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI focus the target, for 30 s or until it dies or you press T on another enemy.
-- Self-treatment only covers AI in your own group, on foot, with a first aid kit (or a medikit for medics) for real wounds. It is off under ACE medical, whose own AI medical handles it.
+- Self-treatment covers AI in your own group, and members of AI groups while smart combat runs for them, on foot, with a first aid kit (or a medikit for medics) for real wounds. It is off under ACE medical, whose own AI medical handles it.
 - SQF scripts run on one thread per machine, so no mod can spread its scripts over CPU cores. AUQOL keeps its work event-driven instead, and the engine already runs AI, physics and rendering on its own threads.
 - Freezing parked vehicles and wrecks uses Arma's dynamic simulation. Only players wake a frozen vehicle, so AI more than 500 m from every player find it as it was left. If the mission or another mod already runs dynamic simulation, AUQOL keeps its distances (the default wake distance for empty vehicles is then 250 m instead of 500 m).
 - Live vehicle markers only speed up the markers Antistasi already shows. Player markers already update every second, and zone markers change when a zone changes hands. Intercepted enemy support markers keep Antistasi's 5-second update because the server owns them. Nothing new is revealed.

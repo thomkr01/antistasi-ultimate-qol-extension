@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.13.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.14.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -187,7 +187,7 @@ Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehi
 
 ## 17. Wounded squad AI treat themselves
 
-AI in your group that get hurt treat themselves without being told.
+AI in your group that get hurt treat themselves without being told. Since 1.14.0, members of AI groups in a fight (smart combat) treat themselves with their own first aid kits by the same rules; the light-damage clearing below stays for your squad only, since it is there for the hurt icon you see. A group medic healing a mate and the mate treating itself never start on each other.
 
 - Really hurt means it limps and can't run (legs at 0.5 or more), any other body part is at 0.5 or more, or overall damage is above 0.25. Such a unit uses vanilla "Treat yourself" 3 s after being hit, with its first aid kit, or its medikit if it is a medic. Without either it waits for a medic, as before. RHS, CUP and other mods' first aid kits count, since kits are recognised by their item type.
 - Lightly hurt means it can run and has at most 0.25 overall damage. That is what Antistasi's revive by a non-medic and a first aid kit leave behind, and what keeps the red hurt icon up. AUQOL clears it without using a kit. With `auqol_squad_selfTreatMedikit` (on) this only happens when that AI carries a medikit; turn it off to clear it on every AI.
@@ -257,8 +257,9 @@ Rules:
 
 Every AUQOL feature knows about the others:
 - **Stuck recovery and smart combat.** Stuck recovery never moves a soldier that smart combat is moving to cover or away from a grenade. Smart combat has its own stuck handling for its movers: a soldier who makes no progress to its spot for 9 s gets a new one, and the stuck spot is avoided. After three failed spots it rejoins its leader for 30 s, and stuck recovery takes over from there once the fight is over.
-- **Squad launchers and smart combat.** AI groups facing armor use the same launcher switch as your squad.
-- **Your squad's sightings** (and the T key) are shared with friendly AI groups near you through the contact reports.
+- **Squad launchers and smart combat.** AI groups that know about an enemy vehicle use the same launcher switch as your squad: AT against armor and cars, AA against aircraft.
+- **Self-treatment, medics and smart combat.** Your squad treats itself (and gets the red icon cleared); AI groups in a fight treat themselves with the same rules, and their medics heal the worst hurt. A unit that is treating itself is not picked by a medic, and the other way round.
+- **Your squad's sightings** and every T key press are shared with friendly AI groups near you through the contact reports.
 - **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
 - **Smart combat leaves your squad alone,** so the T key focus, self-treatment, squad perks and launchers keep full control of it.
 - **AI animation speed** makes every smart combat move faster too, and ACE medical's reset of a medic is re-applied.
@@ -274,4 +275,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, and its remaining parts and the cross-feature links in 1.13.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, and AI group self-treatment and AA launchers in 1.14.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
