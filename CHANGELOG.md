@@ -2,6 +2,16 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.9.0
+
+None of this has been tested in game yet.
+
+- New: wounded squad AI treat themselves (`auqol_squad_selfTreat`, on). An AI in your group that is really hurt (limping and can't run, or badly hit) uses its own first aid kit, or medikit if it is a medic, 3 s after being hit, instead of waiting for you to order it. Light leftover damage that only keeps the red hurt icon up (Antistasi's non-medic revive leaves 0.25, and so does a first aid kit) is cleared without a kit, by default only on AI that carry a medikit (`auqol_squad_selfTreatMedikit`, on; off clears it on every AI). Units Antistasi's medical is already handling are left alone, and the feature is off under ACE medical, whose own AI medical treats AI.
+- Recoil is now a slider, `auqol_player_recoil`, 0 to 100%, instead of the No recoil checkbox. 100% (the default) is vanilla recoil, 0% is the old No recoil. The old `auqol_player_noRecoil` setting is gone: if you had it on, set the slider to 0%.
+- Reveal target (T) fix: the enemy you reveal now becomes your squad's focus for 30 s. Every second any AI that turned to another target is put back on it, and is told to fire when its combat mode allows (Fire at will or Engage at will). A new T press always moves the focus to the new enemy, and the old one stays known. Before, the AI got one `doTarget` that their own target choice could override at once.
+- Contact reports: when your group spots a new enemy, every AI in it gets the sighting at once instead of waiting for the spoken contact report to reach it through the radio queue (part of `auqol_squad_reaction`).
+- Asynchronous work: SQF runs on one thread per machine, so scripts can't be spread over CPU cores. The engine already runs AI, physics and rendering in its own threads. What a mod can do is avoid work and avoid waiting, so the new features are event-driven (a hit, a key press, a sighting) with the existing 15 s player pass as the only fallback, and nothing new polls.
+
 ## 1.8.1
 
 Fixes for edge cases found in a review of 1.8.0. Nothing from 1.8.0 changed otherwise; none of these fixes has been tested in game yet.

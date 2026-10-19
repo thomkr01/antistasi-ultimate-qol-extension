@@ -318,9 +318,9 @@ def check_ace(ace):
     for var in sorted(set(re.findall(r'"(ace_[A-Za-z0-9_]+)"', code))):
         if "_fnc_" in var:
             continue
-        if var == "ace_main":  # CfgPatches class (PREFIX ace, COMPONENT main), not a variable
-            if not (ace / "addons" / "main" / "config.cpp").is_file():
-                problems.append("ace_main CfgPatches not found in ACE3")
+        if var in ("ace_main", "ace_medical_engine"):  # CfgPatches classes (PREFIX ace, COMPONENT name), not variables
+            if not (ace / "addons" / var[len("ace_"):] / "config.cpp").is_file():
+                problems.append(f"{var} CfgPatches not found in ACE3")
             continue
         found = False
         for comp_dir in (ace / "addons").iterdir():

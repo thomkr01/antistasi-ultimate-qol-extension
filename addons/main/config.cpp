@@ -103,6 +103,8 @@ class CfgFunctions {
             class squadRevealTarget {};
             class squadLaunchers {};
             class squadGroupHooks {};
+            class squadRevealFocus {};
+            class squadSelfTreat {};
         };
         class map {
             file = "\z\auqol\addons\main\functions\map";

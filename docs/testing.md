@@ -23,6 +23,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Squad reactions, T key, squad launchers (1.6.0) | Not tested yet |
 | Live vehicle markers (1.6.0) | Not tested yet |
 | Faster reactions for all friendly AI (1.7.0) | Not tested yet |
+| Self-treat, recoil slider, T key focus, instant contact sharing (1.9.0) | Not tested yet. Thomas reported the 1.6.0 T key "doesn't really work"; 1.9.0 is the fix. |
 | Safer stuck recovery and leaner scans (1.8.0) | Not tested yet |
 | Edge-case fixes (1.8.1) | Not tested yet, see test 13 |
 
@@ -111,11 +112,11 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### 4. Player features
 
-1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, recoil coef `1` (no recoil is off by default) and a total carry limit of 10000000.
+1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, recoil coef `1` (the Recoil slider is at 100% by default) and a total carry limit of 10000000.
 2. Aim down sights while standing after a sprint: there should be no sway. Sprint for several minutes: there should be no exhaustion. Fill a backpack with heavy items and sprint: no slowdown or forced walking.
 3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within about 3 s.
 4. Toggle each player setting off. Sway, stamina and loadCoef should return to normal: aim coef 1, stamina on, and loadCoef back to the role's value.
-5. Turn `auqol_player_noRecoil` on and fire a full magazine: the muzzle should not climb. Turn it off and recoil should come back.
+5. Set `auqol_player_recoil` to 0% and fire a full magazine: the muzzle should not climb. At 50% it climbs about half as much, and at 100% recoil is back to normal.
 6. **With ACE3:** the stamina bar should stay full while sprinting with a full load, and there should be no sway, with ACE sway on and off.
 
 ### 5. Total weight limit
@@ -143,7 +144,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 1. Recruit two AI into your squad. Right after they join, run in the debug console: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected for the AI: `0`, `false`, `0`.
 2. Turn `auqol_player_squad` off. The AI should go back to `1`, `true` and their previous loadCoef. Your own values stay as they were.
-3. Turn `auqol_player_noRecoil` on with the squad setting on: `unitRecoilCoefficient` of the AI should read `0`.
+3. Set `auqol_player_recoil` to 0% with the squad setting on: `unitRecoilCoefficient` of the AI should read `0`.
 4. **With ACE3:** the AI still read `0`, `false`, `0` (they use the vanilla commands).
 
 ### 9. Copy from user
@@ -174,9 +175,17 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 ### 11. Squad reactions, T key and launchers
 
 1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
-2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all, the Reveal target action name may be wrong; please report it.
+2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). While they fight him, press T on a second enemy: they should switch to the second one and keep on it, and deal with the first afterwards. Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all and no "Reveal:" line appears, the Reveal target action name may be wrong; please report it.
 3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher as soon as the squad spots it, at most about 5 s if it was spotted behind cover first. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
 4. Go to a garrisoned outpost with a static gunner. On the server (or host) debug console run `(allUnits select { side group _x == teamPlayer && !(isPlayer leader group _x) }) apply { _x skill "spotTime" }` within 5 s of them spawning: every value at least 0.8. Turn `auqol_squad_reactionAll` off: within 5 s they go back, your own squad keeps 0.8.
+5. **Contact sharing:** with `auqol_squad_reaction` on, when one AI calls out a new contact, `units group player apply { _x knowsAbout <enemy> }` should be above 0 for every unit right away, not one by one as the callouts play.
+
+### 11b. Wounded AI treat themselves
+
+1. Shoot a squad AI in the legs (`(units group player select 1) setHitPointDamage ["HitLegs", 0.6]`, then hit it once so the event fires). Within about 3 s it should play the treat-yourself animation and use one first aid kit, then run normally. With `auqol_debug` on, the RPT shows "Self-treat:" lines.
+2. Remove its first aid kits and repeat: it should not treat itself.
+3. Give an AI a medikit, get it downed and revive it with a non-medic. Within 15 s its red hurt icon should go away without using a kit (`damage` reads 0). Repeat with an AI without a medikit: the icon stays. Turn `auqol_squad_selfTreatMedikit` off: it goes away on that AI too.
+4. **With ACE medical:** nothing from AUQOL should happen; ACE's own medical AI decides.
 
 ### 12. Live vehicle markers
 
@@ -191,7 +200,7 @@ Static checks only show the fixes are in the code. These need a person in game, 
 1. **Loot request:** hold "Gather Scattered Loot" on a vehicle: it works as before. Hold it twice within 10 s (or with two players at once): the second gets Antistasi's cooldown line and caches are emptied once. With `auqol_debug` on, a request sent while dead, in a vehicle or more than 10 m away logs "Refused loot request". Test on a hosted game too: the host's own request must work.
 2. **Copy from user, nested items:** run `tests/ingame/loadout_test.sqf` (works anywhere, no Antistasi needed): every line must say PASS. Then in the loadout editor carry an unlocked rifle with a locked optic and locked magazine in your backpack and press Copy from user: the rifle stays in the backpack without the optic and magazine, and the chat line names both.
 3. **Reaction skills and the headless client:** on a dedicated server with a headless client, note a garrison unit's `spotTime` before AUQOL raises it (turn `auqol_squad_reaction` off, read it, turn it on). Let Antistasi hand the group to the HC (or back), then turn the setting off: the value must return to the noted one, not 0.8.
-4. **Sway and recoil restore:** run `player setCustomAimCoef 0.5`, turn `auqol_player_noSway` on and then off: `getCustomAimCoef player` reads 0.5 again. Same with `player setUnitRecoilCoefficient 0.7` and `auqol_player_noRecoil`. Respawn and change loadout with both on: values stay 0, and turning off afterwards gives the right value back.
+4. **Sway and recoil restore:** run `player setCustomAimCoef 0.5`, turn `auqol_player_noSway` on and then off: `getCustomAimCoef player` reads 0.5 again. Same with `player setUnitRecoilCoefficient 0.7` and `auqol_player_recoil` at 0% and back to 100%. Respawn and change loadout with both on: values stay 0, and turning off afterwards gives the right value back.
 5. **Pending ejection:** shoot the wheels of a moving enemy truck and turn `auqol_eject_enabled` off within a second: nobody is ejected. With a headless client, damage an HC-owned vehicle while it is changing owner: the crew is still ejected once.
 6. **Stuck, circling:** put a squad AI on a move order to a point behind a long wall with no gap that it walks along back and forth. After about 90 s plus one timeout it is reported stuck and recovery starts. A unit taking a long but working detour (around a large compound, under 90 s) is not reported. Formation followers walking with you are never reported.
 7. **Vehicle markers in a convoy:** watch a convoy of several vehicles on the map. Every marker follows its own vehicle. If one ever follows the wrong vehicle, it should correct itself within about a minute, staying on Antistasi's position rather than jumping back.

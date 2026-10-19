@@ -87,15 +87,15 @@ private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } 
 ] call CBA_fnc_addSetting;
 
 [
-    "auqol_player_noRecoil", "CHECKBOX",
-    ["No recoil", "Removes weapon recoil for your own character (setUnitRecoilCoefficient 0). AI recoil is not changed."],
+    "auqol_player_recoil", "SLIDER",
+    ["Recoil", "How much weapon recoil your own character has, 0 to 100%. 100% is vanilla and leaves recoil alone; 0% is no recoil (setUnitRecoilCoefficient). AI outside your squad is not changed."],
     [_category, "Player"],
-    false, 1, _playerChanged
+    [0, 1, 1, 0, true], 1, _playerChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_player_squad", "CHECKBOX",
-    ["Apply to AI in your squad", "The no sway, unlimited stamina, weightless running and no recoil settings above also apply to the AI in your own group (the ones local to your machine). Under ACE the AI get the vanilla versions, since ACE sway and fatigue only run for players."],
+    ["Apply to AI in your squad", "The no sway, unlimited stamina, weightless running and recoil settings above also apply to the AI in your own group (the ones local to your machine). Under ACE the AI get the vanilla versions, since ACE sway and fatigue only run for players."],
     [_category, "Player"],
     true, 1, _playerChanged
 ] call CBA_fnc_addSetting;
@@ -126,7 +126,21 @@ private _squadChanged = { if (auqol_ready) then { call AUQOL_fnc_squadReactApply
 
 [
     "auqol_squad_revealKey", "CHECKBOX",
-    ["Reveal target key alerts your squad", "Pressing Reveal target (T by default) while looking at an enemy gives every unit in your group full knowledge of it, and if you lead the group your AI target it at once. They fire under their current combat mode, so Hold fire still holds."],
+    ["Reveal target key alerts your squad", "Pressing Reveal target (T by default) while looking at an enemy gives every unit in your group full knowledge of it. If you lead the group it becomes your AI's focus for 30 s: they target it at once, and each new press moves the focus to the new enemy while the old one stays known. They fire under their current combat mode, so Hold fire still holds."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_selfTreat", "CHECKBOX",
+    ["Wounded squad AI treat themselves", "AI in your group that are hurt (limping, can't run) use their first aid kit on themselves at once, a few seconds after being hit. Light leftover damage that only keeps the red hurt icon up (for example after Antistasi's revive) is cleared without using a kit. Off under ACE medical, which has its own AI medical."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_selfTreatMedikit", "CHECKBOX",
+    ["Require medikit to clear the hurt icon", "On: light leftover damage (the red hurt icon, for example after a revive by a non-medic) is only cleared on AI that carry a medikit. Off: it is cleared on every AI. Treating real wounds with a first aid kit is not affected."],
     [_category, "Squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
