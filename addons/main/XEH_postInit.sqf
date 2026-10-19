@@ -11,6 +11,8 @@
 }] call CBA_fnc_addEventHandler;
 // Player animation boosts (ladder, pistol swap): setAnimSpeedCoef only acts on the machine that runs it.
 ["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
+// Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
+["auqol_combat_reveal", { params ["_group", "_target"]; _group reveal [_target, 1.5] }] call CBA_fnc_addEventHandler;
 ["auqol_stuck_message", { systemChat ("[AUQOL] " + (_this select 0)) }] call CBA_fnc_addEventHandler;
 
 // Added on every machine: the handlers act only where the vehicle is local, which follows locality changes.
@@ -41,6 +43,9 @@
     [[_unit]] call AUQOL_fnc_squadReactApply;
     [{ [[_this]] call AUQOL_fnc_squadReactApply }, _unit, 5] call CBA_fnc_waitAndExecute;
 }, true, [], true] call CBA_fnc_addClassEventHandler;
+
+// Grenade dodge: any unit's throw, checked for frags in the handler.
+["CAManBase", "Fired", { _this call AUQOL_fnc_combatDodge }, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Antistasi's rebel loadout editor is a BIS arsenal; its open event is the only hook into that screen.
 if (hasInterface) then {

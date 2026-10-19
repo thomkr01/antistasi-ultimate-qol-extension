@@ -5,7 +5,8 @@
     - EnemyDetected: a new enemy was spotted by the group. With faster squad reactions on, every unit
       gets the best knowledge anyone on its side has of it at once, instead of waiting for the spoken
       contact report to reach it through the radio queue. For vehicles the launcher check also runs at
-      once instead of waiting for the 5 s fallback pass.
+      once instead of waiting for the 5 s fallback pass. With smart combat AI's contact sharing, nearby
+      friendly AI groups learn about it too (AUQOL_fnc_combatShareContact).
     - UnitJoined: a recruit joined, so the squad perks, the self-treat hook and the faster reactions are
       applied to it at once.
     Group events fire where the group is local (the machine of its leader); when another machine leads
@@ -25,6 +26,7 @@ _group addEventHandler ["EnemyDetected", {
     if (group player isNotEqualTo _group) exitWith {};
     if (auqol_squad_reaction) then { { _x reveal _target } forEach (units _group select { local _x && {!isPlayer _x} }) };
     if !(_target isKindOf "Man") then { call AUQOL_fnc_squadLaunchers };
+    [_group, _target] call AUQOL_fnc_combatShareContact;
 }];
 _group addEventHandler ["UnitJoined", {
     params ["_group", "_unit"];

@@ -7,14 +7,19 @@
     launcher out at once and targets it. Knowledge comes from the unit's own spotting, the squad, or
     the Reveal target key. The engine's own weapon choice takes over again once the target is gone.
 
-    Arguments: none
+    Smart combat AI (AUQOL_fnc_combatTick) also calls it with the members of an AI group facing armor.
+
+    Arguments:
+    0: Units <ARRAY> (optional, default: the AI of the local player's group, when auqol_squad_launchers is on)
+
     Return Value: none
 */
 
-if (!hasInterface || {!auqol_ready} || {!auqol_squad_launchers}) exitWith {};
-
-private _player = player;
-if (isNull _player) exitWith {};
+params [["_units", nil, [[]]]];
+if (!auqol_ready) exitWith {};
+if (isNil "_units") then {
+    _units = [[], units group player] select (hasInterface && auqol_squad_launchers && {!isNull player});
+};
 
 {
     private _unit = _x;
@@ -51,4 +56,4 @@ if (isNull _player) exitWith {};
         _unit doTarget _target;
         [format ["Launcher: %1 takes out %2 for %3", name _unit, _launcher, typeOf _target], true] call AUQOL_fnc_log;
     };
-} forEach (units group _player select { local _x && {!isPlayer _x} && {alive _x} });
+} forEach (_units select { local _x && {!isPlayer _x} && {alive _x} });

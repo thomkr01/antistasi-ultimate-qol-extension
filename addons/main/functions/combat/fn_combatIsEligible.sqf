@@ -5,7 +5,8 @@
     incapacitated (engine or Antistasi), surrendered, captive, fleeing, healing or being healed
     (Antistasi "helping"/"helped"), rearming, attached, remote controlled, with pathing or movement
     off (Antistasi garrisons and its smoke charge), stopped (Stop / Hold, garrison doStop), or with a
-    command other than none, attack or fire. A move order counts only when AUQOL gave it.
+    command other than none, attack or fire. A move order counts only when AUQOL gave it. A unit
+    that failed to reach three spots in a row rests for 30 s (AUQOL_fnc_combatTick).
 
     Arguments:
     0: Unit <OBJECT>
@@ -21,4 +22,5 @@ alive _unit && {local _unit} && {!isPlayer _unit} && {isNull objectParent _unit}
     && {!(_unit getVariable ["helping", false])} && {!(_unit getVariable ["helped", false])} && {!(_unit getVariable ["rearming", false])}
     && {isNull attachedTo _unit} && {isNull remoteControlled _unit}
     && {_unit checkAIFeature "MOVE"} && {_unit checkAIFeature "PATH"} && {!stopped _unit}
+    && {time >= _unit getVariable ["auqol_tacRestUntil", 0]}
     && {currentCommand _unit in ["", "ATTACK", "ATTACKFIRE", "FIRE"] || {currentCommand _unit == "MOVE" && {!isNil {_unit getVariable "auqol_tacDest"}}}}

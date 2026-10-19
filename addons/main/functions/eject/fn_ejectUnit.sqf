@@ -20,4 +20,6 @@ moveOut _unit;
 private _group = group _unit;
 if (local _group) then {
     _group leaveVehicle _vehicle;
+    // On foot now: smart combat tactics take the crew into cover right away.
+    [_group] call AUQOL_fnc_combatStart;
 };

@@ -15,6 +15,8 @@
       (get in, supply);
     - on foot: on the ground, not swimming, not on a ladder. In a vehicle: the AI driver of a land
       vehicle that can move, with no player on board. Passengers and static weapons are skipped;
+    - not being moved by smart combat AI (a cover spot or a grenade dodge, AUQOL_fnc_combatTick and
+      AUQOL_fnc_combatDodge), which handles its own movers that get stuck;
     - not fighting: no attack target, not suppressed, no known enemy within 300 m;
     - for AI-led groups (patrols, garrisons, HC squads): not on a HOLD, GUARD, SENTRY, LOITER, DISMISS
       or SCRIPTED waypoint and not on a CYCLE patrol route.
@@ -40,6 +42,7 @@ alive _unit && {local _unit} && {!isPlayer _unit} && {!captive _unit}
     && {lifeState _unit in ["HEALTHY", "INJURED"]}
     && {isNull attachedTo _unit} && {isNull remoteControlled _unit}
     && {!("ainv" in _anim)} && {!("medic" in _anim)} && {_anim select [0, 5] != "acts_"}
+    && {isNil {_unit getVariable "auqol_tacDest"}} && {isNil {_unit getVariable "auqol_tacDodge"}}
     && {_unit checkAIFeature "MOVE"} && {_unit checkAIFeature "PATH"}
     && {!stopped _unit} && {currentCommand _unit in ["", "MOVE"]}
     && {!(_mode in ["DoNotPlan", "LEADER DIRECT"])} && {_dest isNotEqualTo []}
