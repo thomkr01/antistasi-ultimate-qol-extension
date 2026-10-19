@@ -196,7 +196,14 @@ def check_regressions():
     markers = code("functions/map/fn_mapVehicleMarkers.sqf")
     if "([_x] call _iconOf) == _icon" not in markers or "auqol_map_pending set [_x, time];\n            continue;" not in markers:
         problems.append("mapVehicleMarkers: pairing must match the icon and re-pair markers Antistasi moved")
-    check("Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing", problems)
+    # 1.15.0: Antistasi stores the helper unit in "helped" (an object), so a bool default breaks the check.
+    for path in sorted(ADDON.rglob("*.sqf")):
+        if re.search(r'"helped",\s*(false|true)', strip_comments(path.read_text())):
+            problems.append(f"{path.name}: Antistasi's \"helped\" is an object; read it with objNull and isNull")
+    support = code("functions/combat/fn_combatSupport.sqf")
+    if "_unit canAdd" not in support:
+        problems.append("combatSupport: magazine sharing must check the receiver has room (canAdd)")
+    check("Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing, helped flag, magazine room", problems)
 
 
 # --- Wiki-backed checks ------------------------------------------------------------------------

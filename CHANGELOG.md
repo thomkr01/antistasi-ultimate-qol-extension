@@ -2,6 +2,19 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.15.0
+
+Launchers stop wasting rounds, plus fixes from an internal review of how the features work together. None of it tested in game yet.
+
+- Launchers: a vehicle that is out of the fight gets no more rounds. That means no living crew, an aircraft that can no longer fly (going down), or a ground vehicle that can neither move nor fire. An immobilized vehicle whose gun still works stays a target. Vehicles another gunner already has under his launcher come last, so two rounds go to two vehicles. 1 s after each launcher round hits, the gunner turns to the next vehicle or puts the launcher away. Works for your squad and for AI groups in a smart combat fight.
+- Launchers: an empty launcher counts when the gunner carries another round, so the second AA or AT round is used after he has put the launcher away.
+- The T key focus ends when its vehicle is out of the fight.
+- Fix: smart combat stopped working for any group with a soldier an Antistasi medic had ever helped (script error on Antistasi's "helped" value, which is a unit, not true/false).
+- Fix: magazine sharing could lose the magazine when the receiver had no room left.
+- Fix: spreading targets in smart combat could pull an AT gunner off the tank he was aiming at.
+- Fix: a soldier treating himself, or being treated by a group medic, could be sent to cover or into a grenade dodge, which cut the treatment short.
+- Fix: with ACE Advanced Throwing, AI ran from a player's grenade while it was still being cooked in the hand. The dodge now waits until the grenade is thrown.
+
 ## 1.14.0
 
 AI features linked tighter with smart combat. None of it tested in game yet.

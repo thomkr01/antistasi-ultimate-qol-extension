@@ -88,7 +88,7 @@ private _enemies = (_leader targets [true, auqol_combat_range]) select { alive _
 // What the group is doing decides where the movers go.
 private _armor = objNull;
 if (auqol_combat_antiArmor) then {
-    _armor = (_enemies select { (_x isKindOf "Tank" || {_x isKindOf "Wheeled_APC_F"}) && {_leader distance _x < 400} }) param [0, objNull];
+    _armor = (_enemies select { (_x isKindOf "Tank" || {_x isKindOf "Wheeled_APC_F"}) && {_leader distance _x < 400} && {!([_x] call AUQOL_fnc_squadIsOutOfFight)} }) param [0, objNull];
 };
 private _assault = auqol_combat_assault && {isNull _armor} && _distEnemy < 50
     && {count _members + 1 >= 2 * count (_enemies select { _x isKindOf "CAManBase" && {_x distance2D _ePos < 50} })};
@@ -215,7 +215,8 @@ private _men = _enemies select { _x isKindOf "CAManBase" };
         _unit setVariable ["auqol_tacStance", true];
     };
     // One enemy each, in turn, instead of the whole team on the same one.
-    if (auqol_combat_spreadTargets && _newPhase && {count _men > 1}) then {
+    // Not a gunner with his launcher out: his vehicle target comes first (AUQOL_fnc_squadLaunchers).
+    if (auqol_combat_spreadTargets && _newPhase && {count _men > 1} && {currentWeapon _unit != secondaryWeapon _unit || {secondaryWeapon _unit == ""}}) then {
         private _target = _men select (_forEachIndex % count _men);
         if (getAttackTarget _unit isNotEqualTo _target) then { _unit doTarget _target };
     };

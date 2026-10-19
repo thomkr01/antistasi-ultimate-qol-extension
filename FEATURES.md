@@ -169,11 +169,13 @@ Press T (the game's Reveal target key, whatever you bound it to) while looking a
 
 ## 15. Squad switches to launchers at once
 
-An AI in your group with a loaded AT or AA launcher takes it out as soon as an enemy vehicle is both known and shootable.
+An AI in your group with an AT or AA launcher and a round for it takes it out as soon as an enemy vehicle is both known and shootable.
 
 - Known: the unit knows about it, from its own (faster) spotting, its squad, or your T key.
 - Shootable: the unit has a clear line of sight to it, and it is in range: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Which targets a launcher can hit comes from its ammo's AI usage flags, so RHS and CUP launchers work.
-- Checked the moment your group spots a new enemy, when you press T, and every 5 seconds for targets that only become visible later; that 5-second check is skipped while your group knows of no enemy. Units in vehicles, incapacitated units and units already holding the launcher are skipped. Once the target is gone, the AI pick their own weapon again.
+- Checked the moment your group spots a new enemy, when you press T, and every 5 seconds for targets that only become visible later; that 5-second check is skipped while your group knows of no enemy. Units in vehicles and incapacitated units are skipped, and a unit already holding the launcher keeps its target while that target is still in the fight. Once the target is gone, the AI pick their own weapon again.
+- No wasted rounds (1.15.0): a vehicle that is out of the fight is never picked. That is one with no living crew, an aircraft that can no longer fly (it is going down), or a ground vehicle that can neither move nor fire. An immobilized vehicle whose gun still works is still a target. Vehicles another gunner already has under his launcher come last, so two AA rounds go to two helicopters and two AT rounds to two vehicles.
+- 1 second after each launcher round hits, the gunner is checked again: if his vehicle is out of the fight he turns to the next one, or puts the launcher away and the group forgets the wreck. The T key focus also ends when its vehicle is out of the fight.
 - `auqol_squad_launchers` (on).
 
 ## 16. Live vehicle markers
@@ -237,7 +239,7 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Armor.** Against a known tank or APC, AT gunners take out their launchers and target it, and everyone else takes cover further away.
 - **Target spread.** The covering team splits the known enemies between them.
 - **Contact reports.** A sighting by a group, or by your squad, reaches AI groups of the same side within 300 m, so they join the fight.
-- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it.
+- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it. With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
 - **Ammo sharing.** An AI down to its last magazine gets one from a nearby group mate.
 - **Medics.** Once the enemy is more than 60 m away, a group's medic treats wounded mates. Downed soldiers stay with Antistasi's revive, and it's off under ACE medical.
 - **Reacting to fire.** When rounds pass close, the group learns where they came from, and standing soldiers crouch (or go prone under heavy fire, unless no-prone is on) until 10 s after the fire stops.
@@ -257,7 +259,8 @@ Rules:
 
 Every AUQOL feature knows about the others:
 - **Stuck recovery and smart combat.** Stuck recovery never moves a soldier that smart combat is moving to cover or away from a grenade. Smart combat has its own stuck handling for its movers: a soldier who makes no progress to its spot for 9 s gets a new one, and the stuck spot is avoided. After three failed spots it rejoins its leader for 30 s, and stuck recovery takes over from there once the fight is over.
-- **Squad launchers and smart combat.** AI groups that know about an enemy vehicle use the same launcher switch as your squad: AT against armor and cars, AA against aircraft.
+- **Squad launchers and smart combat.** AI groups that know about an enemy vehicle use the same launcher switch as your squad: AT against armor and cars, AA against aircraft, with the same no-wasted-rounds rule. Smart combat's armor reaction ignores a tank or APC that is out of the fight. Spreading targets over the covering team never pulls a gunner with his launcher out off his vehicle.
+- **Self-treatment and smart combat moves.** A soldier treating himself, or being treated by a group medic, is not sent to cover and does not dodge until the treatment is done.
 - **Self-treatment, medics and smart combat.** Your squad treats itself (and gets the red icon cleared); AI groups in a fight treat themselves with the same rules, and their medics heal the worst hurt. A unit that is treating itself is not picked by a medic, and the other way round.
 - **Your squad's sightings** and every T key press are shared with friendly AI groups near you through the contact reports.
 - **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
@@ -275,4 +278,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, and AI group self-treatment and AA launchers in 1.14.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, and the no-wasted-rounds launcher rule in 1.15.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
