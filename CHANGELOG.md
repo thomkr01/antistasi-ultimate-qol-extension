@@ -2,6 +2,15 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.11.0
+
+New features, none tested in game yet.
+
+- New: faster AI animations (`auqol_anim_ai`, on; `auqol_anim_aiSpeed`, 1.0 to 2.0, default 1.25). Every AI soldier of every faction plays its animations faster, like the Fast Reaction AI (FRAI) mod. Players are never sped up; no FSM or behaviour is changed.
+- New: faster pistol swap (`auqol_anim_pistolSwap`, on; speed 2x by default).
+- New: faster ladders (`auqol_anim_ladder`, on; 1.5x by default) and a *Fast ladder climbing (hold)* keybind, Left Shift by default, for 2.5x.
+- New: smart combat AI. AI that come under close fire make their group aware of the shooter (`auqol_combat_revealShooter`, on), and standing AI crouch or go prone until 10 s after the fire stops (`auqol_combat_takeCover`, on; not in player-led groups). Both stand down when LAMBS Danger or Vcom AI is loaded (`auqol_combat_yieldToAIMods`, on).
+
 ## 1.10.0
 
 Performance. None of this has been tested in game yet.

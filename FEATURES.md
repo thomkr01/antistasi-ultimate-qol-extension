@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.9.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.11.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -205,6 +205,36 @@ Empty vehicles standing still, and wrecks that have come to rest, stop being sim
 - Only players wake a frozen vehicle. AI far from every player find it as it was left.
 - `auqol_freeze_parked` (on) and `auqol_freeze_wrecks` (on).
 
+## 19. Faster AI animations
+
+Every AI soldier of every faction plays its animations 25% faster by default, adjustable from 1.0 (vanilla) to 2.0. They move, turn, change stance and get through actions sooner, so their next decision comes sooner. This is the idea of the Fast Reaction AI (FRAI) mod, rebuilt in AUQOL.
+
+- No FSM, behaviour or skill is changed, so it sits under any AI mod (LAMBS, Vcom and others) and Antistasi's own AI.
+- Players are never sped up.
+- Reloading and other upper-body animations can't be sped up this way (engine limit).
+- A new value reaches every AI within 15 seconds.
+- `auqol_anim_ai` (on), `auqol_anim_aiSpeed` (1.25).
+
+## 20. Faster pistol swap and faster ladders
+
+Switching to or from your handgun plays twice as fast, and climbing ladders 1.5 times as fast. Hold the *Fast ladder climbing* key (Left Shift by default, under Controls > Configure Addons) to climb at 2.5 times. All three speeds can be set.
+
+- Only your own character. Everyone else sees you at the same speed.
+- Works with ACE Advanced Fatigue, which is told to leave the speed alone while the boost lasts.
+- `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2), `auqol_anim_ladder` (on), `auqol_anim_ladderSpeed` (1.5), `auqol_anim_ladderFastSpeed` (2.5).
+
+## 21. Smart combat AI
+
+AI react to being shot at, not only to being hit:
+- When rounds pass close to an AI, its group learns where the fire came from, so it answers instead of scanning for the shooter. Both sides.
+- A standing AI on foot crouches under close fire, or goes prone under heavy fire, and goes back to its own stance choice 10 seconds after the last close round. AI in a group led by a player are left alone, since their stance is your call.
+
+Rules:
+- Only AI whose stance is left to the AI are touched, so stance orders from you, Antistasi or other mods win.
+- Antistasi already makes AI throw smoke, take cover when badly hit and call for support when a group member dies. AUQOL doesn't duplicate those, and it doesn't flank, throw grenades or retreat.
+- When LAMBS Danger or Vcom AI is loaded these reactions stand down, since those mods already handle suppression.
+- `auqol_combat_revealShooter` (on), `auqol_combat_takeCover` (on), `auqol_combat_yieldToAIMods` (on).
+
 ## Less background work (1.10.0)
 
 None of this changes what you see or how things play:
@@ -216,4 +246,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap, ladders and smart combat AI are new in 1.11.0 and not tested in game yet either. The in-game test plan is in [docs/testing.md](docs/testing.md).
