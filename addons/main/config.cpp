@@ -106,6 +106,7 @@ class CfgFunctions {
             class squadGroupHooks {};
             class squadRevealFocus {};
             class squadSelfTreat {};
+            class squadIsOutOfFight {};
         };
         class map {
             file = "\z\auqol\addons\main\functions\map";

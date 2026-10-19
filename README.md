@@ -20,7 +20,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
 | Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
 | T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and it becomes your AI's focus. Each new press moves the focus to the new enemy. |
-| Squad launchers at once | Squad AI with a loaded AT or AA launcher take it out as soon as they know about an enemy vehicle they can see and hit. |
+| Squad launchers at once | Squad AI with an AT or AA launcher take it out as soon as they know about an enemy vehicle they can see and hit. Vehicles that are out of the fight (going down, no crew, or unable to move and fire) get no more rounds, and rounds are spread over several vehicles. |
 | Live vehicle markers | Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute. |
 | AI stuck recovery | Friendly AI that have somewhere to go but make no progress are freed step by step: refresh the order, rejoin formation, a short safe hop, and an optional emergency teleport to the squad leader. |
 | Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
@@ -67,7 +67,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and makes it your AI's focus for 30 s; a new press replaces the focus. |
 | `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Members of AI groups in a fight treat themselves the same way (without the icon clearing). Off under ACE medical. |
 | `auqol_squad_selfTreatMedikit` | Checkbox | On | Server | Only clear that light leftover damage (the red hurt icon) on AI that carry a medikit. Off: clear it on every AI. |
-| `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
+| `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to an AT or AA launcher as soon as an enemy vehicle they know about is visible and in range, skip vehicles that are out of the fight and spread rounds over several vehicles. |
 | `auqol_anim_ai` | Checkbox | On | Server | Every AI soldier plays its animations faster (moving, turning, stance changes, actions). Players are never sped up. |
 | `auqol_anim_aiSpeed` | Slider 1–2 | 1.25 | Server | The AI animation speed. 1.0 is vanilla. |
 | `auqol_anim_pistolSwap` | Checkbox | On | Server | Switching to or from your handgun plays faster. |
@@ -87,7 +87,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_combat_antiArmor` | Checkbox | On | Server | Against a known tank or APC within 400 m, AT gunners target it and the rest take cover further away. Launchers also come out against other vehicles and aircraft (AA). |
 | `auqol_combat_spreadTargets` | Checkbox | On | Server | The covering team splits known enemies between them. |
 | `auqol_combat_shareContacts` | Checkbox | On | Server | A sighting by a group or your squad is shared with AI groups of the same side within 300 m. |
-| `auqol_combat_dodge` | Checkbox | On | Server | AI within 10 m of a thrown grenade run 12 m away from it. |
+| `auqol_combat_dodge` | Checkbox | On | Server | AI within 10 m of a thrown grenade run 12 m away from it, once it has left the thrower's hand. |
 | `auqol_combat_resupply` | Checkbox | On | Server | AI low on magazines get one from a nearby group mate. |
 | `auqol_combat_medics` | Checkbox | On | Server | Group medics treat wounded mates once no enemy is within 60 m. Off under ACE medical. |
 | `auqol_combat_range` | Slider 100–1000 m | 500 | Server | How close a known enemy must be for the tactics to run. |

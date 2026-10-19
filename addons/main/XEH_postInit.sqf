@@ -45,7 +45,17 @@
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Grenade dodge: any unit's throw, checked for frags in the handler.
-["CAManBase", "Fired", { _this call AUQOL_fnc_combatDodge }, true, [], true] call CBA_fnc_addClassEventHandler;
+// Launcher rounds: once a local AI's round has hit, its launcher check runs again, so a vehicle that is
+// out of the fight gets no second round and the next vehicle gets it (AUQOL_fnc_squadLaunchers). Only
+// where AUQOL already runs that check: your squad with the launcher switch on, and AI groups in a smart combat fight.
+["CAManBase", "Fired", {
+    _this call AUQOL_fnc_combatDodge;
+    params ["_unit", "_weapon", "", "", "", "", "_projectile"];
+    if (!auqol_ready || {!local _unit} || {isPlayer _unit} || _weapon == "" || {_weapon != secondaryWeapon _unit}) exitWith {};
+    if !([auqol_combat_antiArmor && {!isNil {group _unit getVariable "auqol_tacPFH"}}, auqol_squad_launchers] select (isPlayer leader _unit)) exitWith {};
+    private _recheck = { [{ [[_this]] call AUQOL_fnc_squadLaunchers }, _this select 0, 1] call CBA_fnc_waitAndExecute };
+    [{ isNull (_this select 1) }, _recheck, [_unit, _projectile], 20, _recheck] call CBA_fnc_waitUntilAndExecute;
+}, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Antistasi's rebel loadout editor is a BIS arsenal; its open event is the only hook into that screen.
 if (hasInterface) then {

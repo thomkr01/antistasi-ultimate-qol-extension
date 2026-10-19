@@ -33,7 +33,8 @@ if (auqol_combat_resupply) then {
         if (count _own >= 2) then { continue };
         {
             private _spare = magazines _x select { toLowerANSI _x in _fits };
-            if (count _spare >= 4 && {local _x} && {_x distance _unit < 15}) exitWith {
+            // canAdd: with no room the magazine would be lost.
+            if (count _spare >= 4 && {local _x} && {_x distance _unit < 15} && {_unit canAdd (_spare select 0)}) exitWith {
                 private _mag = _spare select 0;
                 _x removeMagazine _mag;
                 _unit addMagazine _mag;
