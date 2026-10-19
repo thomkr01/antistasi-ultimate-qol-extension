@@ -15,8 +15,9 @@
       a HOLD, GUARD or SENTRY waypoint, no waypoint left, or a stopped leader) the movers take cover
       within 30 m of the leader instead of advancing, preferring building positions.
     - against armor (auqol_combat_antiArmor): with an enemy tank or APC known within 400 m, AT gunners
-      take out their launchers and target it (AUQOL_fnc_squadLaunchers), and everyone else takes
-      cover 15 m further away from it.
+      take out their launchers and target it, and everyone else takes cover 15 m further away from
+      it. The launcher switch (AUQOL_fnc_squadLaunchers) runs on every pass with any enemy vehicle
+      known, so AA gunners also take out their launchers against aircraft.
     With auqol_combat_buildings an enemy inside a building within 80 m is cleared: up to two movers
     take the building positions nearest to it. A mover that finds no cover while the enemy is within
     200 m may throw smoke first (auqol_combat_smoke). A mover that makes no progress to its spot for
@@ -199,7 +200,8 @@ if (_toPick isNotEqualTo []) then {
     } forEach _toPick;
 };
 
-if (!isNull _armor) then { [_members] call AUQOL_fnc_squadLaunchers };
+// Any known vehicle, not only armor, so AA launchers come out against aircraft too; the function filters by launcher and range.
+if (auqol_combat_antiArmor && {_enemies findIf { !(_x isKindOf "Man") } > -1}) then { [_members] call AUQOL_fnc_squadLaunchers };
 
 // --- Covering team
 private _men = _enemies select { _x isKindOf "CAManBase" };

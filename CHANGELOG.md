@@ -2,6 +2,15 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.14.0
+
+AI features linked tighter with smart combat. None of it tested in game yet.
+
+- AI groups in a fight now treat themselves with their own first aid kits, by the same rules as your squad (`auqol_squad_selfTreat`). The red-icon clearing stays for your squad only. A medic never heals a mate that is treating itself, and the other way round.
+- AI groups use the launcher switch against any known enemy vehicle, so AA gunners now engage aircraft (before, only tanks and APCs triggered it).
+- The T key now shares the enemy with nearby friendly AI groups, as the 1.13.0 notes already said.
+- Fix: group medics could hit a script error on a mate an Antistasi medic was coming to help.
+
 ## 1.13.0
 
 The rest of the four mods' features in AUQOL's own code, and AUQOL's features made aware of each other. None of it tested in game yet.

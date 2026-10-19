@@ -7,7 +7,7 @@
     launcher out at once and targets it. Knowledge comes from the unit's own spotting, the squad, or
     the Reveal target key. The engine's own weapon choice takes over again once the target is gone.
 
-    Smart combat AI (AUQOL_fnc_combatTick) also calls it with the members of an AI group facing armor.
+    Smart combat AI (AUQOL_fnc_combatTick) also calls it with the members of an AI group that knows about an enemy vehicle.
 
     Arguments:
     0: Units <ARRAY> (optional, default: the AI of the local player's group, when auqol_squad_launchers is on)
