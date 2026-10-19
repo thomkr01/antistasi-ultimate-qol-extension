@@ -18,7 +18,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | Short Withstand cooldown | Not reported yet |
 | Item caches within 30 m | Works (1.4.0). 1.4.1 now deletes the empty box, not yet reported. |
 | Squad perks (1.5.0) | Not tested yet |
-| Copy from user (1.5.0) | Not tested yet |
+| Copy from user (1.5.0) | Works (reported 2026-10-18) |
 | AI stuck recovery (1.5.0) | Not tested yet |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
