@@ -141,13 +141,15 @@ The unit's health, gear, group, rank and role are never changed. When every enab
 
 **Testing without a real stuck unit:** `[cursorObject] call AUQOL_fnc_stuckSimulate` in the debug console marks a unit as past the timeout. `tests/ingame/stuck_test.sqf` builds a real stuck case.
 
-## 13. Faster squad reactions
+## 13. Faster AI reactions
 
-The AI in your own group spot enemies sooner, tell each other faster and turn onto targets quicker.
+The AI in your own group, and by default every friendly AI, spot enemies sooner, tell each other faster and turn onto targets quicker.
 
 - Antistasi gives recruits low skills early in the campaign (about 0.2 to 0.4), which is why they react slowly. AUQOL raises four of them to at least `auqol_squad_reactionSkill` (default 0.8): spot time, spot distance, aiming speed and commanding (how fast sightings pass through the group).
 - Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
-- `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced. Applied within 5 seconds of a recruit joining.
+- `auqol_squad_reactionAll` (on) extends it to every friendly AI: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Off: only AI in groups a player leads.
+- Each machine checks the friendly AI it runs every 5 seconds (four skill reads per unit, writes only when a value is too low), so newly spawned garrisons get it within 5 seconds. Enemy AI are never changed.
+- `auqol_squad_reaction` (on). Turning it off puts back the values AUQOL replaced.
 
 ## 14. Reveal target key (T) alerts your squad
 
@@ -176,4 +178,4 @@ Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehi
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. None of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

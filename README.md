@@ -17,7 +17,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 | Squad gets your perks | No sway, unlimited stamina, weightless running and no recoil also apply to the AI in your group. |
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
-| Faster squad reactions | The AI in your group spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
+| Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
 | T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and your AI target it at once. |
 | Squad launchers at once | Squad AI with a loaded AT or AA launcher take it out as soon as they know about an enemy vehicle they can see and hit. |
 | Live vehicle markers | Antistasi's markers on convoy objectives, mission vehicles, supply boxes and spotted enemy vehicles follow their vehicle every second instead of once a minute. |
@@ -57,6 +57,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_player_noRecoil` | Checkbox | Off | Server | No weapon recoil. |
 | `auqol_player_squad` | Checkbox | On | Server | Also apply the four player settings above to the AI in your group. |
 | `auqol_squad_reaction` | Checkbox | On | Server | Faster reactions for the AI in your group (spot time, spot distance, aiming speed, commanding). |
+| `auqol_squad_reactionAll` | Checkbox | On | Server | Also give the faster reactions to every friendly AI: garrisons, static and turret gunners, high-command squads. |
 | `auqol_squad_reactionSkill` | Slider 0.3–1 | 0.8 | Server | The minimum those four skills are raised to. |
 | `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and your AI target it. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to a loaded AT or AA launcher as soon as an enemy vehicle they know about is visible and in range. |
@@ -115,13 +116,13 @@ Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
 - **Loot** adds a copy of the crate's hold action to vehicles and swaps it in on the crate. Completing it asks the server to run Antistasi's own `SCRT_fnc_loot_gatherLoot`, the crate's function, with the AUQOL radius. The 10-second cooldown, unlocked-item rule and money split are Antistasi's. Enemy item caches within 30 m (the supply crates at outposts, bases and airports) are emptied into a weapon holder first, so the same run picks their contents up, and the empty box is deleted. The enemies-nearby check is done by AUQOL with its own radius, using Antistasi's `A3A_fnc_enemyNearCheck`.
 - **Withstand** sets `A3A_selfReviveTimeout`, the cooldown Antistasi's `A3A_fnc_selfRevive` reads, which defaults to 300 s.
 - **Squad perks** run in the same 5-second player re-check over the AI in your group that are local to your machine, so new recruits get them within 5 seconds.
-- **Squad reactions** run in the same 5-second re-check and only raise skills that are below the floor, remembering the old values for when the setting is turned off. **The T key** is the engine's own Reveal target action, caught with `addUserActionEventHandler`. **Launchers** are checked every second for your group's AI. All three only touch AI in your own group that are local to your machine.
+- **AI reactions** run every 5 seconds on every machine (server, headless clients, players) for the friendly AI local to it, and only raise skills that are below the floor, remembering the old values for when the setting is turned off. **The T key** is the engine's own Reveal target action, caught with `addUserActionEventHandler`. **Launchers** are checked every second for your group's AI. The T key and launchers only touch AI in your own group that are local to your machine.
 - **Live vehicle markers** run every second on each player's machine. Antistasi still creates and deletes the markers; AUQOL only moves them to their vehicle.
 - **Copy from user** waits for Antistasi's loadout editor to finish opening, then turns the editor's empty third bottom-bar button into "Copy from user". It takes the loadout you wore when you opened the editor, drops anything the arsenal does not have unlimited, and loads the rest through Antistasi's own "load this role" step, which switches the slot overrides on. Nothing is saved until you press Save.
 - **AI stuck recovery** checks every 5 seconds, on each machine, only the AI local to that machine. A unit is watched only while it has a destination more than 8 m away (25 m in a vehicle) and nothing else to do, and is stuck after the timeout with no progress. Steps are tried one per timeout window, cheapest first; after the last enabled step the round fails, a cooldown follows, and after the maximum number of rounds the unit is left alone. Tracking is a variable on the unit, so nothing piles up over a long campaign. Details in [FEATURES.md](FEATURES.md#12-ai-stuck-recovery).
 - **No total weight limit** raises the engine's total soldier load cap (`maxSoldierLoad`, vanilla 1000) to 10,000,000 in config. That cap is what stops you adding items once you carry something heavy. Each container's own size is unchanged.
 
-There are no per-frame handlers. The only timers are a 1-second check for live vehicle markers and squad launchers on each player's machine, the 5-second player re-check, the 5-second stuck-AI check, a 10-second garage-fuel check, and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
+There are no per-frame handlers. The only timers are a 1-second check for live vehicle markers and squad launchers on each player's machine, the 5-second player re-check, a 5-second AI reaction pass on every machine, the 5-second stuck-AI check, a 10-second garage-fuel check, and a 30-second ACE rearm top-up, which runs only in ACE limited-supply mode.
 
 ## Diagnostics
 
@@ -148,7 +149,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
 - The stuck check can't see why the engine's pathfinding failed, only that a unit with a destination made no progress. A unit that is legitimately waiting with a destination set (for example behind a closed gate a player will open) can be nudged. Raise the timeout if that happens.
 - The emergency teleport is off by default, infantry only, and only to a leader within the maximum distance. Vehicles are only ever moved by the short hop.
-- Squad reactions, the T key and the launcher switch only cover AI in your own group. High-command squads and garrisons keep Antistasi's behaviour.
+- The T key and the launcher switch only cover AI in your own group. Faster reactions also cover all friendly AI unless `auqol_squad_reactionAll` is off. Enemy AI are never changed.
 - The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI target.
 - Live vehicle markers only speed up the markers Antistasi already shows. Player markers already update every second, and zone markers change when a zone changes hands. Intercepted enemy support markers keep Antistasi's 5-second update because the server owns them. Nothing new is revealed.
 - A vehicle marker is paired with the nearest vehicle when it appears. In a tight convoy two markers can swap vehicles, which only matters if they have different labels.

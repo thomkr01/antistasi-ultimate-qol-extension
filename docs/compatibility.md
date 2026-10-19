@@ -56,7 +56,8 @@ If an ACE function is missing, AUQOL logs one warning and leaves that ACE path u
 | ACE refuel and rearm sources | `makeSource` (server only), `setSupplyCount` (public variable) | Server |
 | Antistasi garage | Garage state lives on the server | Server |
 | Sway, stamina, loadCoef, recoil | `setCustomAimCoef` (local), `enableStamina` (local arg), `setUnitTrait` (local arg) | The player's own client, for the player and the AI of their group local to it |
-| Squad reactions, T key, launchers | `setSkill`, `doTarget`, `selectWeapon` (local arg), `reveal` (local effect) | The player's own client, for the AI of their group local to it |
+| Faster AI reactions | `setSkill` (local arg) | Every machine, for the friendly AI local to it (squad AI on the player, garrisons on the server or a headless client), so each unit is handled once by its owner |
+| T key, launchers | `doTarget`, `selectWeapon` (local arg), `reveal` (local effect) | The player's own client, for the AI of their group local to it |
 | Live vehicle markers | `setMarkerPosLocal` (local effect) on Antistasi's local markers | Each player's own client |
 | Copy from user | UI only; edits Antistasi's editor state on the client and restores `rebelLoadouts` straight away | The player's own client. Antistasi's Save button publishes the result as usual. |
 | Stuck checks and recovery | `expectedDestination`, `doMove`, `doFollow`, `doWatch`, `setCurrentWaypoint` (local arg); `doStop`, `setPosATL`, `setVehiclePosition` (global) | The machine the AI is local to: each machine only checks its own AI, so one unit is never handled twice. Messages to a player on another machine go through the `auqol_stuck_message` CBA target event. |

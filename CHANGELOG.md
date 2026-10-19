@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.7.0
+
+- Faster AI reactions can cover every friendly AI, not just your squad: garrisons, static and turret gunners and high-command squads (`auqol_squad_reactionAll`, on by default). Each machine applies it to its own AI every 5 seconds. Accuracy is still unchanged.
+
 ## 1.6.0
 
 - Faster squad reactions: the AI in your group get spot time, spot distance, aiming speed and commanding raised to at least 0.8 (`auqol_squad_reaction`, `auqol_squad_reactionSkill`). Accuracy is unchanged.

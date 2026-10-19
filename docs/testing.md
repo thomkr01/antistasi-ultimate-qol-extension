@@ -22,6 +22,7 @@ Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate):
 | AI stuck recovery (1.5.0) | "Seems fine" (2026-10-19) |
 | Squad reactions, T key, squad launchers (1.6.0) | Not tested yet |
 | Live vehicle markers (1.6.0) | Not tested yet |
+| Faster reactions for all friendly AI (1.7.0) | Not tested yet |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -50,7 +51,7 @@ The checks were themselves tested by mutation. Adding an invented command, an in
 
 ### Results of the last run
 
-Run on 2026-10-19 for 1.6.0 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
+Run on 2026-10-19 for 1.7.0 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist`, HEMTT 1.22.0:
 
 ```
 PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
@@ -65,7 +66,7 @@ PASS  ACE3: every ACE function, variable, constant and class used exists
 PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist
 hemtt check --pedantic --error-on-all: 1 addon config rapified, 42 SQF files compiled, no warnings
 tools/check_ingame_scripts.sh: 4 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.6.0.zip
+hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.7.0.zip
 ```
 
 The `expectedDestination` planning modes the stuck check relies on ("DoNotPlan", "LEADER DIRECT", "FORMATION PLANNED", "DoNotPlanFormation") are not in the parsed wiki data, so they were checked by hand against the BI wiki page for `expectedDestination`. The Random button IDC 44150 used for "Copy from user" (`IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM` in the game's `defineResinclDesign.inc`, which no source here contains) was taken from a Bohemia forums thread that disables that button by this IDC. The static check only confirms Antistasi blanks the Random button; the IDC itself is confirmed in game by test 9.
@@ -171,6 +172,7 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
 2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all, the Reveal target action name may be wrong; please report it.
 3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher within about a second. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
+4. Go to a garrisoned outpost with a static gunner. On the server (or host) debug console run `(allUnits select { side group _x == teamPlayer && !(isPlayer leader group _x) }) apply { _x skill "spotTime" }` within 5 s of them spawning: every value at least 0.8. Turn `auqol_squad_reactionAll` off: within 5 s they go back, your own squad keeps 0.8.
 
 ### 12. Live vehicle markers
 
