@@ -6,6 +6,7 @@ Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new
 
 Fixes from checking every feature against every other feature. None of it tested in game yet.
 
+- The T key always shares the enemy with nearby friendly AI groups, even right after an automatic contact report (before, it could be skipped for up to 10 s).
 - T key on a soldier: a squad gunner holding his launcher takes his rifle instead of firing a rocket at him.
 - A unit treating itself is no longer pulled away by the T key focus, the launcher switch, or smart combat ordering it back into formation mid-treatment.
 - Smart combat: a soldier behind outdoor cover no longer stands up for a few seconds when its "get low under fire" timer runs out; it stays crouched and the fire team pass takes the stance over.

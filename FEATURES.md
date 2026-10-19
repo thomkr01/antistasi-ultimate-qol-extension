@@ -264,7 +264,7 @@ Every AUQOL feature knows about the others:
 - **T key and launchers.** When you mark a soldier with T, a squad gunner holding his launcher takes his rifle for him.
 - **Taking cover under fire and fire teams.** Both crouch soldiers; when the under-fire crouch ends behind outdoor cover the fire team keeps him crouched, so he never stands up in between.
 - **Self-treatment, medics and smart combat.** Your squad treats itself (and gets the red icon cleared); AI groups in a fight treat themselves with the same rules, and their medics heal the worst hurt. A unit that is treating itself is not picked by a medic, and the other way round.
-- **Your squad's sightings** and every T key press are shared with friendly AI groups near you through the contact reports.
+- **Your squad's sightings** and every T key press are shared with friendly AI groups near you through the contact reports. Sightings go out at most once every 10 s per group; a T key press always goes out (1.15.1).
 - **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
 - **Smart combat leaves your squad alone,** so the T key focus, self-treatment, squad perks and launchers keep full control of it.
 - **AI animation speed** makes every smart combat move faster too, and ACE medical's reset of a medic is re-applied.
