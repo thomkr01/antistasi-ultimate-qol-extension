@@ -44,7 +44,7 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | CfgFunctions consistency | `tests/static_checks.py` | Missing function files, unregistered `fn_` files, calls to undefined or unused `AUQOL_fnc_` functions |
 | Dependencies and paths | `tests/static_checks.py` | `requiredAddons` must be exactly `cba_main`. XEH script paths and the PBO prefix must match. |
 | File map | `tests/static_checks.py` | Every code folder and doc must be listed in `FILEMAP.md` |
-| Settings | `tests/static_checks.py` | Duplicate settings, settings missing from README or `configuration.md`, `auqol_` globals read but never declared |
+| Settings | `tests/static_checks.py` | Duplicate settings, settings missing from `configuration.md`, `auqol_` globals read but never declared |
 | Command existence | `tests/static_checks.py --wiki` | Every bare identifier in the addon and test scripts must be a real Arma 3 command or a known symbol. This catches invented commands. |
 | Event handler names and parameters | `tests/static_checks.py --wiki` | `Dammaged`, `Fuel`, `GetIn` and `Service` must exist, and the parameter positions the code reads must match the wiki |
 | Locality (heuristic) | `tests/static_checks.py --wiki` | A file using a local-argument command (per the wiki) must contain a `local`, `isServer` or `hasInterface` guard |
@@ -62,7 +62,7 @@ Run on 2026-10-19 for 1.8.1 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi 
 PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
 PASS  config.cpp: XEH paths exist, PBO prefix matches, CBA is the only hard dependency
 PASS  FILEMAP.md lists every code folder and doc
-PASS  CBA settings: unique, documented in README and docs, no undeclared auqol_ globals
+PASS  CBA settings: unique, documented in docs/configuration.md, no undeclared auqol_ globals
 PASS  Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing
 PASS  SQF: every command used exists in the Arma 3 wiki command list
 PASS  Event handlers: names exist and the parameter positions used match the wiki
@@ -93,7 +93,7 @@ Run this in single player first, then on a dedicated server with a second client
 
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
 2. Check the RPT for the `[AUQOL] Version 1.5.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
-3. Open Addon Options and check the 33 settings listed in the README.
+3. Open Addon Options and check the 33 settings listed in `docs/configuration.md`.
 
 ### 2. Enemy crew ejection
 
