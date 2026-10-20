@@ -33,8 +33,8 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 
 | Path | What it is |
 | --- | --- |
-| `README.md` | Overview, install, full settings table, compatibility summary, limitations. |
-| `FEATURES.md` | What each feature does and its rules, in plain words. |
+| `README.md` | Short overview: what the mod does, how it works, install, links to the docs, credits. |
+| `FEATURES.md` | What each feature does and its rules, how it works, known limitations. |
 | `CHANGELOG.md` | One section per version, plus the versioning rules. |
 | `FILEMAP.md` | This file. |
 | `docs/installation.md` | Install steps, building from source, troubleshooting. |

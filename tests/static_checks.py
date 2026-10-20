@@ -134,12 +134,9 @@ def check_settings():
     if len(names) != len(declared):
         problems.append("duplicate setting names")
     docs = (ROOT / "docs" / "configuration.md").read_text()
-    readme = (ROOT / "README.md").read_text()
     for name in names:
         if f"`{name}`" not in docs:
             problems.append(f"{name} missing from docs/configuration.md")
-        if f"`{name}`" not in readme:
-            problems.append(f"{name} missing from README.md settings table")
     # Every auqol_ global read in code is a setting or assigned somewhere in the mod.
     assigned = set()
     reads = set()
@@ -149,7 +146,7 @@ def check_settings():
         reads.update(re.findall(r"\b(auqol_\w+)\b", nostr))
     for var in sorted(reads - names - assigned):
         problems.append(f"global {var} is read but never declared or assigned")
-    check("CBA settings: unique, documented in README and docs, no undeclared auqol_ globals", problems)
+    check("CBA settings: unique, documented in docs/configuration.md, no undeclared auqol_ globals", problems)
     return names
 
 

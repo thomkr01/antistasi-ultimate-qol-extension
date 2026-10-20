@@ -2,6 +2,12 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.3
+
+Docs only, nothing in game changes.
+
+- The README is now a short overview with links. The settings table lives in docs/configuration.md, the compatibility table in docs/compatibility.md, and "How it works" and "Known limitations" moved to FEATURES.md.
+
 ## 1.20.2
 
 Not tested in game yet. Optimization only, nothing plays or looks different.
