@@ -1,6 +1,6 @@
 # Configuration
 
-All settings are under **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_loot_radius = 1000;`.
+All settings are under **Configure → Configure Addons → Antistasi Ultimate QoL by TchicX**, in the Esc menu during a mission or in the main menu. They can also be put in a CBA settings file, `cba_settings.sqf`, for example `force auqol_loot_radius = 1000;`.
 
 **Scope.** Settings marked *Server* are registered with `isGlobal = 1`. The server's value is shared with every client, because the code they control runs on whichever machine owns the object, and that has to be the same everywhere. The player features are also server settings, so the server decides for everyone, while the effect is still applied on each player's own machine. Only `auqol_debug` is *Client* (`isGlobal = 0`).
 
@@ -245,6 +245,6 @@ A cooldown already running when you change the setting finishes at its old lengt
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore, loot run and stuck-recovery event, on the machine doing it. Every 5 minutes it also writes a `Timing:` line per AUQOL timer with its runs, average and worst time in ms (`diag_tickTime`), so the mod's own cost can be read. |
+| `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, ACE source change, garage restore, loot run and stuck-recovery event, on the machine doing it. Every 5 minutes it also writes a `Timing:` line per AUQOL timer with its runs, average and worst time in ms (`diag_tickTime`), so the mod's own cost can be read. Quick switch without the menu: `auqol_debug = true;` in the debug console, with Local Exec for your machine or Server Exec for the server (until the mission restarts). |
 
 `call AUQOL_fnc_diagnostics` returns and logs the active integrations on that machine. Run from the debug console, it also prints them to system chat.
