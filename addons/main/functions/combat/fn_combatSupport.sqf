@@ -45,7 +45,7 @@ if (auqol_combat_resupply) then {
 
 { [_x] call AUQOL_fnc_squadSelfTreat } forEach (_members select { damage _x > 0 });
 
-if (auqol_combat_medics && _distEnemy > 60 && {!isClass (configFile >> "CfgPatches" >> "ace_medical_engine")}) then {
+if (auqol_combat_medics && _distEnemy > 60 && {!auqol_aceMedical}) then {
     {
         private _medic = _x;
         if (!(_medic getUnitTrait "Medic") || {time < _medic getVariable ["auqol_tacNextHeal", 0]}) then { continue };
