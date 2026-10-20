@@ -28,7 +28,8 @@
     covered spot they already hold when the teams swap.
     Covering team: units in cover crouch outdoors (only if their stance is left to the AI), and with
     auqol_combat_spreadTargets they are spread over the known enemies. Those without a line of sight
-    lay suppressive fire on where the enemy was last seen (auqol_combat_suppressiveFire), and one 12
+    lay suppressive fire on where the enemy was last seen (auqol_combat_suppressiveFire; a 35% chance
+    per pass, every pass while the group is under fire), and one 12
     to 35 m from an enemy it can't see, with no friend near that spot, throws a hand grenade
     (auqol_combat_grenades). Ammo sharing and medics run from AUQOL_fnc_combatSupport.
 
@@ -214,6 +215,8 @@ if (_toPick isNotEqualTo []) then {
 if (auqol_combat_antiArmor && {_enemies findIf { !(_x isKindOf "Man") } > -1}) then { [_members] call AUQOL_fnc_squadLaunchers };
 
 // --- Covering team
+// Under fire (AUQOL_fnc_combatSuppressed), every covering unit that can't see the enemy suppresses each pass.
+private _suppressChance = [0.35, 1] select (time < _group getVariable ["auqol_tacUnderFire", 0]);
 private _men = _enemies select { _x isKindOf "CAManBase" };
 {
     private _unit = _x;
@@ -251,7 +254,7 @@ private _men = _enemies select { _x isKindOf "CAManBase" };
         if (auqol_combat_grenades && _d > 12 && _d < 35 && {(_ePos nearEntities ["CAManBase", 8]) findIf { side group _x == side _group } == -1}) then {
             [_unit, _ePos, "frag"] call AUQOL_fnc_combatThrow;
         } else {
-            if (auqol_combat_suppressiveFire && {random 1 < 0.35} && _d < 400) then { _unit doSuppressiveFire (AGLToASL _ePos vectorAdd [0, 0, 1]) };
+            if (auqol_combat_suppressiveFire && {random 1 < _suppressChance} && _d < 400) then { _unit doSuppressiveFire (AGLToASL _ePos vectorAdd [0, 0, 1]) };
         };
     };
 } forEach _coverers;

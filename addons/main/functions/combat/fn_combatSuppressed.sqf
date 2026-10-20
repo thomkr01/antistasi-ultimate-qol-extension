@@ -32,7 +32,23 @@ _unit setVariable ["auqol_combatNext", time + 2];
 private _enemy = [_instigator, _shooter] select isNull _instigator;
 if (auqol_combat_revealShooter && {alive _enemy}) then { (group _unit) reveal [_enemy, 1.5] };
 
-if (!auqol_combat_takeCover || {!isNull objectParent _unit} || {isPlayer leader group _unit} || {lifeState _unit == "INCAPACITATED"}) exitWith {};
+if (isPlayer leader group _unit) exitWith {};
+
+// Fire back: the whole group suppresses harder for 15 s (AUQOL_fnc_combatTick), and this unit answers
+// at once at where it believes the shooter is, if it can't see him (seen, the engine aims anyway) and
+// isn't on its way to cover.
+if (auqol_combat_suppressiveFire && {alive _enemy}) then {
+    (group _unit) setVariable ["auqol_tacUnderFire", time + 15];
+    private _dest = _unit getVariable "auqol_tacDest";
+    private _ePos = _unit getHideFrom _enemy;
+    if ((isNil "_dest" || {_unit distance2D _dest < 2.5}) && {_ePos isNotEqualTo [0, 0, 0]} && {_unit distance2D _ePos < 400}
+        && {currentWeapon _unit isEqualTo primaryWeapon _unit} && {[_unit] call AUQOL_fnc_combatIsEligible}
+        && {([_unit, "VIEW", _enemy] checkVisibility [eyePos _unit, aimPos _enemy]) < 0.3}) then {
+        _unit doSuppressiveFire (AGLToASL _ePos vectorAdd [0, 0, 1]);
+    };
+};
+
+if (!auqol_combat_takeCover || {!isNull objectParent _unit} || {lifeState _unit == "INCAPACITATED"}) exitWith {};
 
 private _ours = _unit getVariable ["auqol_combatCover", false];
 // Someone else changed the stance since AUQOL set it: theirs stays.

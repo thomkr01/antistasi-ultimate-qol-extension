@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.17.0
+
+Not tested in game yet.
+
+- Wounded AI (your squad and AI groups in a fight) no longer treat themselves in the open: when a known enemy can see them they run to the nearest cover within 25 m first, then treat there. Your squad rejoins formation afterwards. Stuck recovery leaves them alone meanwhile. A "Treat yourself" ordered from the command menu is the engine's own and still runs at once.
+- Smart combat AI fire back harder when shot at: a suppressed soldier answers at once at where he thinks the shooter is, and for 15 s every covering soldier that can't see the enemy lays suppressive fire each pass (before, about one in three). Part of `auqol_combat_suppressiveFire`.
+
 ## 1.16.0
 
 None of it tested in game yet.

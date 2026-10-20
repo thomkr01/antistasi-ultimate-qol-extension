@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.16.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.17.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -191,6 +191,8 @@ Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehi
 
 AI in your group that get hurt treat themselves without being told. Since 1.14.0, members of AI groups in a fight (smart combat) treat themselves with their own first aid kits by the same rules; the light-damage clearing below stays for your squad only, since it is there for the hurt icon you see. A group medic healing a mate and the mate treating itself never start on each other.
 
+Since 1.17.0, a really hurt unit that a known enemy within 500 m can see first runs to the nearest cover within 25 m (the same cover search smart combat uses, at most 20 s) and treats itself there. Your squad goes back into formation afterwards. With no cover near, or when held in place (Stop, Antistasi garrisons), it treats where it is. Only the automatic self-treatment does this; a "Treat yourself" you order from the command menu is the engine's own and runs at once.
+
 - Really hurt means it limps and can't run (legs at 0.5 or more), any other body part is at 0.5 or more, or overall damage is above 0.25. Such a unit uses vanilla "Treat yourself" 3 s after being hit, with its first aid kit, or its medikit if it is a medic. Without either it waits for a medic, as before. RHS, CUP and other mods' first aid kits count, since kits are recognised by their item type.
 - Lightly hurt means it can run and has at most 0.25 overall damage. That is what Antistasi's revive by a non-medic and a first aid kit leave behind, and what keeps the red hurt icon up. AUQOL clears it without using a kit. With `auqol_squad_selfTreatMedikit` (on) this only happens when that AI carries a medikit; turn it off to clear it on every AI.
 - Left alone: units in vehicles, incapacitated units (Antistasi's revive handles them), units an Antistasi medic is coming to help or that are helping someone, captives and surrendered units.
@@ -231,7 +233,7 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Fire teams, cover to cover.** A squad in contact splits into two fire teams. One moves to the next covered spot while the other covers it, then they swap, so the squad advances in bounds instead of walking in the open. Cover is anything solid between the enemy and the soldier: walls, rocks, trees, sandbags, ruins, and building positions.
 - **Buildings.** AI fight from inside houses, standing at the windows. An enemy hiding in a building within 80 m is cleared: two soldiers take the rooms nearest to it.
 - **Flanking.** In squads of four or more, the second team swings out to one side of the enemy.
-- **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen.
+- **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen. While the group is being shot at they do it every pass (about one in three otherwise), and a soldier who is shot at fires back at once at where he thinks the shooter is, to win the firefight.
 - **Grenades.** A soldier 12 to 35 m from an enemy he can't see throws a hand grenade, if no friend is near that spot.
 - **Smoke.** A soldier caught with no cover near throws smoke toward the enemy first.
 - **Assault.** Within 50 m and at least twice the enemy's number, the moving team closes in on it.
