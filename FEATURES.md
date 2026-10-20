@@ -9,7 +9,7 @@ This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules ea
 - **ACE3, RHS and CUP are optional.** They are detected at runtime, and each feature works with or without them.
 - **Compatible by design.** Every change is built to work alongside as many other mods as possible, and must always work with Antistasi Ultimate, RHS, CUP and ACE3.
 - **Only verified APIs are used.** Every engine command, CBA function, ACE function and Antistasi global was checked against its source. `tests/static_checks.py` enforces this on every build.
-- **Every feature is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Addon Options → Antistasi Ultimate QoL by TchicX*, and can be toggled during a mission.
+- **Every feature is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages, and each has its own CBA setting** under *Configure → Configure Addons → Antistasi Ultimate QoL by TchicX* (Esc menu), and can be toggled during a mission.
 - **Multiplayer safe.** Each action runs on the machine that owns the object, as the command's locality requires. Cross-machine calls are named CBA events with fixed handlers. The one exception is the loot request, a `remoteExecCall` to the server, because only that tells the server which machine sent it.
 
 ## 1. Enemy AI crew ejection from immobilized vehicles
