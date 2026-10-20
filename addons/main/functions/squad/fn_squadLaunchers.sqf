@@ -1,10 +1,12 @@
 /*
     Author: AUQOL
     Launcher switch for the AI in the local player's group. Runs when the group spots a new enemy
-    (EnemyDetected, AUQOL_fnc_squadGroupHooks), on the Reveal target key, and every 5 s as a fallback. An AI with a launcher
+    (EnemyDetected, AUQOL_fnc_squadGroupHooks), on the Reveal target key, and as a fallback every 5 s while an
+    enemy vehicle is known, every second while an enemy aircraft is. An AI with a launcher
     and a round for it that knows about an enemy vehicle it can see and its launcher can engage (by the
     ammunition's aiAmmoUsageFlags: 256 air, 128 or 512 ground vehicles) within range takes the
-    launcher out at once and targets it. Knowledge comes from the unit's own spotting, the squad, or
+    launcher out at once, targets it and fires when its combat mode allows. Aircraft count as seen at
+    any line of sight, ground vehicles at more than half; parachutes are never targets. Knowledge comes from the unit's own spotting, the squad, or
     the Reveal target key. The engine's own weapon choice takes over again once the target is gone.
 
     Rounds are not wasted: a vehicle out of the fight (AUQOL_fnc_squadIsOutOfFight) is never picked, and vehicles another gunner already
@@ -62,10 +64,11 @@ if (isNil "_units") then {
         // Vehicles another gunner of these units already has under its launcher come last, so rounds spread over several vehicles.
         private _taken = (_units select { _x isNotEqualTo _unit && {currentWeapon _x == secondaryWeapon _x} && {secondaryWeapon _x != ""} }) apply { getAttackTarget _x };
         private _eye = eyePos _unit;
+        // Aircraft need only a glimpse: a jet crosses the sky in seconds, and the launcher has to be out before it is gone.
         private _candidates = (_unit targets [true, [500, 2000] select _antiAir]) select {
-            !(_x isKindOf "Man") && {!([_x] call AUQOL_fnc_squadIsOutOfFight)}
+            !(_x isKindOf "Man") && {!(_x isKindOf "ParachuteBase")} && {!([_x] call AUQOL_fnc_squadIsOutOfFight)}
             && {[_antiGround && {_unit distance _x < 500}, _antiAir] select (_x isKindOf "Air")}
-            && {([_unit, "VIEW", _x] checkVisibility [_eye, aimPos _x]) > 0.5}
+            && {([_unit, "VIEW", _x] checkVisibility [_eye, aimPos _x]) > ([0.5, 0] select (_x isKindOf "Air"))}
         };
         _target = (_candidates select { !(_x in _taken) }) param [0, _candidates param [0, objNull]];
     };
@@ -73,6 +76,8 @@ if (isNil "_units") then {
     if (!isNull _target) then {
         if (!_holding) then { _unit selectWeapon _launcher };
         _unit doTarget _target;
+        // doTarget alone only aims; the AI locks on and fires when its combat mode allows firing.
+        if (combatMode _unit in ["YELLOW", "RED"]) then { _unit doFire _target };
         [format ["Launcher: %1 takes out %2 for %3", name _unit, _launcher, typeOf _target], true] call AUQOL_fnc_log;
         continue;
     };

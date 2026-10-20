@@ -177,7 +177,7 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 
 1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
 2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). While they fight him, press T on a second enemy: they should switch to the second one and keep on it, and deal with the first afterwards. Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all and no "Reveal:" line appears, the Reveal target action name may be wrong; please report it.
-3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher as soon as the squad spots it, at most about 5 s if it was spotted behind cover first. Repeat with an AA launcher and a helicopter within 2000 m. A vehicle behind a hill or a building should not trigger it.
+3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher as soon as the squad spots it, at most about 5 s if it was spotted behind cover first. Repeat with an AA launcher and a helicopter within 2000 m, and with a jet making attack runs on you (1.20.5): the AA soldier should have the launcher out within a second or two of the jet coming into view and fire when it locks. A vehicle behind a hill or a building should not trigger it.
 4. Go to a garrisoned outpost with a static gunner. On the server (or host) debug console run `(allUnits select { side group _x == teamPlayer && !(isPlayer leader group _x) }) apply { _x skill "spotTime" }` within 5 s of them spawning: every value at least 0.8. Turn `auqol_squad_reactionAll` off: within 5 s they go back, your own squad keeps 0.8.
 5. **Contact sharing:** with `auqol_squad_reaction` on, when one AI calls out a new contact, `units group player apply { _x knowsAbout <enemy> }` should be above 0 for every unit right away, not one by one as the callouts play.
 
@@ -226,7 +226,7 @@ Static checks only show the fixes are in the code. These need a person in game, 
 8. **Features together:** with smart combat running, `auqol_stuck_notifyDetect` on and a soldier walking into a wall to reach cover: smart combat picks him another spot within about 10 s; stuck recovery reports nothing during the fight.
 9. **1.14.0 additions:** fly a helicopter near an enemy squad with an AA soldier: he takes out the AA launcher. Shoot an enemy in the legs from far away (`setHitPointDamage ["HitLegs", 0.6]` on one in contact): within about 10 s it treats itself. Press T on an enemy: a friendly AI group within 300 m knows about it (debug console: `(group _ai) knowsAbout _enemy` above 1).
 10. **1.15.0 launchers and fixes:** give a squad AA soldier two rounds and fly two enemy helicopters in (Zeus or debug console). After the first hit sends one down, the second round goes to the other helicopter, not the falling one. Same with an AT soldier and two APCs: once one can neither move nor fire, the next round goes to the other. Shoot only the tracks of a tank whose gun still works: it still gets rounds. Press T on a helicopter, shoot it down: the squad stops firing at it. With ACE Advanced Throwing, cook a grenade next to your squad: nobody runs until you throw it. In a fight, let an Antistasi medic revive an enemy AI, then keep fighting that group: no script errors in the RPT, and its soldiers keep moving between cover.
-11. **1.15.1 features together:** with a squad AT soldier holding his launcher, press T on an enemy soldier: he switches to his rifle. Wound a squad AI so it treats itself, then press T on an enemy at once: it finishes treating first. Get spotted, then within 10 s press T on a different enemy: a friendly AI group within 300 m still learns about it. Suppress an enemy patrol that is fighting from behind walls: the soldiers stay crouched behind the walls when the fire stops instead of standing up.
+11. **1.15.1 features together:** with a squad AT soldier holding his launcher with no enemy vehicle around, press T on an enemy soldier: he switches to his rifle (with a vehicle still in the fight he stays on it since 1.20.5). Wound a squad AI so it treats itself, then press T on an enemy at once: it finishes treating first. Get spotted, then within 10 s press T on a different enemy: a friendly AI group within 300 m still learns about it. Suppress an enemy patrol that is fighting from behind walls: the soldiers stay crouched behind the walls when the fire stops instead of standing up.
 
 ### 16. Smart combat cover and scratches (1.16.0)
 
@@ -267,6 +267,14 @@ Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 3. Same at 50 m with the suppressor: they find you.
 4. With the Hide Among The Grass mod loaded instead of AUQOL's concealment: step 1 behaves the same.
 5. Antistasi may still call support on the position after a kill; that is Antistasi's own reaction.
+
+### 22. AA launchers against jets and T key feedback (1.20.5)
+
+1. **Jets:** with an AA soldier in your squad (RHS Igla or Stinger, CUP or vanilla Titan), have an enemy jet (A-10 or Su-25) attack you, in the open and next to buildings. Within a second or two of it coming into view he takes out his launcher and fires once it locks. With `auqol_debug` on the RPT shows a "Launcher:" line. Set the squad to Hold fire: he takes it out and aims, but does not fire.
+2. **T while the jet is up:** with the AA soldier holding his launcher on the jet, press T on an enemy soldier: he stays on the jet, the rest of the squad takes the soldier.
+3. **Paratroopers:** enemy parachutes in the air draw no AA round.
+4. **T near an enemy:** aim a little beside an enemy soldier you can see and press T: he is marked (notification shows his name) and the squad engages him. An enemy hidden behind a wall is not picked.
+5. **T feedback:** press T on an enemy: a small notification "<enemy> marked for your squad" appears for you only. Pressing T on nothing or on a friendly shows nothing.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
 
