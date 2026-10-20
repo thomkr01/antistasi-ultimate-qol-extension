@@ -233,7 +233,7 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Fire teams, cover to cover.** A squad in contact splits into two fire teams. One moves to the next covered spot while the other covers it, then they swap, so the squad advances in bounds instead of walking in the open. Cover is anything solid between the enemy and the soldier: walls, rocks, trees, sandbags, ruins, and building positions.
 - **Buildings.** AI fight from inside houses, standing at the windows. An enemy hiding in a building within 80 m is cleared: two soldiers take the rooms nearest to it.
 - **Flanking.** In squads of four or more, the second team swings out to one side of the enemy.
-- **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen.
+- **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen. While the group is being shot at they do it every pass (about one in three otherwise), and a soldier who is shot at fires back at once at where he thinks the shooter is, to win the firefight.
 - **Grenades.** A soldier 12 to 35 m from an enemy he can't see throws a hand grenade, if no friend is near that spot.
 - **Smoke.** A soldier caught with no cover near throws smoke toward the enemy first.
 - **Assault.** Within 50 m and at least twice the enemy's number, the moving team closes in on it.

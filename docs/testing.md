@@ -239,5 +239,6 @@ Static checks only show the fixes are in the code. These need a person in game, 
 
 1. In a firefight near trees or walls, let a squad AI get hit in the legs while the enemy can see it: it runs to cover first, then plays the treat-yourself animation there, then rejoins formation. With `auqol_debug` on, the RPT shows "Self-treat: ... runs to cover before treating".
 2. Order it to Stop first, then let it get hit: it treats where it stands.
+3. **Fire back:** from cover, fire bursts near an enemy group: the soldiers you shoot at answer at once, and the group's covering team keeps suppressing your position for about 15 s after your last burst.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

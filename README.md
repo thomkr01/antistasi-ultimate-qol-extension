@@ -82,7 +82,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_combat_tactics` | Checkbox | On | Server | AI groups in contact fight as two fire teams that take turns moving to covered spots. Not for groups led by a player. |
 | `auqol_combat_buildings` | Checkbox | On | Server | Building positions count as cover, and an enemy inside a building within 80 m is cleared by up to two AI. |
 | `auqol_combat_flank` | Checkbox | On | Server | In groups of four or more, the second fire team swings out to one side of the enemy. |
-| `auqol_combat_suppressiveFire` | Checkbox | On | Server | Covering AI that can't see the enemy fire at where it was last seen. |
+| `auqol_combat_suppressiveFire` | Checkbox | On | Server | Covering AI that can't see the enemy fire at where it was last seen; much more while they are being shot at, and a shot-at soldier fires back at once. |
 | `auqol_combat_grenades` | Checkbox | On | Server | AI 12 to 35 m from an enemy they can't see throw a hand grenade at it. |
 | `auqol_combat_smoke` | Checkbox | On | Server | AI with no cover near and the enemy within 200 m throw smoke first. |
 | `auqol_combat_assault` | Checkbox | On | Server | Within 50 m and at least twice the enemy's number, the moving team closes in on it. |
