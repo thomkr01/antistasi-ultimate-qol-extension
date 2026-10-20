@@ -17,7 +17,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 | Squad gets your perks | No sway, unlimited stamina, weightless running and the recoil setting also apply to the AI in your group. |
 | Clear scratches | A bullet or two that breaks nothing no longer leaves a vehicle asking for Repair; the prompt only shows when something needs fixing. |
-| Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. AI groups in a fight use their own first aid kits too. |
+| Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. AI groups in a fight use their own first aid kits too. Under fire they run to cover first. |
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
 | Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
 | T key alerts your squad | Pressing Reveal target (T) at an enemy makes your whole group know about it, and it becomes your AI's focus. Each new press moves the focus to the new enemy. |
@@ -68,7 +68,7 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_squad_reactionAll` | Checkbox | On | Server | Also give the faster reactions to every friendly AI: garrisons, static and turret gunners, high-command squads. |
 | `auqol_squad_reactionSkill` | Slider 0.3–1 | 0.8 | Server | The minimum those four skills are raised to. |
 | `auqol_squad_revealKey` | Checkbox | On | Server | Reveal target (T) at an enemy alerts your group and makes it your AI's focus for 30 s; a new press replaces the focus. |
-| `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Members of AI groups in a fight treat themselves the same way (without the icon clearing). Off under ACE medical. |
+| `auqol_squad_selfTreat` | Checkbox | On | Server | Hurt AI in your group treat themselves with their own first aid kit; light leftover damage (the stale red hurt icon) is cleared. Members of AI groups in a fight treat themselves the same way (without the icon clearing). A unit an enemy can see runs to cover within 25 m first. Off under ACE medical. |
 | `auqol_squad_selfTreatMedikit` | Checkbox | On | Server | Only clear that light leftover damage (the red hurt icon) on AI that carry a medikit. Off: clear it on every AI. |
 | `auqol_squad_launchers` | Checkbox | On | Server | Squad AI switch to an AT or AA launcher as soon as an enemy vehicle they know about is visible and in range, skip vehicles that are out of the fight and spread rounds over several vehicles. |
 | `auqol_anim_ai` | Checkbox | On | Server | Every AI soldier plays its animations faster (moving, turning, stance changes, actions). Players are never sped up. |

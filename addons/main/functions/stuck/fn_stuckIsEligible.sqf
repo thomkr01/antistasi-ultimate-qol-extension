@@ -42,7 +42,7 @@ alive _unit && {local _unit} && {!isPlayer _unit} && {!captive _unit}
     && {lifeState _unit in ["HEALTHY", "INJURED"]}
     && {isNull attachedTo _unit} && {isNull remoteControlled _unit}
     && {!("ainv" in _anim)} && {!("medic" in _anim)} && {_anim select [0, 5] != "acts_"}
-    && {isNil {_unit getVariable "auqol_tacDest"}} && {isNil {_unit getVariable "auqol_tacDodge"}}
+    && {isNil {_unit getVariable "auqol_tacDest"}} && {isNil {_unit getVariable "auqol_tacDodge"}} && {time >= _unit getVariable ["auqol_treatUntil", 0]}
     && {_unit checkAIFeature "MOVE"} && {_unit checkAIFeature "PATH"}
     && {!stopped _unit} && {currentCommand _unit in ["", "MOVE"]}
     && {!(_mode in ["DoNotPlan", "LEADER DIRECT"])} && {_dest isNotEqualTo []}

@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.16.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.17.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -190,6 +190,8 @@ Antistasi marks convoy objectives, mission vehicles, supply boxes and enemy vehi
 ## 17. Wounded squad AI treat themselves
 
 AI in your group that get hurt treat themselves without being told. Since 1.14.0, members of AI groups in a fight (smart combat) treat themselves with their own first aid kits by the same rules; the light-damage clearing below stays for your squad only, since it is there for the hurt icon you see. A group medic healing a mate and the mate treating itself never start on each other.
+
+Since 1.17.0, a really hurt unit that a known enemy within 500 m can see first runs to the nearest cover within 25 m (the same cover search smart combat uses, at most 20 s) and treats itself there. Your squad goes back into formation afterwards. With no cover near, or when held in place (Stop, Antistasi garrisons), it treats where it is. Only the automatic self-treatment does this; a "Treat yourself" you order from the command menu is the engine's own and runs at once.
 
 - Really hurt means it limps and can't run (legs at 0.5 or more), any other body part is at 0.5 or more, or overall damage is above 0.25. Such a unit uses vanilla "Treat yourself" 3 s after being hit, with its first aid kit, or its medikit if it is a medic. Without either it waits for a medic, as before. RHS, CUP and other mods' first aid kits count, since kits are recognised by their item type.
 - Lightly hurt means it can run and has at most 0.25 overall damage. That is what Antistasi's revive by a non-medic and a first aid kit leave behind, and what keeps the red hurt icon up. AUQOL clears it without using a kit. With `auqol_squad_selfTreatMedikit` (on) this only happens when that AI carries a medikit; turn it off to clear it on every AI.
