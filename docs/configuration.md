@@ -205,6 +205,24 @@ Applied on every machine to the enemy AI local to it (server, headless client).
 
 The skills are scaled from whatever the unit has, including Antistasi's own night values for units spawned in the dark (`A3A_fnc_NATOinit` already lowers spot distance and time for soldiers without NVGs). If Antistasi or another mod sets the skills later, that value becomes the new baseline, and when it gets light it is kept rather than overwritten. Units are checked 5 s after they spawn, when they change owner and every 5 s.
 
+## Concealment
+
+Runs on each player's machine every second, for the player and (with `auqol_conceal_squad`) the AI of their group local to it. Off when Hide Among The Grass is loaded (`hatg_core` in CfgPatches).
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_conceal_enabled` | Checkbox | On | Server | A unit that can hide gets its `camouflageCoef` trait set to 1% of its value, so enemy AI can't see it; revealed, it gets the value back. A value someone else set meanwhile (Antistasi's role traits after a respawn) becomes the baseline and is kept. |
+| `auqol_conceal_squad` | Checkbox | On | Server | Also the AI in the player's group that are local to the player. |
+| `auqol_conceal_crouch` | Checkbox | On | Server | Crouched units can hide while their speed is at most `auqol_conceal_crouchSpeed`. Standing units only hide under a roof (a `Building` straight above the eyes within 25 m). |
+| `auqol_conceal_crouchSpeed` | Slider 0–20, integer | 5 | Server | km/h. |
+| `auqol_conceal_surfaces` | Checkbox | Off | Server | Hiding needs a surface whose `CfgSurfaces` entry has a clutter `character` (not `Empty`), a terrain bush within 3 m, or a roof. |
+| `auqol_conceal_distance` | Slider 0–100, integer | 30 | Server | No hiding with a living, conscious hostile man within this many metres prone, ×2 crouched, ×4 standing; halved for each of `sunOrMoon` ≤ 0.8, `rain` ≥ 0.3, `fog` ≥ 0.3, a roof and a ghillie uniform; at least 5 m. A shot fired within it (`FiredNear`) starts the cooldown. |
+| `auqol_conceal_cooldown` | Slider 0–600, integer | 30 | Server | Seconds a unit can't hide after a hit (`Dammaged`), a close shot, a launcher shot or too many shots. |
+| `auqol_conceal_shots` | Slider −1–60, integer | 4 | Server | Shots allowed from one spot (the count restarts after moving 10 m): `random [n, n+2, n+4]`, plus the same again with a ghillie uniform, plus `2n` with a suppressor (a muzzle item whose `AmmoCoef` `audibleFire` is below 1), half without one. −1: shots never reveal. |
+| `auqol_conceal_hud` | Checkbox | On | Client | The stealth icon (Zeus "stealth" behaviour icon) with HIDDEN, SEEN or OFF. |
+
+The Toggle hiding keybind has no default key.
+
 ## Withstand
 
 Needs Antistasi Ultimate with the mission's Withstand self-revive parameter on.

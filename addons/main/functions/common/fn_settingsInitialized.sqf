@@ -76,6 +76,15 @@ if (hasInterface) then {
     // without a hit, such as the 0.25 Antistasi's revive leaves.
     [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call CBA_fnc_addPerFrameHandler;
 
+    // Concealment: no event says a unit lay down or an enemy came near, so the player and their squad
+    // are checked every second (a handful of units); hits, near shots and getting in are events.
+    [{ ["concealment", { [] call AUQOL_fnc_concealTick }] call AUQOL_fnc_perfRun }, 1] call CBA_fnc_addPerFrameHandler;
+    ["Antistasi Ultimate QoL by TchicX", "auqol_conceal_toggle", ["Toggle hiding", "Switch concealment off or on for you and your squad, for example to be seen on purpose."], {
+        auqol_conceal_off = !auqol_conceal_off;
+        [] call AUQOL_fnc_concealTick;
+        false
+    }, {}, [-1, [false, false, false]]] call CBA_fnc_addKeybind; // no default key
+
     // Fast ladder climbing key. Not blocking the key: Left Shift is still sprint off the ladder.
     ["Antistasi Ultimate QoL by TchicX", "auqol_anim_ladderFast", ["Fast ladder climbing (hold)", "While on a ladder, climb at the 'Ladder speed with the key held' setting."], {
         auqol_anim_ladderKeyHeld = true;

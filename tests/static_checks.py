@@ -221,7 +221,7 @@ MAGIC = {"_this", "_x", "_y", "_forEachIndex", "_thisEventHandler", "_thisSettin
 EXTERNAL_GLOBALS = {"teamPlayer", "HR_GRG_Vehicles", "HR_GRG_Sources", "missionNamespace", "player",
                     "BIS_fnc_holdActionAdd", "BIS_fnc_holdActionRemove", "SCRT_fnc_loot_gatherLoot",
                     "SCRT_fnc_common_getNearPlayers", "SCRT_fnc_arsenal_loadoutArsenal", "BIS_fnc_addScriptedEventHandler",
-                    "BIS_fnc_baseWeapon", "rebelLoadouts", "jna_dataList"}
+                    "BIS_fnc_baseWeapon", "BIS_fnc_rscLayer", "rebelLoadouts", "jna_dataList"}
 
 
 def check_wiki(wiki):
