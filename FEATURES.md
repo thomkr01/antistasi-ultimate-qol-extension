@@ -272,21 +272,35 @@ In the dark, enemy AI without night vision struggle to find you and your squad: 
 - Who: every AI hostile to your side, on every machine (server, headless client), with no night vision or thermal anywhere: head-mounted slot, helmet with a built-in visor, binoculars, rifle, launcher or pistol sight, or any sight of the vehicle or static weapon they are in. Gear and vehicles come from config, so RHS, CUP, ACE and any other mod's NVGs, thermal sights and vehicles count without a list. Your side's AI are never changed.
 - How dark: from the sky, not the clock: sun and moon height, moon phase and cloud cover. A moonless, overcast night is full darkness; a clear full moon night is a bit over halfway back to normal; dusk and dawn fade in and out.
 - What changes: only their `spotDistance` and `spotTime` skills, scaled down to `auqol_night_strength` (25%) in full darkness. Accuracy, courage, hearing gunfire, contact reports and all of Antistasi's AI work as before.
-- Noise and movement still give you away. Inside these distances an enemy spots you as well as by day:
+- Lights (`auqol_night_lights`, on) and, optionally, noise (`auqol_night_noise`, off) give you away. Inside these distances an enemy spots you as well as by day:
 
   | You are | Distance (default) |
   | --- | --- |
-  | Prone | 0.4 × setting (20 m) |
+  | Noise: prone | 0.4 × setting (20 m) |
   | Crouched | 0.7 × (35 m) |
   | Walking upright | 1 × (50 m) |
   | Running (over 9 km/h, any stance) | 2 × (100 m) |
   | Sprinting (over 17 km/h) | 3 × (150 m) |
   | A vehicle with its engine on | 4 × (200 m) |
-  | Lit: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
+  | Light: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
 
   The setting is `auqol_night_closeRange` (50 m). Firing is always heard, as the engine already does.
 - Day: the values AUQOL replaced are put back, also for units that moved between the server and a headless client. If Antistasi or another mod changed the skills meanwhile, their value is kept.
-- `auqol_night_enabled` (on), `auqol_night_strength` (25%, 5 to 100) and `auqol_night_closeRange` (50 m, 10 to 200). Checked when a unit spawns, changes owner and every 5 s.
+- `auqol_night_enabled` (on), `auqol_night_strength` (25%, 5 to 100), `auqol_night_noise` (off), `auqol_night_lights` (on) and `auqol_night_closeRange` (50 m, 10 to 200). Checked when a unit spawns, changes owner and every 5 s.
+
+## 24. Hide among the grass
+
+The same rules, timings and indicator as the Hide Among The Grass (HATG) mod (its GitHub version), written for AUQOL so you can drop that mod, with partial camouflage on top. When HATG is loaded, AUQOL's version switches itself off and HATG does the job.
+
+- **Hidden** means enemy AI can't see you: your camouflage is set near zero, so it works against every enemy, with or without night vision. It covers you and, with `auqol_conceal_squad`, the AI in your group.
+- **You can hide** when you are on foot, on the ground (below 2 m unless under a roof), off roads, not on cooldown, and:
+  - prone; or crouched at no more than 5 km/h (`auqol_conceal_crouch`, `auqol_conceal_crouchSpeed`); or standing under a roof;
+  - with `auqol_conceal_surfaces` on: in grass or field clutter, next to a bush or under a roof (off by default, as in HATG);
+  - no living enemy within the detection distance: 10 m prone (`auqol_conceal_distance`), twice that crouched, four times standing, halved for each of night, rain, fog, a roof and a ghillie suit, at least 5 m.
+- **Revealed** for 15 s (`auqol_conceal_cooldown`, not extended by a second hit while it runs) when you are hit, when anyone fires within the detection distance, when you fire a launcher, or when you fire more than your allowed shots from one spot (within 10 m): a random 4 to 8 at the default `auqol_conceal_shots` of 4, plus as many again with a ghillie suit, plus 8 with a suppressor, and half without one. Getting into a vehicle reveals you at once.
+- **Partial camouflage** (`auqol_conceal_partial`, on): when you can't hide (enemy close, moving, not on cooldown), your camouflage is still lowered: prone ×0.5, crouched ×0.75, ×0.7 in grass, field clutter or next to a bush (not while running), ×0.6 in a ghillie suit. Gone on cooldown, on roads and in vehicles.
+- **Indicator** (`auqol_conceal_hud`, per player): HATG's own hidden, revealed and disabled icons at HATG's place near the bottom centre of the screen, grey while hidden and white otherwise.
+- **Toggle hiding** keybind (no default key, set it under Controls > Addon Options): switches hiding off and on for you and your squad, to be seen on purpose.
 
 ## Features working together
 
@@ -301,7 +315,8 @@ Every AUQOL feature knows about the others:
 - **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
 - **Smart combat leaves your squad alone,** so the T key focus, self-treatment, squad perks and launchers keep full control of it.
 - **Night spotting and everything else.** Night spotting only lowers enemy spotting skills; faster reactions only raise friendly ones, and a unit that changes side gets its night values back before faster reactions look at it. Contacts shared by smart combat, the T key, the `Suppressed` reveal and gunfire still reach enemy AI at night, so a firefight plays as before: when they are shot at they still return fire and suppress where the shots came from.
-- **Night spotting and Hide Among The Grass (HATG).** They stack: HATG hides you when you lie still in grass, AUQOL makes enemies without night vision worse at spotting in the dark. Smart combat no longer counts HATG's hiding objects on your squad as buildings when looking for cover.
+- **Night spotting and hiding.** They stack: hiding (AUQOL's or HATG's) makes you invisible while you lie still, night spotting makes enemies without night vision worse at finding you when you move. Night also halves the hiding detection distance. Smart combat no longer counts HATG's hiding objects on your squad as buildings when looking for cover.
+- **Hiding and your squad features.** Hiding only changes the camouflage trait; squad perks (load), faster reactions, the T key, launchers and self-treat work as before. Your AI firing counts against their own shots, so a squad that opens fire gets revealed like you would.
 - **AI animation speed** makes every smart combat move faster too, and ACE medical's reset of a medic is re-applied.
 
 ## Less background work (1.10.0)
@@ -315,4 +330,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, the no-wasted-rounds launcher rule in 1.15.0, and the cross-feature fixes in 1.15.1; none of them is tested in game yet. Night spotting is new in 1.18.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, the no-wasted-rounds launcher rule in 1.15.0, and the cross-feature fixes in 1.15.1; none of them is tested in game yet. Night spotting is new in 1.18.0 and hide among the grass in 1.19.0; neither is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).

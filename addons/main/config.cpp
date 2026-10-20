@@ -141,6 +141,13 @@ class CfgFunctions {
             class nightApply {};
             class nightHasVision {};
         };
+        class conceal {
+            file = "\z\auqol\addons\main\functions\conceal";
+            class concealTick {};
+            class concealFactor {};
+            class concealOnFired {};
+            class concealHud {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

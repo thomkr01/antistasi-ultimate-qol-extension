@@ -18,6 +18,11 @@ auqol_freeze_ownsSystem = false; // AUQOL switched the engine's dynamic simulati
 auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], debug logging only
 auqol_perf_nextReport = 0;
 auqol_anim_ladderKeyHeld = false;
+auqol_conceal_hatg = isClass (configFile >> "CfgPatches" >> "hatg_core"); // Hide Among The Grass loaded: AUQOL concealment stays off
+auqol_conceal_hidden = []; // units this machine has hidden
+auqol_conceal_off = false; // the local player switched concealment off for their squad with the toggle key
+auqol_conceal_surfaceCache = createHashMap; // surface class -> has ground clutter
+auqol_conceal_ghillieCache = createHashMap; // uniform class -> is a ghillie suit
 auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
@@ -549,10 +554,97 @@ private _nightChanged = { if (auqol_ready) then { [] call AUQOL_fnc_nightApply }
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_night_noise", "CHECKBOX",
+    ["Noise gives you away", "On: inside the distances below an enemy spots you as well as by day (prone, crouched, walking, running, sprinting, engines). Off: noise doesn't help them; gunfire is still heard."],
+    [_category, "Night spotting"],
+    false, 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_night_lights", "CHECKBOX",
+    ["Lights give you away", "On: with your weapon light or headlights on, under a working street lamp or near a flare, you are seen from 6 times the walking distance below."],
+    [_category, "Night spotting"],
+    true, 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
     "auqol_night_closeRange", "SLIDER",
-    ["Noticed by noise and movement within (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4, and x6 when you are lit (your weapon light or headlights on, a street lamp, a flare near you). Gunfire is always heard."],
+    ["Noise and light distance (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4 (with Noise gives you away), and x6 when you are lit (with Lights give you away). Gunfire is always heard."],
     [_category, "Night spotting"],
     [10, 200, 50, 0], 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+// --- Concealment (each player's machine, for the player and their squad AI). Off while HATG is loaded.
+private _concealChanged = { if (auqol_ready) then { [] call AUQOL_fnc_concealTick } };
+
+[
+    "auqol_conceal_enabled", "CHECKBOX",
+    ["Hide among the grass", "Lying still (or sneaking crouched) off roads, with no enemy close, makes you and your squad invisible to enemy AI until you are hit, someone fires close to you or you fire too much. Like the Hide Among The Grass mod; switches itself off when that mod is loaded."],
+    [_category, "Concealment"],
+    true, 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_squad", "CHECKBOX",
+    ["Also your squad's AI", "The AI in your group hide the same way."],
+    [_category, "Concealment"],
+    true, 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_crouch", "CHECKBOX",
+    ["Hide while crouched", "Crouching also hides you, as long as you move no faster than the speed below. Standing only hides you under a roof."],
+    [_category, "Concealment"],
+    true, 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_crouchSpeed", "SLIDER",
+    ["Crouched hiding speed (km/h)", "The fastest you can move crouched and stay hidden, 0 to 20. 5 is sneaking, 12 walking."],
+    [_category, "Concealment"],
+    [0, 20, 5, 0], 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_surfaces", "CHECKBOX",
+    ["Only in grass or bushes", "On: hiding needs ground with grass or field clutter, a bush within 3 m, or a roof. Off: any ground off a road."],
+    [_category, "Concealment"],
+    false, 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_distance", "SLIDER",
+    ["Detection distance (m)", "No hiding with a living enemy this close when prone, twice it crouched, four times standing, 0 to 100. Halved for each of night, rain, fog, a roof and a ghillie suit (at least 5 m). Anyone firing within it reveals you."],
+    [_category, "Concealment"],
+    [0, 100, 10, 0], 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_cooldown", "SLIDER",
+    ["Revealed for (s)", "How long you stay visible after being hit, shot near or firing too much, 0 to 600."],
+    [_category, "Concealment"],
+    [0, 600, 15, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_shots", "SLIDER",
+    ["Shots before you are revealed", "From one spot (within 10 m), -1 to 60: a random 4 to 8 at 4, more with a ghillie suit, many more with a suppressor, half without one. Firing a launcher always reveals you. -1: shooting never reveals you."],
+    [_category, "Concealment"],
+    [-1, 60, 4, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_partial", "CHECKBOX",
+    ["Partial camouflage when not hidden", "When you can't hide (enemy close, moving, after shooting's cooldown ends), you are still harder to see: prone x0.5, crouched x0.75, x0.7 in grass or next to a bush (not while running), x0.6 in a ghillie suit."],
+    [_category, "Concealment"],
+    true, 1, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_hud", "CHECKBOX",
+    ["Show hidden indicator", "A stealth icon at the bottom of the screen: grey HIDDEN, white SEEN, red OFF after the toggle key."],
+    [_category, "Concealment"],
+    true, 0, _concealChanged
 ] call CBA_fnc_addSetting;
 
 // --- Antistasi "Withstand" self-revive cooldown (read on each client, so the setting script applies it everywhere)

@@ -201,9 +201,30 @@ Applied on every machine to the enemy AI local to it (server, headless client).
 | --- | --- | --- | --- | --- |
 | `auqol_night_enabled` | Checkbox | On | Server | At night, enemy AI (hostile to the rebel side) with no night vision or thermal get lower `spotDistance` and `spotTime` skills. Night vision counts from the head-mounted slot, a helmet's built-in visor (`subItems`), binoculars, the sights on rifle, launcher and pistol, and any optic of the vehicle or static weapon the unit sits in: anything whose config lists an `NVG` or `Ti` vision mode. Off restores the values AUQOL replaced. |
 | `auqol_night_strength` | Slider 5–100, integer | 25 | Server | The two skills in full darkness as a percentage of the unit's own value. Darkness is `(1 - sunOrMoon) × (1 - 0.6 × moonIntensity × (1 - overcast))`: 1 on a moonless or overcast night, 0.4 under a clear full moon, 0 by day. The multiplier is `1 - darkness × (1 - strength)`, in steps of 0.05. |
+| `auqol_night_noise` | Checkbox | Off | Server | Noise counts: the stance and speed multipliers below. Off: noise never restores the skills. |
+| `auqol_night_lights` | Checkbox | On | Server | Light counts: a lit target within 6 × `auqol_night_closeRange` restores the skills. |
 | `auqol_night_closeRange` | Slider 10–200, integer | 50 | Server | The distance for an enemy walking upright. An enemy of the unit inside its noise distance gives the unit its normal skills until it is gone. Noise distance is this times 0.4 prone, 0.7 crouched, 1 standing or walking, 2 running (over 9 km/h, any stance), 3 sprinting (over 17 km/h), and 4 for a vehicle with its engine on (1 with it off). A lit target counts at 6: a man with his weapon light on (`isFlashlightOn`), a vehicle with headlights on (`isLightOn`), a `Lamps_base_F` lamp within 15 m that is alive and not switched off, or a `FlareCore` projectile within 120 m (all hand, grenade-launcher and mortar flares). Gunfire reaches AI through the engine's own hearing either way. |
 
 The skills are scaled from whatever the unit has, including Antistasi's own night values for units spawned in the dark (`A3A_fnc_NATOinit` already lowers spot distance and time for soldiers without NVGs). If Antistasi or another mod sets the skills later, that value becomes the new baseline, and when it gets light it is kept rather than overwritten. Units are checked 5 s after they spawn, when they change owner and every 5 s.
+
+## Concealment
+
+Runs on each player's machine every second, for the player and (with `auqol_conceal_squad`) the AI of their group local to it. Off when Hide Among The Grass is loaded (`hatg_core` in CfgPatches).
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_conceal_enabled` | Checkbox | On | Server | A unit that can hide gets its `camouflageCoef` trait set to 1% of its value, so enemy AI can't see it; revealed, it gets the value back. A value someone else set meanwhile (Antistasi's role traits after a respawn) becomes the baseline and is kept. |
+| `auqol_conceal_squad` | Checkbox | On | Server | Also the AI in the player's group that are local to the player. |
+| `auqol_conceal_crouch` | Checkbox | On | Server | Crouched units can hide while their speed is at most `auqol_conceal_crouchSpeed`. Standing units only hide under a roof (a `Building` straight above the eyes within 25 m). |
+| `auqol_conceal_crouchSpeed` | Slider 0–20, integer | 5 | Server | km/h. |
+| `auqol_conceal_surfaces` | Checkbox | Off | Server | Hiding needs a surface whose `CfgSurfaces` entry has a clutter `character` (not `Empty`), a terrain bush within 3 m, or a roof. |
+| `auqol_conceal_distance` | Slider 0–100, integer | 10 | Server | No hiding with a living, conscious hostile man within this many metres prone, ×2 crouched, ×4 standing; halved for each of `sunOrMoon` ≤ 0.8, `rain` ≥ 0.3, `fog` ≥ 0.3, a roof and a ghillie uniform; at least 5 m. A shot fired within it (`FiredNear`) starts the cooldown. |
+| `auqol_conceal_cooldown` | Slider 0–600, integer | 15 | Server | Seconds a unit can't hide after a hit (`Dammaged`), a close shot, a launcher shot or too many shots. A running cooldown is not extended. |
+| `auqol_conceal_shots` | Slider −1–60, integer | 4 | Server | Shots allowed from one spot (the count restarts after moving 10 m): `random [n, n+2, n+4]`, plus the same again with a ghillie uniform, plus `2n` with a suppressor (a muzzle item whose `AmmoCoef` `audibleFire` is below 1), half without one. −1: shots never reveal. |
+| `auqol_conceal_partial` | Checkbox | On | Server | When a unit can't hide and is not on cooldown, on a road or in a vehicle: `camouflageCoef` × 0.5 prone or 0.75 crouched, × 0.7 on clutter or next to a bush below 9 km/h, × 0.6 in a ghillie uniform. |
+| `auqol_conceal_hud` | Checkbox | On | Client | HATG's hidden / revealed / disabled icons (APL-SA, see README), size 3, at HATG's default position (centred, box bottom 1.7 above the screen bottom with its interface-size offset); grey `#80808080` hidden, white otherwise. Redrawn only on change. |
+
+The Toggle hiding keybind has no default key.
 
 ## Withstand
 

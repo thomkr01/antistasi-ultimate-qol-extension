@@ -249,4 +249,14 @@ Static checks only show the fixes are in the code. These need a person in game, 
 4. **Morning:** skip time to day (`skipTime`): within 5 s the saved array is gone and the skills are back.
 5. **HATG:** with Hide Among The Grass loaded, lie prone in grass at night: both work at once and nothing shows script errors in the RPT.
 
+### 19. Hide among the grass (1.19.0)
+
+Without the Hide Among The Grass mod loaded:
+1. Lie down in a field with no enemy within 10 m: HATG's hidden icon shows in grey, and `player getUnitTrait "camouflageCoef"` is about 0.01. A patrol walking past at 20 m doesn't react.
+2. Let an enemy come within 10 m, or fire 2 to 4 unsuppressed shots, or fire a launcher: the revealed icon shows in white for 15 s.
+3. Crouch and walk slowly (under 5 km/h): stays hidden; jog: revealed. Stand in the open: revealed; stand inside a house: hidden. With an enemy close while prone, `camouflageCoef` is about half its normal value (partial camouflage).
+4. Your squad AI lying down are hidden too (`_ai getUnitTrait "camouflageCoef"`), and get revealed when they fire.
+5. Bind Toggle hiding and press it: the disabled icon shows and nobody in your squad hides.
+6. With HATG loaded: no AUQOL icon, HATG's own indicator works, and the RPT diagnostics line says AUQOL's concealment is off.
+
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
