@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.16.0
+
+None of it tested in game yet.
+
+- Smart combat AI take cover much more often. Cover spots are now right at the back of the tree, rock or wall (found with a ray), not a few metres off where the enemy could still see them. A soldier with no cover near where the team is heading takes cover near himself, the covering team takes cover at contact instead of standing in the open, and defenders keep their covered spot when the teams swap. Return fire and suppression are unchanged.
+- New: clear scratches (`auqol_service_scratches`, on). A vehicle with only light damage (below `auqol_service_scratchLevel`, 0.1) is set back to undamaged, so Repair only shows when something needs fixing.
+
 ## 1.15.1
 
 Fixes from checking every feature against every other feature. None of it tested in game yet.

@@ -16,6 +16,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Loot from any vehicle | Every vehicle gets the loot crate's "Gather Scattered Loot" action, and the vehicle and the crate share one radius you can set up to 2000 m. |
 | Short Withstand cooldown | Antistasi's Withstand self-revive cooldown drops from 5 minutes to 1 second, adjustable. |
 | Squad gets your perks | No sway, unlimited stamina, weightless running and the recoil setting also apply to the AI in your group. |
+| Clear scratches | A bullet or two that breaks nothing no longer leaves a vehicle asking for Repair; the prompt only shows when something needs fixing. |
 | Wounded AI treat themselves | Hurt AI in your group use their first aid kit on themselves at once, and the stale red hurt icon is cleared. AI groups in a fight use their own first aid kits too. |
 | Copy from user | A "Copy from user" button in Antistasi's Set Rebel Loadout arsenal loads your own loadout into the role you are editing (unlocked items only). |
 | Faster AI reactions | Your squad, and by default every friendly AI (garrisons, static and turret gunners), spot enemies sooner, share sightings faster and turn onto targets quicker. Their accuracy is unchanged. |
@@ -56,6 +57,8 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_service_ammo` | Checkbox | On | Server | Infinite ammunition-service stock. |
 | `auqol_service_repair` | Checkbox | On | Server | Infinite repair-service stock. |
 | `auqol_service_garageFuel` | Checkbox | On | Server | Keep Antistasi garage fuel sources full. Also needs the fuel setting on. |
+| `auqol_service_scratches` | Checkbox | On | Server | Light vehicle damage (nothing broken) is cleared 2 s after the hit, so Repair only shows when something needs fixing. |
+| `auqol_service_scratchLevel` | Slider 0.01-0.3 | 0.1 | Server | Damage below this, on the whole vehicle and every part, counts as a scratch. |
 | `auqol_player_noSway` | Checkbox | On | Server | No weapon sway. |
 | `auqol_player_unlimitedStamina` | Checkbox | On | Server | Unlimited stamina. |
 | `auqol_player_weightless` | Checkbox | On | Server | Running unaffected by carried weight. |
@@ -138,6 +141,7 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Recoil slider | `setUnitRecoilCoefficient` | Yes | n/a | n/a | n/a (ACE has no recoil module) |
 | Squad perks | Same commands on your group's AI | Yes | n/a | n/a | AI get the vanilla commands, since ACE sway and fatigue only run for players. |
 | Squad reactions, T key, launchers | `setSkill`, `reveal`, `doTarget`, `doFire`, `selectWeapon` on your group's AI | Yes. Accuracy stays at Antistasi's rebel training level. | Any launcher, by its ammo's AI usage flags | Any launcher, by its ammo's AI usage flags | Yes |
+| Clear scratches | `Dammaged` handler, `setDamage 0` where the vehicle is local | Yes. Garage and logistics see an undamaged vehicle, as after a repair | Any vehicle; only damage values are read | Same | ACE repair prompts follow the same hit points, so they disappear too |
 | Wounded AI treat themselves | Vanilla `HealSoldierSelf` action, `setDamage 0` for light leftover damage | Yes. Skips units Antistasi's medical is handling (incapacitated, `helped`, `helping`). Clears the 0.25 Antistasi's non-medic revive leaves. | Their first aid kits work (kits are found by item type) | Their first aid kits work | Off under ACE medical (ACE's medical AI treats AI) |
 | Live vehicle markers | n/a | Moves the markers of Antistasi's `A3A_fnc_vehicleMarkers` | Any vehicle | Any vehicle | Yes |
 | Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |

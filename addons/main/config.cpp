@@ -69,6 +69,7 @@ class CfgFunctions {
             class serviceOnService {};
             class serviceRefillLocal {};
             class serviceGarageRestore {};
+            class serviceScratches {};
         };
         class player {
             file = "\z\auqol\addons\main\functions\player";

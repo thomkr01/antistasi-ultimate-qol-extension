@@ -1,6 +1,6 @@
 # Features
 
-This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.14.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
+This is what the Antistasi Ultimate QoL Extension (AUQOL) does, and the rules each feature follows. Version 1.16.0. The [README](README.md) covers installation and the settings table. The [docs](docs/) folder has the details.
 
 ## Ground rules
 
@@ -254,6 +254,14 @@ Rules:
 - Not added: retreat and morale, because Antistasi already decides when its soldiers flee or surrender, and AUQOL taking over would fight it. Investigating heard gunfire, because that means moving the whole group, which is Antistasi's job (its PATCOM already sends groups toward contact).
 - Event-driven: a group costs nothing until it detects an enemy or is shot at, and its 3 s pass stops 30 s after the fight.
 - `auqol_combat_tactics`, `auqol_combat_buildings`, `auqol_combat_flank`, `auqol_combat_assault`, `auqol_combat_defend`, `auqol_combat_antiArmor`, `auqol_combat_spreadTargets`, `auqol_combat_shareContacts`, `auqol_combat_dodge`, `auqol_combat_resupply`, `auqol_combat_medics`, `auqol_combat_suppressiveFire`, `auqol_combat_grenades`, `auqol_combat_smoke`, `auqol_combat_revealShooter`, `auqol_combat_takeCover`, `auqol_combat_noProne`, `auqol_combat_yieldToAIMods` (all on), `auqol_combat_range` (500 m).
+
+## 22. Clear scratches
+
+A vehicle hit by a bullet or two that broke nothing no longer asks to be repaired. 2 s after the first hit of a burst, if the whole vehicle and every part are below the scratch level, it is set back to undamaged, so Repair (vanilla or ACE) only shows up when there is something to fix.
+
+- Anything at or above the level stays, including the light damage next to it, and is repaired as usual.
+- Any vehicle or static weapon from any mod; only damage values are read. Checked where the vehicle is local.
+- `auqol_service_scratches` (on) and `auqol_service_scratchLevel` (0.1, from 0.01 to 0.3).
 
 ## Features working together
 

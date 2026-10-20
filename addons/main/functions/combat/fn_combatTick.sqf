@@ -23,6 +23,9 @@
     200 m may throw smoke first (auqol_combat_smoke). A mover that makes no progress to its spot for
     9 s gets a new one, and after three such spots it is handed back to its leader for 30 s (and to
     AUQOL's stuck recovery once the fight is over).
+    A mover with no cover near its point takes cover near itself instead, and a covering unit with no
+    spot (the first team at contact) takes the nearest cover within 15 m. Defending units keep a
+    covered spot they already hold when the teams swap.
     Covering team: units in cover crouch outdoors (only if their stance is left to the AI), and with
     auqol_combat_spreadTargets they are spread over the known enemies. Those without a line of sight
     lay suppressive fire on where the enemy was last seen (auqol_combat_suppressiveFire), and one 12
@@ -124,6 +127,8 @@ private _toPick = [];
 {
     private _unit = _x;
     private _dest = _unit getVariable "auqol_tacDest";
+    // Defending, a unit that already holds a covered spot keeps it instead of shuffling to another.
+    if (_newPhase && _defend && {!isNil "_dest"} && {_unit distance2D _dest < 2.5}) then { continue };
     if (_newPhase || {isNil "_dest"}) then { _toPick pushBack _unit; continue };
     private _dist = _unit distance2D _dest;
     if (_dist < 2.5) then { continue };
@@ -184,6 +189,8 @@ if (_toPick isNotEqualTo []) then {
                 _anchor = (getPosATL _leader) getPos [(_distEnemy / 3) min 25, _dir];
             };
             _pos = [_unit, _ePos, _anchor, _radius, _taken] call AUQOL_fnc_combatFindCover;
+            // Nothing near the anchor: any cover close to the unit itself beats staying in the open.
+            if (_pos isEqualTo []) then { _pos = [_unit, _ePos, getPosATL _unit, 20, _taken] call AUQOL_fnc_combatFindCover };
             if (_pos isEqualTo [] && _assault) then { _pos = [_ePos getPos [4, _ePos getDir _unit], false] };
         };
         if (_pos isEqualTo []) then {
@@ -211,6 +218,21 @@ private _men = _enemies select { _x isKindOf "CAManBase" };
 {
     private _unit = _x;
     private _dest = _unit getVariable "auqol_tacDest";
+    // A covering unit standing in the open (the first team at contact, or one whose mover spot found
+    // nothing) takes the nearest cover around itself, and keeps firing from there.
+    if (isNil "_dest" && {time >= _unit getVariable ["auqol_tacNextSeek", 0]}) then {
+        _unit setVariable ["auqol_tacNextSeek", time + 6];
+        private _pos = [_unit, _ePos, getPosATL _unit, 15, _taken] call AUQOL_fnc_combatFindCover;
+        if (_pos isNotEqualTo []) then {
+            _pos params ["_spot", "_indoor"];
+            _taken pushBack _spot;
+            _dest = _spot;
+            _unit setVariable ["auqol_tacDest", _spot];
+            _unit setVariable ["auqol_tacIndoor", _indoor];
+            _unit setVariable ["auqol_tacProgress", [_unit distance2D _spot, time]];
+            _unit doMove _spot;
+        };
+    };
     private _inCover = !isNil "_dest" && {_unit distance2D _dest < 2.5};
     // Behind outdoor cover they crouch; at a building position they stay up to see out of windows.
     if (_inCover && {unitPos _unit == "Auto"} && {!(_unit getVariable ["auqol_tacIndoor", false])}) then {

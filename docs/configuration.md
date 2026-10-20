@@ -30,6 +30,8 @@ Every setting takes effect immediately, with no mission restart.
 | `auqol_service_fuel` | Checkbox | On | Server | Fuel sources never run out of the fuel they hand out. |
 | `auqol_service_ammo` | Checkbox | On | Server | Ammo sources never run out. |
 | `auqol_service_repair` | Checkbox | On | Server | Repair sources never run out. |
+| `auqol_service_scratches` | Checkbox | On | Server | Every vehicle and static weapon gets a `Dammaged` handler. 2 s after the first hit of a burst, where the vehicle is local, it is set back to undamaged (`setDamage [0, false]`) when the overall damage and every hit point are below `auqol_service_scratchLevel`. Anything at or above the level is left alone. |
+| `auqol_service_scratchLevel` | Slider 0.01-0.3 | 0.1 | Server | The scratch level (0 = intact, 1 = destroyed). |
 | `auqol_service_garageFuel` | Checkbox | On | Server | Keep fuel sources stored in the Antistasi garage full. Needs `auqol_service_fuel` on as well. |
 
 An object is a service source only if its config declares the service: `transportFuel`, `transportAmmo` or `transportRepair` greater than 0, or ACE's `ace_refuel_fuelCargo` or `ace_rearm_defaultSupply`. Ordinary vehicles are never touched. ACE jerry cans are excluded because they are portable consumables. Map-placed fuel stations are terrain objects, not service vehicles, so they keep Antistasi's finite fuel economy.
