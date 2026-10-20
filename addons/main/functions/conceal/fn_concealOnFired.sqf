@@ -35,6 +35,5 @@ if (_allowed == -1) then {
 _unit setVariable ["auqol_concealShots", [_pos, _count, _allowed]];
 
 if ((_weapon != "" && {_weapon == secondaryWeapon _unit}) || {_shots != -1 && _count >= _allowed}) then {
-    _unit setVariable ["auqol_concealUntil", time + auqol_conceal_cooldown];
-    [_unit] call AUQOL_fnc_concealTick;
+    [_unit] call (_unit getVariable "auqol_concealReveal");
 };

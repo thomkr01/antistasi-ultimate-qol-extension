@@ -144,7 +144,7 @@ class CfgFunctions {
         class conceal {
             file = "\z\auqol\addons\main\functions\conceal";
             class concealTick {};
-            class concealCanHide {};
+            class concealFactor {};
             class concealOnFired {};
             class concealHud {};
         };

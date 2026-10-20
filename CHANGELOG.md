@@ -6,7 +6,9 @@ Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new
 
 Not tested in game yet.
 
-- New: hide among the grass (`auqol_conceal_enabled`, on). Lying still or sneaking crouched off roads, with no enemy close, makes you and your squad invisible to enemy AI until you are hit, someone fires close by, or you fire too much. Same rules and defaults as the Hide Among The Grass mod (detection distance 30 m, 30 s cooldown, 4 shots, crouching on, grass not required), with a HIDDEN / SEEN stealth icon and a Toggle hiding keybind. Switches itself off when the Hide Among The Grass mod is loaded.
+- New: hide among the grass (`auqol_conceal_enabled`, on). Lying still or sneaking crouched off roads, with no enemy close, makes you and your squad invisible to enemy AI until you are hit, someone fires close by, or you fire too much. Same rules and timings as the Hide Among The Grass mod's GitHub version (detection distance 10 m, 15 s cooldown, 4 shots, crouching on, grass not required), with HATG's hidden / revealed icon at its place and a Toggle hiding keybind. Switches itself off when the Hide Among The Grass mod is loaded.
+- New: partial camouflage (`auqol_conceal_partial`, on). When you can't hide, prone, vegetation and a ghillie suit still make you harder to see.
+- Night spotting: noise and lights now have their own switches. Noise (`auqol_night_noise`) is off by default, lights (`auqol_night_lights`) on.
 
 ## 1.18.0
 

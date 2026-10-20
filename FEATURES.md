@@ -272,33 +272,34 @@ In the dark, enemy AI without night vision struggle to find you and your squad: 
 - Who: every AI hostile to your side, on every machine (server, headless client), with no night vision or thermal anywhere: head-mounted slot, helmet with a built-in visor, binoculars, rifle, launcher or pistol sight, or any sight of the vehicle or static weapon they are in. Gear and vehicles come from config, so RHS, CUP, ACE and any other mod's NVGs, thermal sights and vehicles count without a list. Your side's AI are never changed.
 - How dark: from the sky, not the clock: sun and moon height, moon phase and cloud cover. A moonless, overcast night is full darkness; a clear full moon night is a bit over halfway back to normal; dusk and dawn fade in and out.
 - What changes: only their `spotDistance` and `spotTime` skills, scaled down to `auqol_night_strength` (25%) in full darkness. Accuracy, courage, hearing gunfire, contact reports and all of Antistasi's AI work as before.
-- Noise and movement still give you away. Inside these distances an enemy spots you as well as by day:
+- Lights (`auqol_night_lights`, on) and, optionally, noise (`auqol_night_noise`, off) give you away. Inside these distances an enemy spots you as well as by day:
 
   | You are | Distance (default) |
   | --- | --- |
-  | Prone | 0.4 × setting (20 m) |
+  | Noise: prone | 0.4 × setting (20 m) |
   | Crouched | 0.7 × (35 m) |
   | Walking upright | 1 × (50 m) |
   | Running (over 9 km/h, any stance) | 2 × (100 m) |
   | Sprinting (over 17 km/h) | 3 × (150 m) |
   | A vehicle with its engine on | 4 × (200 m) |
-  | Lit: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
+  | Light: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
 
   The setting is `auqol_night_closeRange` (50 m). Firing is always heard, as the engine already does.
 - Day: the values AUQOL replaced are put back, also for units that moved between the server and a headless client. If Antistasi or another mod changed the skills meanwhile, their value is kept.
-- `auqol_night_enabled` (on), `auqol_night_strength` (25%, 5 to 100) and `auqol_night_closeRange` (50 m, 10 to 200). Checked when a unit spawns, changes owner and every 5 s.
+- `auqol_night_enabled` (on), `auqol_night_strength` (25%, 5 to 100), `auqol_night_noise` (off), `auqol_night_lights` (on) and `auqol_night_closeRange` (50 m, 10 to 200). Checked when a unit spawns, changes owner and every 5 s.
 
 ## 24. Hide among the grass
 
-The same idea and rules as the Hide Among The Grass (HATG) mod, written for AUQOL so you can drop that mod. When HATG is loaded, AUQOL's version switches itself off and HATG does the job.
+The same rules, timings and indicator as the Hide Among The Grass (HATG) mod (its GitHub version), written for AUQOL so you can drop that mod, with partial camouflage on top. When HATG is loaded, AUQOL's version switches itself off and HATG does the job.
 
 - **Hidden** means enemy AI can't see you: your camouflage is set near zero, so it works against every enemy, with or without night vision. It covers you and, with `auqol_conceal_squad`, the AI in your group.
 - **You can hide** when you are on foot, on the ground (below 2 m unless under a roof), off roads, not on cooldown, and:
   - prone; or crouched at no more than 5 km/h (`auqol_conceal_crouch`, `auqol_conceal_crouchSpeed`); or standing under a roof;
   - with `auqol_conceal_surfaces` on: in grass or field clutter, next to a bush or under a roof (off by default, as in HATG);
-  - no living enemy within the detection distance: 30 m prone (`auqol_conceal_distance`), twice that crouched, four times standing, halved for each of night, rain, fog, a roof and a ghillie suit, at least 5 m.
-- **Revealed** for 30 s (`auqol_conceal_cooldown`) when you are hit, when anyone fires within the detection distance, when you fire a launcher, or when you fire more than your allowed shots from one spot (within 10 m): a random 4 to 8 at the default `auqol_conceal_shots` of 4, plus as many again with a ghillie suit, plus 8 with a suppressor, and half without one. Getting into a vehicle reveals you at once.
-- **Indicator** (`auqol_conceal_hud`, per player): a stealth icon at the bottom of the screen, grey HIDDEN, white SEEN, red OFF.
+  - no living enemy within the detection distance: 10 m prone (`auqol_conceal_distance`), twice that crouched, four times standing, halved for each of night, rain, fog, a roof and a ghillie suit, at least 5 m.
+- **Revealed** for 15 s (`auqol_conceal_cooldown`, not extended by a second hit while it runs) when you are hit, when anyone fires within the detection distance, when you fire a launcher, or when you fire more than your allowed shots from one spot (within 10 m): a random 4 to 8 at the default `auqol_conceal_shots` of 4, plus as many again with a ghillie suit, plus 8 with a suppressor, and half without one. Getting into a vehicle reveals you at once.
+- **Partial camouflage** (`auqol_conceal_partial`, on): when you can't hide (enemy close, moving, not on cooldown), your camouflage is still lowered: prone ×0.5, crouched ×0.75, ×0.7 in grass, field clutter or next to a bush (not while running), ×0.6 in a ghillie suit. Gone on cooldown, on roads and in vehicles.
+- **Indicator** (`auqol_conceal_hud`, per player): HATG's own hidden, revealed and disabled icons at HATG's place near the bottom centre of the screen, grey while hidden and white otherwise.
 - **Toggle hiding** keybind (no default key, set it under Controls > Addon Options): switches hiding off and on for you and your squad, to be seen on purpose.
 
 ## Features working together

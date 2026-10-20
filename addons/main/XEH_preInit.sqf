@@ -554,8 +554,22 @@ private _nightChanged = { if (auqol_ready) then { [] call AUQOL_fnc_nightApply }
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_night_noise", "CHECKBOX",
+    ["Noise gives you away", "On: inside the distances below an enemy spots you as well as by day (prone, crouched, walking, running, sprinting, engines). Off: noise doesn't help them; gunfire is still heard."],
+    [_category, "Night spotting"],
+    false, 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_night_lights", "CHECKBOX",
+    ["Lights give you away", "On: with your weapon light or headlights on, under a working street lamp or near a flare, you are seen from 6 times the walking distance below."],
+    [_category, "Night spotting"],
+    true, 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
     "auqol_night_closeRange", "SLIDER",
-    ["Noticed by noise and movement within (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4, and x6 when you are lit (your weapon light or headlights on, a street lamp, a flare near you). Gunfire is always heard."],
+    ["Noise and light distance (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4 (with Noise gives you away), and x6 when you are lit (with Lights give you away). Gunfire is always heard."],
     [_category, "Night spotting"],
     [10, 200, 50, 0], 1, _nightChanged
 ] call CBA_fnc_addSetting;
@@ -602,14 +616,14 @@ private _concealChanged = { if (auqol_ready) then { [] call AUQOL_fnc_concealTic
     "auqol_conceal_distance", "SLIDER",
     ["Detection distance (m)", "No hiding with a living enemy this close when prone, twice it crouched, four times standing, 0 to 100. Halved for each of night, rain, fog, a roof and a ghillie suit (at least 5 m). Anyone firing within it reveals you."],
     [_category, "Concealment"],
-    [0, 100, 30, 0], 1, _concealChanged
+    [0, 100, 10, 0], 1, _concealChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_conceal_cooldown", "SLIDER",
     ["Revealed for (s)", "How long you stay visible after being hit, shot near or firing too much, 0 to 600."],
     [_category, "Concealment"],
-    [0, 600, 30, 0], 1
+    [0, 600, 15, 0], 1
 ] call CBA_fnc_addSetting;
 
 [
@@ -617,6 +631,13 @@ private _concealChanged = { if (auqol_ready) then { [] call AUQOL_fnc_concealTic
     ["Shots before you are revealed", "From one spot (within 10 m), -1 to 60: a random 4 to 8 at 4, more with a ghillie suit, many more with a suppressor, half without one. Firing a launcher always reveals you. -1: shooting never reveals you."],
     [_category, "Concealment"],
     [-1, 60, 4, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_partial", "CHECKBOX",
+    ["Partial camouflage when not hidden", "When you can't hide (enemy close, moving, after shooting's cooldown ends), you are still harder to see: prone x0.5, crouched x0.75, x0.7 in grass or next to a bush (not while running), x0.6 in a ghillie suit."],
+    [_category, "Concealment"],
+    true, 1, _concealChanged
 ] call CBA_fnc_addSetting;
 
 [

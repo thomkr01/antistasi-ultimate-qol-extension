@@ -5,11 +5,11 @@
     auqol_night_strength percent on a moonless, overcast night. Darkness comes from the sun and moon
     height, the moon phase and the cloud cover, not the clock. Everything else (accuracy, courage,
     hearing gunfire, contacts reported by other units) is left alone, so a firefight works as before.
-    Noise and movement still give a target away: a soldier with an enemy close enough gets his normal
+    With auqol_night_noise (off by default), noise and movement still give a target away: a soldier with an enemy close enough gets his normal
     skills back until it is gone. How close depends on how much noise the enemy makes, as a multiple of
     auqol_night_closeRange (an enemy walking upright): prone 0.4, crouched 0.7, walking 1, running
     (over 9 km/h) 2, sprinting (over 17 km/h) 3, a vehicle with its engine on 4. The noisier of stance
-    and speed counts, so a crouched run is a run. A lit target is seen from 6: its own weapon light or
+    and speed counts, so a crouched run is a run. With auqol_night_lights, a lit target is seen from 6: its own weapon light or
     headlights on, a burning street lamp within 15 m, or a flare in the air or on the ground within 120 m.
 
     Runs on every machine for its own AI. The original values are a public unit variable
@@ -33,6 +33,7 @@ private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
 private _factor = [1, 1 - _dark * (1 - auqol_night_strength / 100)] select auqol_night_enabled;
 _factor = (round (_factor * 20)) / 20; // steps of 0.05, so slow light changes don't rewrite every pass
 private _range = auqol_night_closeRange;
+private _reach = _range * (([0, 4] select auqol_night_noise) max ([0, 6] select auqol_night_lights)); // farthest a target can give itself away
 private _pass = diag_tickTime; // a target's light is worked out once per pass, kept on the target
 private _isLit = {
     private _known = _this getVariable ["auqol_nightLit", [-1, false]];
@@ -54,18 +55,20 @@ private _isLit = {
 
     private _side = side group _unit;
     if (_factor < 1 && {[_side] call AUQOL_fnc_isHostileSide} && {!([_unit] call AUQOL_fnc_nightHasVision)}
-        && {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _range * 6]) findIf {
+        && {_reach == 0 || {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _reach]) findIf {
             alive _x && {(_side getFriend side _x) < 0.6} && {
                 private _noise = [1, 4] select isEngineOn _x;
-                if (_x isKindOf "CAManBase") then {
-                    private _speed = abs speed _x;
-                    _noise = switch (stance _x) do { case "PRONE": {0.4}; case "CROUCH": {0.7}; default {1} };
-                    if (_speed > 17) then { _noise = 3 } else { if (_speed > 9) then { _noise = 2 } };
-                };
+                if (auqol_night_noise) then {
+                    if (_x isKindOf "CAManBase") then {
+                        private _speed = abs speed _x;
+                        _noise = switch (stance _x) do { case "PRONE": {0.4}; case "CROUCH": {0.7}; default {1} };
+                        if (_speed > 17) then { _noise = 3 } else { if (_speed > 9) then { _noise = 2 } };
+                    };
+                } else { _noise = 0 };
                 private _d = _unit distance _x;
-                _d < _range * _noise || {_d < _range * 6 && {_x call _isLit}}
+                _d < _range * _noise || {auqol_night_lights && {_d < _range * 6} && {_x call _isLit}}
             }
-        } == -1}) then {
+        } == -1}}) then {
         private _base = if (isNil "_saved" || _changed) then { _now } else { _saved select [0, 2] };
         private _want = _base apply { _x * _factor };
         if (isNil "_saved" || _changed || {(_saved select 4) != _factor}) then {

@@ -27,8 +27,8 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
 | Faster pistol swap | Switching to or from your handgun plays twice as fast, and the pistol comes up three times as fast (adjustable). |
 | Faster ladders | You climb ladders 1.5 times as fast. Hold the Fast ladder climbing key (Left Shift by default) to climb 2.5 times as fast, or to slide down at 4 times. |
-| Night spotting | At night, enemy AI without night vision (goggles, helmet visor, NV or thermal sight, or a vehicle with one) find you and your squad much later and at shorter range. How much depends on the real light: moon height and phase and cloud cover. Noise still gives you away: prone 20 m, crouched 35 m, walking 50 m, running 100 m, sprinting 150 m, an engine 200 m, and 300 m when you are lit by your weapon light, headlights, a street lamp or a flare (adjustable). Gunfire is always heard. |
-| Hide among the grass | Lying still, or sneaking crouched, off roads and with no enemy close makes you and your squad invisible to enemy AI until you are hit, someone fires close by, or you fire too much. A stealth icon shows HIDDEN or SEEN. Same rules as the Hide Among The Grass mod, so you can drop it; when that mod is loaded AUQOL's version switches itself off. |
+| Night spotting | At night, enemy AI without night vision (goggles, helmet visor, NV or thermal sight, or a vehicle with one) find you and your squad much later and at shorter range. How much depends on the real light: moon height and phase and cloud cover. Lights give you away from 300 m (your weapon light, headlights, a street lamp or a flare). Optionally (off by default) noise too: prone 20 m, crouched 35 m, walking 50 m, running 100 m, sprinting 150 m, an engine 200 m. Gunfire is always heard. |
+| Hide among the grass | Lying still, or sneaking crouched, off roads and with no enemy close makes you and your squad invisible to enemy AI until you are hit, someone fires close by, or you fire too much. HATG's own hidden / revealed icon shows which. When you can't hide, prone, vegetation and a ghillie suit still make you harder to see. Same rules and timings as the Hide Among The Grass mod, so you can drop it; when that mod is loaded AUQOL's version switches itself off. |
 | Smart combat AI | AI squads in a fight move as two fire teams from cover to cover (walls, rocks, trees, inside buildings), clear buildings, flank, lay suppressive fire, throw grenades at hidden enemies and smoke when caught in the open, assault when stronger, defend in place, fight armor as a team, split targets, share sightings with nearby groups, dodge grenades, share magazines and send medics. AI under close fire learn where it came from and get low. Antistasi keeps steering its groups. Stands down when LAMBS Danger or Vcom AI is loaded. |
 
 Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
@@ -124,16 +124,19 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_loot_caches` | Checkbox | On | Server | Also empty enemy item caches within 30 m into the vehicle or crate, then delete the empty box. |
 | `auqol_night_enabled` | Checkbox | On | Server | At night, enemy AI without night vision or thermal spot you and your squad worse, scaled by how dark it is. |
 | `auqol_night_strength` | Slider 5–100% | 25% | Server | Their spot distance and spot time skills on a moonless, overcast night, as a share of normal. |
-| `auqol_night_closeRange` | Slider 10–200 m | 50 | Server | Within this distance from a soldier walking upright they spot you normally (noise, movement). Prone ×0.4, crouched ×0.7, running ×2, sprinting ×3, vehicle with engine on ×4, lit by a weapon light, headlights, street lamp or flare ×6. |
+| `auqol_night_noise` | Checkbox | Off | Server | Noise gives you away: within the distances below they spot you normally. |
+| `auqol_night_lights` | Checkbox | On | Server | Lights give you away: lit by a weapon light, headlights, street lamp or flare, you are seen from 6× the distance below. |
+| `auqol_night_closeRange` | Slider 10–200 m | 50 | Server | The distance for a soldier walking upright. Noise: prone ×0.4, crouched ×0.7, running ×2, sprinting ×3, vehicle with engine on ×4. Lights ×6. |
 | `auqol_conceal_enabled` | Checkbox | On | Server | Hide among the grass. Off automatically while the Hide Among The Grass mod is loaded. |
 | `auqol_conceal_squad` | Checkbox | On | Server | Your squad's AI hide the same way. |
 | `auqol_conceal_crouch` | Checkbox | On | Server | Crouching also hides you (at the speed below). Standing only hides you under a roof. |
 | `auqol_conceal_crouchSpeed` | Slider 0–20 km/h | 5 | Server | Fastest crouched movement that stays hidden. |
 | `auqol_conceal_surfaces` | Checkbox | Off | Server | Only hide in grass or field clutter, next to a bush or under a roof. |
-| `auqol_conceal_distance` | Slider 0–100 m | 30 | Server | No hiding with an enemy this close prone (×2 crouched, ×4 standing; halved for night, rain, fog, roof, ghillie). Shots within it reveal you. |
-| `auqol_conceal_cooldown` | Slider 0–600 s | 30 | Server | How long you stay visible after being hit, shot near or firing too much. |
+| `auqol_conceal_distance` | Slider 0–100 m | 10 | Server | No hiding with an enemy this close prone (×2 crouched, ×4 standing; halved for night, rain, fog, roof, ghillie). Shots within it reveal you. |
+| `auqol_conceal_cooldown` | Slider 0–600 s | 15 | Server | How long you stay visible after being hit, shot near or firing too much. |
 | `auqol_conceal_shots` | Slider −1–60 | 4 | Server | Shots from one spot before you are revealed (randomised, more with ghillie or suppressor). Launchers always reveal. −1: never. |
-| `auqol_conceal_hud` | Checkbox | On | Client | Show the HIDDEN / SEEN / OFF stealth icon. |
+| `auqol_conceal_partial` | Checkbox | On | Server | When you can't hide: prone ×0.5, crouched ×0.75, vegetation ×0.7, ghillie ×0.6 camouflage. |
+| `auqol_conceal_hud` | Checkbox | On | Client | Show HATG's hidden / revealed / disabled icon. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
 | `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, loot run and stuck-recovery event, and every 5 minutes the average and worst time of each AUQOL timer. |
@@ -227,4 +230,6 @@ Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshootin
 
 ## License
 
-MIT, see [LICENSE](LICENSE). This project contains no code from Antistasi Ultimate, CBA_A3 or ACE3. It only calls their public functions at runtime.
+MIT, see [LICENSE](LICENSE). This project contains no code from Antistasi Ultimate, CBA_A3, ACE3 or Hide Among The Grass. It only calls their public functions at runtime.
+
+The three concealment indicator icons in `addons/main/data/conceal/` are from [Hide Among The Grass](https://github.com/Antistasi-Ultimate-Community/HATG) by SilenceIsFatto and MaxxLite, used unchanged under the [Arma Public License Share Alike (APL-SA)](https://www.bohemia.net/community/licenses/arma-public-license-share-alike); those files stay under that licence.
