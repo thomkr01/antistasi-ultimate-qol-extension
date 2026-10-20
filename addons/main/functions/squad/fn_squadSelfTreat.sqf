@@ -25,7 +25,7 @@
 */
 
 if (!auqol_ready) exitWith {};
-if (isClass (configFile >> "CfgPatches" >> "ace_medical_engine")) exitWith {};
+if (auqol_aceMedical) exitWith {};
 
 params [["_unit", objNull, [objNull]]];
 
@@ -56,7 +56,7 @@ private _damage = damage _unit;
 private _worstHit = selectMax (((getAllHitPointsDamage _unit) param [2, []]) + [0]);
 if (_damage == 0 && _worstHit == 0) exitWith {};
 
-private _itemTypes = items _unit apply { getNumber (configFile >> "CfgWeapons" >> _x >> "ItemInfo" >> "type") };
+private _itemTypes = items _unit apply { auqol_itemTypeCache getOrDefaultCall [_x, { getNumber (configFile >> "CfgWeapons" >> _x >> "ItemInfo" >> "type") }, true] };
 
 if (_damage <= 0.25 && _worstHit < 0.5) exitWith {
     if (!hasInterface || {group _unit isNotEqualTo group player}) exitWith {};

@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.2
+
+Not tested in game yet. Optimization only, nothing plays or looks different.
+
+Every feature was reviewed for work it repeats. Most were already event-driven with cached config lookups since 1.10.0. These were left:
+- Loot action: whether an object's class gets the action is looked up once per class, not for every object spawned on each client.
+- Self-treat and group medics: whether ACE medical is loaded is read once at start, and each item's type (first aid kit, medikit) once per item class, instead of on every hit and pass.
+
 ## 1.20.1
 
 Not tested in game yet. Optimization only, nothing plays or looks different.

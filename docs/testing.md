@@ -276,4 +276,5 @@ Nothing should look or play differently from 1.20.0.
 
 1. **Night spotting:** repeat test 18 on a dedicated server with a headless client. Enemies without night vision still spot late, and with a weapon light on they notice you from the light distance.
 2. **Timings:** turn `auqol_debug` on and play 5 minutes at night near a garrison. The `night spotting` line in the RPT should be lower than in 1.20.0.
-3. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.
+3. **Self-treat and loot (1.20.2):** a wounded squad AI with a first aid kit still treats itself, and every vehicle still offers Gather Scattered Loot.
+4. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.

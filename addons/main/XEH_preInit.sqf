@@ -27,6 +27,9 @@ auqol_conceal_camoCache = createHashMap; // uniform class -> camouflage multipli
 auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
+auqol_aceMedical = isClass (configFile >> "CfgPatches" >> "ace_medical_engine"); // ACE medical loaded: self-treat and group medics stay off
+auqol_itemTypeCache = createHashMap; // item class -> CfgWeapons ItemInfo type (401 first aid kit, 619 medikit)
+auqol_loot_vehicleCache = createHashMap; // object class -> gets the loot action as a vehicle
 auqol_combat_ammoSim = createHashMap; // ammo class -> lowercase simulation, for the grenade dodge
 auqol_combat_aiModLoaded = isClass (configFile >> "CfgPatches" >> "lambs_danger") || {isClass (configFile >> "CfgPatches" >> "VCOM_AI")};
 
