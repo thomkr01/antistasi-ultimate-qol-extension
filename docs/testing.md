@@ -278,6 +278,14 @@ Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
 
+### 23. AI avoid prone (1.21.0)
+
+Not tested in game yet.
+
+1. Load AUQOL without the "AI avoids prone" mod. Start a firefight with enemy AI on open ground and in grass: they crouch or stand to fight and move, they don't lie flat.
+2. Your squad does the same. A stance you order yourself (command menu, Prone) still works.
+3. With `auqol_combat_noProne` off, heavy suppression may still order AI down.
+
 ### 21. Optimization pass (1.20.1)
 
 Nothing should look or play differently from 1.20.0.

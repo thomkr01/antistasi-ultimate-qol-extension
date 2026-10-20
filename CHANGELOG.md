@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.21.0
+
+Not tested in game yet. Thomas asked for the "AI avoids prone" mod's behavior.
+
+- AI now avoid going prone on every surface, friendly and enemy, Antistasi's included. This is the same one config value the original mod sets (`CfgSurfaces >> Default >> AIAvoidStance = 2`), so it costs nothing at runtime. It is static config, so it has no setting; unload AUQOL to undo it. You can unload the "AI avoids prone" mod.
+- `auqol_combat_noProne` is unchanged and still decides whether AUQOL's own suppression reaction may order a unit prone.
+
 ## 1.20.5
 
 Not tested in game yet. From Thomas's report of squad AA soldiers not firing at an attacking A-10.

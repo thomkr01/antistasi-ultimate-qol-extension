@@ -307,6 +307,13 @@ The same rules, timings and indicator as the Hide Among The Grass (HATG) mod (it
 - **Hard to locate at range** (`auqol_conceal_locate`, on; also with the HATG mod loaded): an enemy group farther away than the distance where your shot gives you away doesn't learn where you or your squad are from the shot; it has to see you. Unless a soldier of the group saw you around the shot, or another group of its side close enough found you and passes it on by radio, it forgets you 1.5 s after the shot (it still heard the shot). The distance comes from your gear's own config values: 500 m for an unsuppressed rifle (`auqol_conceal_locateRange`), scaled by the round's loudness and your muzzle device (sound carries with the square root of loudness, so a suppressor brings it to about 100 to 160 m), muzzle flash in the dark (an open muzzle is seen 20 % farther on a dark night, a suppressor hides it; enemies with night vision see it as by day), your uniform's camouflage (ghillie ×0.6), prone ×0.8, 25 % more for every further shot from the same spot (up to ×3) and a random ×0.8 to 1.2. A suppressed sniper in a ghillie suit, prone at night, is pinned down by shots alone only within about 50 m for the first shot and about 110 m after five from the same spot; unsuppressed, about 290 m and 580 m (with a typical 0.1 suppressor and the default setting, on a dark night).
 - **Toggle hiding** keybind (no default key, set it under Controls > Addon Options): switches hiding off and on for you and your squad, to be seen on purpose.
 
+## 25. AI avoid going prone
+
+- All AI avoid the prone stance, on every surface (`CfgSurfaces >> Default >> AIAvoidStance = 2` in `config.cpp`, the value the "AI avoids prone" mod sets). Applies to friendly, enemy and Antistasi AI alike.
+- Static config: nothing runs, no setting. Remove AUQOL to undo it. A surface that sets its own `AIAvoidStance` (some terrain mods) keeps it.
+- Orders still win: a stance set with `setUnitPos`, by you in the command menu or by a script can still be prone. `auqol_combat_noProne` (smart combat, on) only decides whether AUQOL's own suppression reaction may give that order; with it off, heavily suppressed AI can still be ordered down by AUQOL.
+- Does not touch the player's own stance, hiding among the grass or stuck recovery.
+
 ## Features working together
 
 Every AUQOL feature knows about the others:

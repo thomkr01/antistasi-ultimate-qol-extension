@@ -27,6 +27,14 @@ class CfgInventoryGlobalVariable {
     maxSoldierLoad = 10000000;
 };
 
+// AI avoid the prone stance on every surface (what the "AI avoids prone" mod does). Surfaces inherit
+// from Default; one that sets its own AIAvoidStance keeps it. Static config, no runtime cost, no switch.
+class CfgSurfaces {
+    class Default {
+        AIAvoidStance = 2;
+    };
+};
+
 class Extended_PreInit_EventHandlers {
     class auqol_main {
         init = "call compileScript ['\z\auqol\addons\main\XEH_preInit.sqf']";
