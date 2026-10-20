@@ -25,7 +25,7 @@ private _candidates = [];
 
 {
     { _candidates pushBack [_x, true] } forEach (_x buildingPos -1);
-} forEach (nearestObjects [_anchor, ["House", "Building"], _radius] select [0, 4]);
+} forEach ((nearestObjects [_anchor, ["House", "Building"], _radius] select { (_x buildingPos -1) isNotEqualTo [] }) select [0, 4]); // objects with no positions (HATG's hiding objects on your squad) would take the slots
 
 private _outdoor = nearestTerrainObjects [_anchor, ["TREE", "ROCK", "ROCKS", "WALL", "FENCE", "HIDE", "BUNKER", "FORTRESS", "RUIN", "HOUSE", "BUILDING"], _radius, false, true];
 _outdoor append (nearestObjects [_anchor, ["Wall", "BagFence_base_F", "HBarrier_base_F"], _radius]);

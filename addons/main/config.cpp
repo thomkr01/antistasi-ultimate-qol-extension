@@ -136,6 +136,11 @@ class CfgFunctions {
             class combatDodge {};
             class combatSupport {};
         };
+        class night {
+            file = "\z\auqol\addons\main\functions\night";
+            class nightApply {};
+            class nightHasVision {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

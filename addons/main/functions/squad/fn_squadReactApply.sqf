@@ -32,6 +32,8 @@ private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
 
 {
     private _unit = _x;
+    // A unit that changed side still carries night-reduced skills: hand them back before saving a baseline.
+    if (!isNil {_unit getVariable "auqol_nightSkills"}) then { [[_unit]] call AUQOL_fnc_nightApply };
     private _saved = _unit getVariable "auqol_reactSkills";
     if (auqol_squad_reaction && {auqol_squad_reactionAll || {isPlayer leader group _unit}}) then {
         // Saved once, before the first write, and public: skills travel with the unit when it moves

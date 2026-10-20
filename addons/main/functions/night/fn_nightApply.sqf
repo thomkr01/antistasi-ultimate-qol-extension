@@ -1,0 +1,73 @@
+/*
+    Author: AUQOL
+    Night spotting: enemy AI without night vision (AUQOL_fnc_nightHasVision) spot worse in the dark.
+    Their spotDistance and spotTime skills are scaled down by how dark it is, down to
+    auqol_night_strength percent on a moonless, overcast night. Darkness comes from the sun and moon
+    height, the moon phase and the cloud cover, not the clock. Everything else (accuracy, courage,
+    hearing gunfire, contacts reported by other units) is left alone, so a firefight works as before.
+    Noise and movement still give a target away: a soldier with an enemy close enough gets his normal
+    skills back until it is gone. How close depends on how much noise the enemy makes, as a multiple of
+    auqol_night_closeRange (an enemy walking upright): prone 0.4, crouched 0.7, walking 1, running
+    (over 9 km/h) 2, sprinting (over 17 km/h) 3, a vehicle with its engine on 4. The noisier of stance
+    and speed counts, so a crouched run is a run.
+
+    Runs on every machine for its own AI. The original values are a public unit variable
+    [spotDistance, spotTime, both values read back after the write, factor], so they survive a change
+    of owner. When someone else changes the skills (Antistasi, another mod), their value becomes the
+    new baseline, and on restore their value is kept.
+
+    Arguments:
+    0: Units to check <ARRAY> (optional, default: every unit on this machine)
+
+    Return Value: none
+*/
+
+if (!auqol_ready) exitWith {};
+
+params [["_units", nil, [[]]]];
+if (isNil "_units") then { _units = allUnits };
+
+// A clear full moon takes 60 % of the darkness away; clouds hide the moon.
+private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
+private _factor = [1, 1 - _dark * (1 - auqol_night_strength / 100)] select auqol_night_enabled;
+_factor = (round (_factor * 20)) / 20; // steps of 0.05, so slow light changes don't rewrite every pass
+private _range = auqol_night_closeRange;
+
+{
+    private _unit = _x;
+    private _saved = _unit getVariable "auqol_nightSkills";
+    private _now = [_unit skill "spotDistance", _unit skill "spotTime"];
+    // Our last write is no longer there: someone else set the skills, and their value is the baseline.
+    private _changed = !isNil "_saved" && {abs ((_now select 0) - (_saved select 2)) > 0.01 || {abs ((_now select 1) - (_saved select 3)) > 0.01}};
+
+    private _side = side group _unit;
+    if (_factor < 1 && {[_side] call AUQOL_fnc_isHostileSide} && {!([_unit] call AUQOL_fnc_nightHasVision)}
+        && {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _range * 4]) findIf {
+            alive _x && {(_side getFriend side _x) < 0.6} && {
+                private _noise = [1, 4] select isEngineOn _x;
+                if (_x isKindOf "CAManBase") then {
+                    private _speed = abs speed _x;
+                    _noise = switch (stance _x) do { case "PRONE": {0.4}; case "CROUCH": {0.7}; default {1} };
+                    if (_speed > 17) then { _noise = 3 } else { if (_speed > 9) then { _noise = 2 } };
+                };
+                _unit distance _x < _range * _noise
+            }
+        } == -1}) then {
+        private _base = if (isNil "_saved" || _changed) then { _now } else { _saved select [0, 2] };
+        private _want = _base apply { _x * _factor };
+        if (isNil "_saved" || _changed || {(_saved select 4) != _factor}) then {
+            _unit setSkill ["spotDistance", _want select 0];
+            _unit setSkill ["spotTime", _want select 1];
+            _unit setVariable ["auqol_nightSkills", _base + [_unit skill "spotDistance", _unit skill "spotTime", _factor], true];
+        };
+    } else {
+        if (isNil "_saved") exitWith {};
+        if (!_changed) then {
+            _unit setSkill ["spotDistance", _saved select 0];
+            _unit setSkill ["spotTime", _saved select 1];
+        };
+        _unit setVariable ["auqol_nightSkills", nil, true];
+    };
+} forEach (_units select {
+    local _x && {!isPlayer _x} && {alive _x} && {_factor < 1 || {!isNil {_x getVariable "auqol_nightSkills"}}}
+});

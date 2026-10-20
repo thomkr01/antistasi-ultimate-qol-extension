@@ -193,6 +193,18 @@ Needs Antistasi Ultimate. Without it the action is not added.
 
 The action is the crate's own: same text, icon, 2-second hold, on foot within 5 m. Completing it runs Antistasi's `SCRT_fnc_loot_gatherLoot` on the server, so everything else is the crate's behaviour: dead bodies, weapon holders and surrender crates in the radius are emptied into the vehicle, money items are split between rebel players, already-unlocked items follow the mission's "loot crate ignores unlocked items" parameter, and there is a 10-second cooldown per vehicle. Before that, the server checks the request: it must come from the machine of the player who held the action (`remoteExecutedOwner`; a hosting player is local), and that player must be alive, on foot and within 10 m of an object that has the action. A repeat request for the same object within 10 s is refused before any cache is touched. The enemies-nearby check is AUQOL's, with `auqol_loot_enemyRadius`, centred on the vehicle. Antistasi's crate centres it on the host player instead, which on a dedicated server is no position at all. Items are added even past the vehicle's normal cargo capacity, as with the crate.
 
+## Night spotting
+
+Applied on every machine to the enemy AI local to it (server, headless client).
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_night_enabled` | Checkbox | On | Server | At night, enemy AI (hostile to the rebel side) with no night vision or thermal get lower `spotDistance` and `spotTime` skills. Night vision counts from the head-mounted slot, a helmet's built-in visor (`subItems`), binoculars, the sights on rifle, launcher and pistol, and any optic of the vehicle or static weapon the unit sits in: anything whose config lists an `NVG` or `Ti` vision mode. Off restores the values AUQOL replaced. |
+| `auqol_night_strength` | Slider 5–100, integer | 25 | Server | The two skills in full darkness as a percentage of the unit's own value. Darkness is `(1 - sunOrMoon) × (1 - 0.6 × moonIntensity × (1 - overcast))`: 1 on a moonless or overcast night, 0.4 under a clear full moon, 0 by day. The multiplier is `1 - darkness × (1 - strength)`, in steps of 0.05. |
+| `auqol_night_closeRange` | Slider 10–200, integer | 50 | Server | The distance for an enemy walking upright. An enemy of the unit inside its noise distance gives the unit its normal skills until it is gone. Noise distance is this times 0.4 prone, 0.7 crouched, 1 standing or walking, 2 running (over 9 km/h, any stance), 3 sprinting (over 17 km/h), and 4 for a vehicle with its engine on (1 with it off). Gunfire reaches AI through the engine's own hearing either way. |
+
+The skills are scaled from whatever the unit has, including Antistasi's own night values for units spawned in the dark (`A3A_fnc_NATOinit` already lowers spot distance and time for soldiers without NVGs). If Antistasi or another mod sets the skills later, that value becomes the new baseline, and when it gets light it is kept rather than overwritten. Units are checked 5 s after they spawn, when they change owner and every 5 s.
+
 ## Withstand
 
 Needs Antistasi Ultimate with the mission's Withstand self-revive parameter on.

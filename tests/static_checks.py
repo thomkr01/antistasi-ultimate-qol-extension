@@ -156,7 +156,7 @@ def check_settings():
 # --- Regression checks for fixed edge cases ----------------------------------------------------
 
 def check_regressions():
-    """Static guards for the 1.8.1 fixes. They prove the safeguard is in the code, not that it works in game."""
+    """Static guards for the 1.8.1 fixes and later baselines. They prove the safeguard is in the code, not that it works in game."""
     def code(rel):
         return strip_comments((ADDON / rel).read_text())
     problems = []
@@ -180,6 +180,12 @@ def check_regressions():
     if 'setVariable ["auqol_reactSkills", _skills apply { _unit skill _x }, true]' not in react \
             or 'if (isNil "_saved"' not in react:
         problems.append("squadReactApply: original skills must be saved once and publicly")
+    night = code("functions/night/fn_nightApply.sqf")
+    if 'setVariable ["auqol_nightSkills", _base +' not in night or ', true];' not in night \
+            or "if (!_changed)" not in night:
+        problems.append("nightApply: original skills must be saved publicly and others' later values kept on restore")
+    if "auqol_nightSkills" not in code("functions/squad/fn_squadReactApply.sqf"):
+        problems.append("squadReactApply: must hand back night skills before saving its baseline")
     player = code("functions/player/fn_playerApply.sqf")
     for bad in ("setCustomAimCoef 1", "setUnitRecoilCoefficient 1"):
         if bad in player:

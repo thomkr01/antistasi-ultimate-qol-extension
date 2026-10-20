@@ -27,8 +27,8 @@
     [_object] call AUQOL_fnc_lootInitObject;
 }, true, ["Man", "WeaponHolder", "WeaponHolderSimulated"], true] call CBA_fnc_addClassEventHandler;
 
-// Faster AI reactions: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
-// set its skills) and whenever it becomes local to a new machine (server <-> headless client).
+// Faster AI reactions and night spotting: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
+// set its skills and night gear) and whenever it becomes local to a new machine (server <-> headless client).
 // Faster AI animations act only on the machine that sets them, so this runs everywhere for every unit.
 // The Suppressed handler acts only where the unit is local, which follows locality changes.
 ["CAManBase", "InitPost", {
@@ -39,11 +39,11 @@
     _unit addEventHandler ["Local", {
         params ["_unit", "_isLocal"];
         [_unit] call AUQOL_fnc_combatGroupHook;
-        if (_isLocal) then { [[_unit]] call AUQOL_fnc_squadReactApply };
+        if (_isLocal) then { [[_unit]] call AUQOL_fnc_squadReactApply; [[_unit]] call AUQOL_fnc_nightApply };
     }];
     if (!local _unit) exitWith {};
     [[_unit]] call AUQOL_fnc_squadReactApply;
-    [{ [[_this]] call AUQOL_fnc_squadReactApply }, _unit, 5] call CBA_fnc_waitAndExecute;
+    [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply }, _unit, 5] call CBA_fnc_waitAndExecute;
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Grenade dodge: any unit's throw, checked for frags in the handler.
