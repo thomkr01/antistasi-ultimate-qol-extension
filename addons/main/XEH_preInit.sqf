@@ -357,7 +357,7 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 
 [
     "auqol_combat_noProne", "CHECKBOX",
-    ["Never make AI go prone", "AUQOL's own stance changes stop at crouching. Use this with a no-prone AI mod. Stance orders from you, Antistasi or other mods are never overridden either way."],
+    ["Never make AI go prone", "AUQOL's own suppression reaction stops at crouching. AI already avoid prone through the mod's config. Stance orders from you, Antistasi or other mods are never overridden either way."],
     [_category, "Smart combat AI"],
     true, 1
 ] call CBA_fnc_addSetting;

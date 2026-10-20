@@ -6,7 +6,7 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 
 | Path | What it is |
 | --- | --- |
-| `config.cpp` | CfgPatches (name, CBA dependency), `maxSoldierLoad` (no total weight limit), XEH registration, CfgFunctions list. Every new function needs a `class` line here. |
+| `config.cpp` | CfgPatches (name, CBA dependency), `maxSoldierLoad` (no total weight limit), `AIAvoidStance` (AI avoid prone), XEH registration, CfgFunctions list. Every new function needs a `class` line here. |
 | `script_version.hpp` | The version, `MAJOR.MINOR.PATCH`. Changing it on `main` publishes a GitHub release. |
 | `$PBOPREFIX$` | PBO prefix `z\auqol\addons\main`. |
 | `XEH_preInit.sqf` | All CBA settings (names, defaults, ranges, tooltips) and global state (concealment state and Hide Among The Grass detection, night vision cache, service cache, launcher flag cache, tracked and pending vehicle markers, tracked stuck-AI list, garage fuel cache, frozen vehicle list, debug timings, fast-ladder key state, LAMBS/Vcom detection, grenade and ammo caches, ACE medical flag, item type and loot vehicle class caches). |
