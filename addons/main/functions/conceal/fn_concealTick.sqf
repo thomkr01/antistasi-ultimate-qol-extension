@@ -56,7 +56,8 @@ if (isNil "_units") then {
         if (isNil "_saved" || _changed || {(_saved select 2) != _factor}) then {
             private _base = if (isNil "_saved" || _changed) then { _now } else { _saved select 0 };
             _unit setUnitTrait ["camouflageCoef", _base * _factor];
-            _unit setVariable ["auqol_concealCoef", [_base, _unit getUnitTrait "camouflageCoef", _factor], true];
+            // Public only for squad AI, which can move to another machine; nobody else reads a player's.
+            _unit setVariable ["auqol_concealCoef", [_base, _unit getUnitTrait "camouflageCoef", _factor], !isPlayer _unit];
             auqol_conceal_hidden pushBackUnique _unit;
         };
     } else {
@@ -65,7 +66,7 @@ if (isNil "_units") then {
             if (abs ((_unit getUnitTrait "camouflageCoef") - (_saved select 1)) <= 0.001) then {
                 _unit setUnitTrait ["camouflageCoef", _saved select 0];
             };
-            _unit setVariable ["auqol_concealCoef", nil, true];
+            _unit setVariable ["auqol_concealCoef", nil, !isPlayer _unit];
         };
         auqol_conceal_hidden deleteAt (auqol_conceal_hidden find _unit);
     };

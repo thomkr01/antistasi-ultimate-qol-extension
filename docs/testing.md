@@ -269,3 +269,11 @@ Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 5. Antistasi may still call support on the position after a kill; that is Antistasi's own reaction.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
+
+### 21. Optimization pass (1.20.1)
+
+Nothing should look or play differently from 1.20.0.
+
+1. **Night spotting:** repeat test 18 on a dedicated server with a headless client. Enemies without night vision still spot late, and with a weapon light on they notice you from the light distance.
+2. **Timings:** turn `auqol_debug` on and play 5 minutes at night near a garrison. The `night spotting` line in the RPT should be lower than in 1.20.0.
+3. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.

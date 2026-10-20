@@ -2,6 +2,15 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.1
+
+Not tested in game yet. Optimization only, nothing plays or looks different.
+
+- Night spotting (server and headless client): the 5 s pass lists every soldier and vehicle once and splits them per side. Each enemy soldier then filters only his own enemies, where before he searched everything within 300 m and checked each of his own friends in script. Whether a side is hostile is also worked out once per pass, not per soldier.
+- Hide among the grass: your own concealment state is no longer sent over the network to every other player, since only your machine reads it. Squad AI still send theirs, because they can move to another machine.
+- The recurring timers start a fraction of a second apart, so the ones with matching periods (5, 15, 30, 60 s) no longer all run in the same frame.
+- The per-shot handler only calls the grenade dodge for throws.
+
 ## 1.20.0
 
 Not tested in game yet.

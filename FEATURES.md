@@ -329,6 +329,7 @@ None of this changes what you see or how things play:
 - Live vehicle markers do the per-second work only while the map or GPS is open.
 - The 5-second launcher check only runs while your group knows of an enemy.
 - With `auqol_debug` on, each AUQOL timer's average and worst time is written to the RPT every 5 minutes.
+- The timers start a fraction of a second apart, so the ones with matching periods never run in the same frame.
 
 ## Status
 

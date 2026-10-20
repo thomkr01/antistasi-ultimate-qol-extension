@@ -209,7 +209,15 @@ def check_regressions():
     support = code("functions/combat/fn_combatSupport.sqf")
     if "_unit canAdd" not in support:
         problems.append("combatSupport: magazine sharing must check the receiver has room (canAdd)")
-    check("Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing, helped flag, magazine room", problems)
+    # 1.20.1: the night pass filters one per-side enemy list instead of a nearEntities search per soldier,
+    # the squad AI's concealment baseline stays public, and the recurring timers start staggered.
+    if "inAreaArray [getPosATL _unit, _reach, _reach]" not in night or "nearEntities" not in night:
+        problems.append("nightApply: full pass must use the per-side enemy list, single checks nearEntities")
+    if 'setVariable ["auqol_concealCoef", [_base, _unit getUnitTrait "camouflageCoef", _factor], !isPlayer _unit]' not in code("functions/conceal/fn_concealTick.sqf"):
+        problems.append("concealTick: squad AI concealment baseline must stay public, the player's local")
+    if "call CBA_fnc_addPerFrameHandler;" in code("functions/common/fn_settingsInitialized.sqf").replace("_this call CBA_fnc_addPerFrameHandler", ""):
+        problems.append("settingsInitialized: recurring timers must start through _every (staggered)")
+    check("Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing, helped flag, magazine room, night search, concealment publicity, staggered timers", problems)
 
 
 # --- Wiki-backed checks ------------------------------------------------------------------------

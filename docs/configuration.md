@@ -133,6 +133,8 @@ The boost is sent to every machine with a CBA global event, so others see you cl
 
 If the engine's dynamic simulation is off, AUQOL turns it on (`enableDynamicSimulationSystem`) and sets the empty-vehicle wake distance to 500 m (`"EmptyVehicle" setDynamicSimulationDistance 500`). Only marked objects are affected; AI groups are never marked. If the mission or another mod already runs dynamic simulation, its distances are kept. With both settings off, AUQOL unmarks every vehicle it marked and turns dynamic simulation off again if it was the one that turned it on.
 
+The recurring timers (every machine: night spotting, reaction skills, AI animation speed, stuck AI; server: garage fuel, ACE rearm, vehicle freeze; client: player perks, concealment, markers, launchers) start 0.15 s apart, so timers with matching periods never run in the same frame. Their periods are not changed by this.
+
 ## Rebel loadouts
 
 | Setting | Type | Default | Scope | Description |
