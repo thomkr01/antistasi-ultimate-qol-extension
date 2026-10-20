@@ -46,6 +46,6 @@ if (leader _group isEqualTo _player) then {
 [_group, _target, true] call AUQOL_fnc_combatShareContact;
 
 // Knowledge just changed, so check launchers now instead of at the next pass.
-call AUQOL_fnc_squadLaunchers;
+[] call AUQOL_fnc_squadLaunchers;
 
 [format ["Reveal: %1 (%2) shown to %3 units", typeOf _target, side _target, count _local], true] call AUQOL_fnc_log;

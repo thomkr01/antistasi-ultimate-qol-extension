@@ -48,7 +48,8 @@ if (isServer) then {
 // says an enemy came close or a soldier left a vehicle with thermal sights, so this polls every 5 s; by
 // day it only looks at units that still carry reduced skills.
 [] call AUQOL_fnc_nightApply;
-[{ ["night spotting", { [] call AUQOL_fnc_nightApply }] call AUQOL_fnc_perfRun }, 5] call _every;
+// A fifth of the units each second, so each is still checked every 5 s but no single frame does them all.
+[{ ["night spotting", { [] call AUQOL_fnc_nightApply }] call AUQOL_fnc_perfRun }, 1] call _every;
 
 // Faster AI animations: units are set when they spawn; this pass catches values reset by others (ACE
 // medical sets a medic back to 1) and units that became or stopped being players. One getter per unit.
@@ -80,7 +81,7 @@ if (hasInterface) then {
         [{ call AUQOL_fnc_playerApply }, [], 3] call CBA_fnc_waitAndExecute;
     }, true] call CBA_fnc_addPlayerEventHandler;
     ["loadout", { call AUQOL_fnc_playerApply }] call CBA_fnc_addPlayerEventHandler;
-    ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat; [units group player] call AUQOL_fnc_squadReactApply }, true] call CBA_fnc_addPlayerEventHandler;
+    ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; [] call AUQOL_fnc_squadSelfTreat; [units group player] call AUQOL_fnc_squadReactApply }, true] call CBA_fnc_addPlayerEventHandler;
     // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
     // without a hit, such as the 0.25 Antistasi's revive leaves.
     [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call _every;

@@ -25,11 +25,11 @@ _group addEventHandler ["EnemyDetected", {
     params ["_group", "_target"];
     if (group player isNotEqualTo _group) exitWith {};
     if (auqol_squad_reaction) then { { _x reveal _target } forEach (units _group select { local _x && {!isPlayer _x} }) };
-    if !(_target isKindOf "Man") then { call AUQOL_fnc_squadLaunchers };
+    if !(_target isKindOf "Man") then { [] call AUQOL_fnc_squadLaunchers };
     [_group, _target] call AUQOL_fnc_combatShareContact;
 }];
 _group addEventHandler ["UnitJoined", {
     params ["_group", "_unit"];
-    if (group player isEqualTo _group) then { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat };
+    if (group player isEqualTo _group) then { call AUQOL_fnc_playerApply; [] call AUQOL_fnc_squadSelfTreat };
     [[_unit]] call AUQOL_fnc_squadReactApply;
 }];

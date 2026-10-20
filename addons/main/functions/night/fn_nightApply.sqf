@@ -18,7 +18,7 @@
     new baseline, and on restore their value is kept.
 
     Arguments:
-    0: Units to check <ARRAY> (optional, default: every unit on this machine)
+    0: Units to check <ARRAY> (optional, default: this second's fifth of the units on this machine)
 
     Return Value: none
 */
@@ -27,7 +27,15 @@ if (!auqol_ready) exitWith {};
 
 params [["_units", nil, [[]]]];
 private _full = isNil "_units";
-if (_full) then { _units = allUnits };
+if (_full) then {
+    // Each unit gets a fixed fifth on first sight; a pass runs every second, so each unit is checked every 5 s.
+    auqol_night_slice = (auqol_night_slice + 1) % 5;
+    _units = allUnits select {
+        private _slot = _x getVariable "auqol_nightSlot";
+        if (isNil "_slot") then { _slot = floor random 5; _x setVariable ["auqol_nightSlot", _slot] };
+        _slot == auqol_night_slice
+    };
+};
 
 // A clear full moon takes 60 % of the darkness away; clouds hide the moon.
 private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));

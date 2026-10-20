@@ -55,7 +55,7 @@ private _lines = [
         missionNamespace getVariable ["auqol_stuck_timeout", 0],
         ("auqol_stuck_refreshOrders" call _setting) call _onOff, ("auqol_stuck_regroup" call _setting) call _onOff,
         ("auqol_stuck_reposition" call _setting) call _onOff, ("auqol_stuck_teleport" call _setting) call _onOff],
-    format ["Night spotting: %1 (%2%% in full darkness, noise distance %3 m) | concealment: %4 (Hide Among The Grass loaded: %5, so AUQOL's stays off)",
+    format ["Night spotting: %1 (%2%% in full darkness, noise distance %3 m) | concealment: %4 (Hide Among The Grass loaded: %5; when it is, AUQOL's stays off)",
         ("auqol_night_enabled" call _setting) call _onOff, missionNamespace getVariable ["auqol_night_strength", 0],
         missionNamespace getVariable ["auqol_night_closeRange", 0],
         (("auqol_conceal_enabled" call _setting) && {!auqol_conceal_hatg}) call _onOff, auqol_conceal_hatg]
