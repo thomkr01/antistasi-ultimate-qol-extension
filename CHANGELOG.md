@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.18.0
+
+Not tested in game yet.
+
+- New: night spotting (`auqol_night_enabled`, on). At night, enemy AI with no night vision or thermal (goggles, helmet visor, weapon sight, or the vehicle's sights) spot you and your squad much later and at shorter range. Darkness comes from the moon height and phase and the cloud cover; on a moonless, overcast night their spot distance and spot time drop to `auqol_night_strength` (25%). Noise still gives you away: they notice you as by day within 20 m prone, 35 m crouched, 50 m walking (`auqol_night_closeRange`), 100 m running, 150 m sprinting and 200 m for a running engine, and 300 m when you are lit by your weapon light, headlights, a street lamp or a flare; gunfire is always heard. Works with any modded gear and vehicles (read from config) and alongside Hide Among The Grass.
+- Smart combat cover search skips objects with no positions inside (such as HATG's hiding objects) when it looks for buildings.
+
 ## 1.17.0
 
 Not tested in game yet.

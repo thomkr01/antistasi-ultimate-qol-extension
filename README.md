@@ -27,6 +27,7 @@ A full description of each feature and its rules is in [FEATURES.md](FEATURES.md
 | Faster AI animations | Every AI soldier of every faction moves, turns and acts 25% faster (adjustable 1.0 to 2.0), so it gets to its next decision sooner. Same idea as the Fast Reaction AI (FRAI) mod. |
 | Faster pistol swap | Switching to or from your handgun plays twice as fast, and the pistol comes up three times as fast (adjustable). |
 | Faster ladders | You climb ladders 1.5 times as fast. Hold the Fast ladder climbing key (Left Shift by default) to climb 2.5 times as fast, or to slide down at 4 times. |
+| Night spotting | At night, enemy AI without night vision (goggles, helmet visor, NV or thermal sight, or a vehicle with one) find you and your squad much later and at shorter range. How much depends on the real light: moon height and phase and cloud cover. Noise still gives you away: prone 20 m, crouched 35 m, walking 50 m, running 100 m, sprinting 150 m, an engine 200 m, and 300 m when you are lit by your weapon light, headlights, a street lamp or a flare (adjustable). Gunfire is always heard. |
 | Smart combat AI | AI squads in a fight move as two fire teams from cover to cover (walls, rocks, trees, inside buildings), clear buildings, flank, lay suppressive fire, throw grenades at hidden enemies and smoke when caught in the open, assault when stronger, defend in place, fight armor as a team, split targets, share sightings with nearby groups, dodge grenades, share magazines and send medics. AI under close fire learn where it came from and get low. Antistasi keeps steering its groups. Stands down when LAMBS Danger or Vcom AI is loaded. |
 
 Every feature has its own CBA setting and can be switched on or off while the mission is running. Everything is on by default (recoil at 100%, which is vanilla) except the emergency teleport and the "unit got stuck" messages.
@@ -120,6 +121,9 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_loot_radius` | Slider 10–2000 | 2000 | Server | Loot gather radius in metres. |
 | `auqol_loot_enemyRadius` | Slider 10–2000 | 100 | Server | Gathering is refused while an enemy in combat is this close. |
 | `auqol_loot_caches` | Checkbox | On | Server | Also empty enemy item caches within 30 m into the vehicle or crate, then delete the empty box. |
+| `auqol_night_enabled` | Checkbox | On | Server | At night, enemy AI without night vision or thermal spot you and your squad worse, scaled by how dark it is. |
+| `auqol_night_strength` | Slider 5–100% | 25% | Server | Their spot distance and spot time skills on a moonless, overcast night, as a share of normal. |
+| `auqol_night_closeRange` | Slider 10–200 m | 50 | Server | Within this distance from a soldier walking upright they spot you normally (noise, movement). Prone ×0.4, crouched ×0.7, running ×2, sprinting ×3, vehicle with engine on ×4, lit by a weapon light, headlights, street lamp or flare ×6. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |
 | `auqol_debug` | Checkbox | Off | Client | Write one RPT line per ejection, refill, loot run and stuck-recovery event, and every 5 minutes the average and worst time of each AUQOL timer. |
@@ -147,6 +151,7 @@ There is no medical or logistics stock setting because the audit found no deplet
 | Copy from user | n/a | Rebel loadout editor (Antistasi Ultimate only) | Any unlocked RHS gear | Any unlocked CUP gear | n/a |
 | Faster AI animations, pistol swap, ladders | `setAnimSpeedCoef` | Yes | Any unit and any animation that follows the vanilla state names | Same | Ladder and pistol boosts register in ACE Advanced Fatigue's animation-speed exclusions. ACE medical's reset of a medic is re-applied within 15 s. |
 | Smart combat AI | `EnemyDetected` and `Suppressed` events, `doMove`, `doFollow`, `setUnitPos`, `doSuppressiveFire`, `forceWeaponFire` | Never touches group waypoints, behaviour, combat mode, formation or speed, so Antistasi's PATCOM keeps steering its groups. Skips garrisons, statics and every unit Antistasi has busy, and pauses during Antistasi's kill reaction. | Any unit, any grenades (found by ammo type) | Same | Yes |
+| Night spotting | `setSkill` on `spotDistance` and `spotTime` of enemy AI, where they are local | Yes. Applied 5 s after spawn, on top of Antistasi's own night values; any later change by Antistasi becomes the new baseline. PATCOM, waypoints and accuracy untouched. | NV and thermal gear and vehicle sights read from config | Same | Yes. ACE NVGs are ordinary head-mounted items. |
 | AI stuck recovery | Engine AI commands | Leaves garrisons, patrols, HOLD/GUARD waypoints, incapacitated, surrendered, healing and rearming units alone | Any infantry or land vehicle | Any infantry or land vehicle | Respects ACE unconscious state (`lifeState`). |
 
 Details and reasoning are in [docs/compatibility.md](docs/compatibility.md).
@@ -192,7 +197,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - Loot and Withstand need Antistasi Ultimate. Withstand also needs the mission's Withstand self-revive parameter turned on.
 - The stuck check can't see why the engine's pathfinding failed, only that a unit with a destination made no progress. A unit that is legitimately waiting with a destination set (for example behind a closed gate a player will open) can be nudged. Raise the timeout if that happens.
 - The emergency teleport is off by default, infantry only, and only to a leader within the maximum distance. Vehicles are only ever moved by the short hop.
-- The T key and the launcher switch only cover AI in your own group. Faster reactions also cover all friendly AI unless `auqol_squad_reactionAll` is off. Enemy AI are never changed.
+- The T key and the launcher switch only cover AI in your own group. Faster reactions also cover all friendly AI unless `auqol_squad_reactionAll` is off. The only change to enemy AI is night spotting, which lowers two spotting skills and nothing else.
 - The T key only alerts the squad about enemies. Your AI then fire under their current combat mode, so Hold fire still holds. Only the group leader's T press makes the AI focus the target, for 30 s or until it dies or you press T on another enemy.
 - Self-treatment covers AI in your own group, and members of AI groups while smart combat runs for them, on foot, with a first aid kit (or a medikit for medics) for real wounds. It is off under ACE medical, whose own AI medical handles it.
 - SQF scripts run on one thread per machine, so no mod can spread its scripts over CPU cores. AUQOL keeps its work event-driven instead, and the engine already runs AI, physics and rendering on its own threads.
@@ -203,6 +208,7 @@ The release zip ends up in `releases/`. Without Arma 3 Tools, HEMTT signs the PB
 - Animation speed (`setAnimSpeedCoef`) doesn't change reloading or other upper-body animations; that is an engine limit. Faster AI animations therefore don't speed up AI reloads.
 - The pistol swap and ladder boosts recognise animations by their vanilla-style names (a weapon switch with `wpst` on one side, any state with `ladder` in it). Addon animations named differently play at normal speed.
 - Smart combat AI moves group members, never the leader, so the group still goes where Antistasi (or the mission) sends it; members fight from cover around that. Cover is judged by a line from where the group believes the enemy is, so cover against a second enemy elsewhere is not guaranteed. It does not retreat or call for help: Antistasi does that.
+- Night spotting judges overall darkness from the sky (sun, moon, clouds). Lights count only around you: your weapon light, headlights, a street lamp within 15 m or a flare within 120 m. Fires, burning wrecks and building lights do not. A soldier gets normal spotting back within 5 s of an enemy coming close or lit. Enemy groups still share sightings by radio, so one enemy with night vision who sees you can tell the others.
 - With infinite stock, selling a fuel or ammo utility item back to the Antistasi garage always refunds its full price, because Antistasi refunds based on the remaining stock.
 
 Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshooting).

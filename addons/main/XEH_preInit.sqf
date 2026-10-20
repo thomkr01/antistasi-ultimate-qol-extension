@@ -17,7 +17,8 @@ auqol_freeze_marked = []; // vehicles AUQOL marked for dynamic simulation
 auqol_freeze_ownsSystem = false; // AUQOL switched the engine's dynamic simulation on
 auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], debug logging only
 auqol_perf_nextReport = 0;
-auqol_anim_ladderKeyHeld = false; // the fast-ladder key is held (local player)
+auqol_anim_ladderKeyHeld = false;
+auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
 auqol_combat_ammoSim = createHashMap; // ammo class -> lowercase simulation, for the grenade dodge
@@ -528,6 +529,30 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     ["Also loot item caches within 30 m", "Enemy item caches (the supply crates at outposts, bases and airports) within 30 m of the vehicle or loot crate are emptied into it too."],
     [_category, "Loot gathering"],
     true, 1
+] call CBA_fnc_addSetting;
+
+// --- Night spotting (applied on every machine to the enemy AI local to it)
+private _nightChanged = { if (auqol_ready) then { [] call AUQOL_fnc_nightApply } };
+
+[
+    "auqol_night_enabled", "CHECKBOX",
+    ["Enemies without night vision spot worse in the dark", "At night, enemy AI with no night vision or thermal (goggles, helmet visor, weapon sight or a vehicle sight) find you and your squad much later and at shorter range. How much depends on how dark it is: moon height and phase and cloud cover. Gunfire, contact reports and Antistasi's own AI work as before."],
+    [_category, "Night spotting"],
+    true, 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_night_strength", "SLIDER",
+    ["Enemy spotting in full darkness (%)", "Their spot distance and spot time skills on a moonless, overcast night, as a share of normal, 5 to 100. A clear full moon night is a bit over halfway back to normal. 100 turns the effect off."],
+    [_category, "Night spotting"],
+    [5, 100, 25, 0], 1, _nightChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_night_closeRange", "SLIDER",
+    ["Noticed by noise and movement within (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4, and x6 when you are lit (your weapon light or headlights on, a street lamp, a flare near you). Gunfire is always heard."],
+    [_category, "Night spotting"],
+    [10, 200, 50, 0], 1, _nightChanged
 ] call CBA_fnc_addSetting;
 
 // --- Antistasi "Withstand" self-revive cooldown (read on each client, so the setting script applies it everywhere)

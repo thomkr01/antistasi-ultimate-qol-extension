@@ -40,7 +40,7 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | SQF compile and lints | `hemtt check --pedantic --error-on-all` | SQF syntax errors and HEMTT's SQF lints, with warnings treated as errors |
 | PBO build and signing | `hemtt release` | Packaging problems. Produces `@auqol`. |
 | In-game test scripts compile | `tools/check_ingame_scripts.sh` | Syntax errors in `tests/ingame/*.sqf` |
-| Regression guards | `tests/static_checks.py` | The 1.8.1 safeguards are still in the code: the loot sender and caller check comes before any cache is emptied or gather runs, nested container weapons are filtered, reaction skills are saved once and publicly, sway and recoil restore saved values, ejection rechecks the setting and hands pending checks to a new owner, stuck movement needs a recent closest point, marker pairing matches the icon and re-pairs markers Antistasi moved. Each guard was confirmed to fail on the 1.8.0 code. They prove the code is there, not that it works in game. |
+| Regression guards | `tests/static_checks.py` | The 1.8.1 safeguards are still in the code: the loot sender and caller check comes before any cache is emptied or gather runs, nested container weapons are filtered, reaction skills are saved once and publicly, sway and recoil restore saved values, ejection rechecks the setting and hands pending checks to a new owner, stuck movement needs a recent closest point, marker pairing matches the icon and re-pairs markers Antistasi moved, and night spotting saves the original skills publicly and keeps values others set later (1.18.0). Each guard was confirmed to fail on the 1.8.0 code. They prove the code is there, not that it works in game. |
 | CfgFunctions consistency | `tests/static_checks.py` | Missing function files, unregistered `fn_` files, calls to undefined or unused `AUQOL_fnc_` functions |
 | Dependencies and paths | `tests/static_checks.py` | `requiredAddons` must be exactly `cba_main`. XEH script paths and the PBO prefix must match. |
 | File map | `tests/static_checks.py` | Every code folder and doc must be listed in `FILEMAP.md` |
@@ -240,5 +240,13 @@ Static checks only show the fixes are in the code. These need a person in game, 
 1. In a firefight near trees or walls, let a squad AI get hit in the legs while the enemy can see it: it runs to cover first, then plays the treat-yourself animation there, then rejoins formation. With `auqol_debug` on, the RPT shows "Self-treat: ... runs to cover before treating".
 2. Order it to Stop first, then let it get hit: it treats where it stands.
 3. **Fire back:** from cover, fire bursts near an enemy group: the soldiers you shoot at answer at once, and the group's covering team keeps suppressing your position for about 15 s after your last burst.
+
+### 18. Night spotting (1.18.0)
+
+1. **Dark:** at night with no moon (or overcast), in the debug console on the server: `[cursorTarget skill "spotDistance", cursorTarget getVariable "auqol_nightSkills"]` on an enemy without NVGs shows a value about a quarter of the first number in the saved array. An enemy with NVGs shows no saved array.
+2. **Range:** approach an enemy patrol without NVGs: crawling it notices you at about 20 m, crouched about 35 m, walking about 50 m, running about 100 m, sprinting about 150 m, and a vehicle with its engine on about 200 m. Switch on your weapon light, stand under a street lamp or fire a flare over yourself: about 300 m. By day it notices you much farther out. Fire a shot and it reacts as before.
+3. **Vehicles:** an enemy gunner on a static or in a vehicle with a thermal or NV sight spots as by day; a truck driver without NVGs does not.
+4. **Morning:** skip time to day (`skipTime`): within 5 s the saved array is gone and the skills are back.
+5. **HATG:** with Hide Among The Grass loaded, lie prone in grass at night: both work at once and nothing shows script errors in the RPT.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

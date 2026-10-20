@@ -35,6 +35,12 @@ if (isServer) then {
 [] call AUQOL_fnc_squadReactApply;
 [{ ["reaction skills", { [] call AUQOL_fnc_squadReactApply }] call AUQOL_fnc_perfRun }, 60] call CBA_fnc_addPerFrameHandler;
 
+// Night spotting: enemy AI are checked when they spawn and change owner (XEH_postInit). No engine event
+// says an enemy came close or a soldier left a vehicle with thermal sights, so this polls every 5 s; by
+// day it only looks at units that still carry reduced skills.
+[] call AUQOL_fnc_nightApply;
+[{ ["night spotting", { [] call AUQOL_fnc_nightApply }] call AUQOL_fnc_perfRun }, 5] call CBA_fnc_addPerFrameHandler;
+
 // Faster AI animations: units are set when they spawn; this pass catches values reset by others (ACE
 // medical sets a medic back to 1) and units that became or stopped being players. One getter per unit.
 [] call AUQOL_fnc_animAiApply;

@@ -265,6 +265,29 @@ A vehicle hit by a bullet or two that broke nothing no longer asks to be repaire
 - Any vehicle or static weapon from any mod; only damage values are read. Checked where the vehicle is local.
 - `auqol_service_scratches` (on) and `auqol_service_scratchLevel` (0.1, from 0.01 to 0.3).
 
+## 23. Night spotting
+
+In the dark, enemy AI without night vision struggle to find you and your squad: you can get much closer before they notice you.
+
+- Who: every AI hostile to your side, on every machine (server, headless client), with no night vision or thermal anywhere: head-mounted slot, helmet with a built-in visor, binoculars, rifle, launcher or pistol sight, or any sight of the vehicle or static weapon they are in. Gear and vehicles come from config, so RHS, CUP, ACE and any other mod's NVGs, thermal sights and vehicles count without a list. Your side's AI are never changed.
+- How dark: from the sky, not the clock: sun and moon height, moon phase and cloud cover. A moonless, overcast night is full darkness; a clear full moon night is a bit over halfway back to normal; dusk and dawn fade in and out.
+- What changes: only their `spotDistance` and `spotTime` skills, scaled down to `auqol_night_strength` (25%) in full darkness. Accuracy, courage, hearing gunfire, contact reports and all of Antistasi's AI work as before.
+- Noise and movement still give you away. Inside these distances an enemy spots you as well as by day:
+
+  | You are | Distance (default) |
+  | --- | --- |
+  | Prone | 0.4 × setting (20 m) |
+  | Crouched | 0.7 × (35 m) |
+  | Walking upright | 1 × (50 m) |
+  | Running (over 9 km/h, any stance) | 2 × (100 m) |
+  | Sprinting (over 17 km/h) | 3 × (150 m) |
+  | A vehicle with its engine on | 4 × (200 m) |
+  | Lit: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
+
+  The setting is `auqol_night_closeRange` (50 m). Firing is always heard, as the engine already does.
+- Day: the values AUQOL replaced are put back, also for units that moved between the server and a headless client. If Antistasi or another mod changed the skills meanwhile, their value is kept.
+- `auqol_night_enabled` (on), `auqol_night_strength` (25%, 5 to 100) and `auqol_night_closeRange` (50 m, 10 to 200). Checked when a unit spawns, changes owner and every 5 s.
+
 ## Features working together
 
 Every AUQOL feature knows about the others:
@@ -277,6 +300,8 @@ Every AUQOL feature knows about the others:
 - **Your squad's sightings** and every T key press are shared with friendly AI groups near you through the contact reports. Sightings go out at most once every 10 s per group; a T key press always goes out (1.15.1).
 - **Crew ejection and smart combat.** Enemy crew ejected from an immobilized vehicle start fighting from cover at once.
 - **Smart combat leaves your squad alone,** so the T key focus, self-treatment, squad perks and launchers keep full control of it.
+- **Night spotting and everything else.** Night spotting only lowers enemy spotting skills; faster reactions only raise friendly ones, and a unit that changes side gets its night values back before faster reactions look at it. Contacts shared by smart combat, the T key, the `Suppressed` reveal and gunfire still reach enemy AI at night, so a firefight plays as before: when they are shot at they still return fire and suppress where the shots came from.
+- **Night spotting and Hide Among The Grass (HATG).** They stack: HATG hides you when you lie still in grass, AUQOL makes enemies without night vision worse at spotting in the dark. Smart combat no longer counts HATG's hiding objects on your squad as buildings when looking for cover.
 - **AI animation speed** makes every smart combat move faster too, and ACE medical's reset of a medic is re-applied.
 
 ## Less background work (1.10.0)
@@ -290,4 +315,4 @@ None of this changes what you see or how things play:
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, the no-wasted-rounds launcher rule in 1.15.0, and the cross-feature fixes in 1.15.1; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, the no-wasted-rounds launcher rule in 1.15.0, and the cross-feature fixes in 1.15.1; none of them is tested in game yet. Night spotting is new in 1.18.0 and not tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
