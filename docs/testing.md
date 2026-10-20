@@ -244,7 +244,7 @@ Static checks only show the fixes are in the code. These need a person in game, 
 ### 18. Night spotting (1.18.0)
 
 1. **Dark:** at night with no moon (or overcast), in the debug console on the server: `[cursorTarget skill "spotDistance", cursorTarget getVariable "auqol_nightSkills"]` on an enemy without NVGs shows a value about a quarter of the first number in the saved array. An enemy with NVGs shows no saved array.
-2. **Range:** approach an enemy patrol without NVGs: crawling it notices you at about 20 m, crouched about 35 m, walking about 50 m, running about 100 m, sprinting about 150 m, and a vehicle with its engine on about 200 m. By day it notices you much farther out. Fire a shot and it reacts as before.
+2. **Range:** approach an enemy patrol without NVGs: crawling it notices you at about 20 m, crouched about 35 m, walking about 50 m, running about 100 m, sprinting about 150 m, and a vehicle with its engine on about 200 m. Switch on your weapon light, stand under a street lamp or fire a flare over yourself: about 300 m. By day it notices you much farther out. Fire a shot and it reacts as before.
 3. **Vehicles:** an enemy gunner on a static or in a vehicle with a thermal or NV sight spots as by day; a truck driver without NVGs does not.
 4. **Morning:** skip time to day (`skipTime`): within 5 s the saved array is gone and the skills are back.
 5. **HATG:** with Hide Among The Grass loaded, lie prone in grass at night: both work at once and nothing shows script errors in the RPT.

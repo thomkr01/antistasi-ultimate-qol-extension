@@ -9,7 +9,8 @@
     skills back until it is gone. How close depends on how much noise the enemy makes, as a multiple of
     auqol_night_closeRange (an enemy walking upright): prone 0.4, crouched 0.7, walking 1, running
     (over 9 km/h) 2, sprinting (over 17 km/h) 3, a vehicle with its engine on 4. The noisier of stance
-    and speed counts, so a crouched run is a run.
+    and speed counts, so a crouched run is a run. A lit target is seen from 6: its own weapon light or
+    headlights on, a burning street lamp within 15 m, or a flare in the air or on the ground within 120 m.
 
     Runs on every machine for its own AI. The original values are a public unit variable
     [spotDistance, spotTime, both values read back after the write, factor], so they survive a change
@@ -32,6 +33,17 @@ private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
 private _factor = [1, 1 - _dark * (1 - auqol_night_strength / 100)] select auqol_night_enabled;
 _factor = (round (_factor * 20)) / 20; // steps of 0.05, so slow light changes don't rewrite every pass
 private _range = auqol_night_closeRange;
+private _pass = diag_tickTime; // a target's light is worked out once per pass, kept on the target
+private _isLit = {
+    private _known = _this getVariable ["auqol_nightLit", [-1, false]];
+    if ((_known select 0) == _pass) exitWith { _known select 1 };
+    private _lit = [isLightOn _this, _this isFlashlightOn currentWeapon _this] select (_this isKindOf "CAManBase");
+    _lit = _lit
+        || {(nearestObjects [_this, ["Lamps_base_F"], 15]) findIf { alive _x && {lightIsOn _x != "OFF"} } != -1}
+        || {(_this nearObjects ["FlareCore", 120]) isNotEqualTo []}; // FlareCore: every hand, grenade-launcher and mortar flare
+    _this setVariable ["auqol_nightLit", [_pass, _lit]];
+    _lit
+};
 
 {
     private _unit = _x;
@@ -42,7 +54,7 @@ private _range = auqol_night_closeRange;
 
     private _side = side group _unit;
     if (_factor < 1 && {[_side] call AUQOL_fnc_isHostileSide} && {!([_unit] call AUQOL_fnc_nightHasVision)}
-        && {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _range * 4]) findIf {
+        && {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _range * 6]) findIf {
             alive _x && {(_side getFriend side _x) < 0.6} && {
                 private _noise = [1, 4] select isEngineOn _x;
                 if (_x isKindOf "CAManBase") then {
@@ -50,7 +62,8 @@ private _range = auqol_night_closeRange;
                     _noise = switch (stance _x) do { case "PRONE": {0.4}; case "CROUCH": {0.7}; default {1} };
                     if (_speed > 17) then { _noise = 3 } else { if (_speed > 9) then { _noise = 2 } };
                 };
-                _unit distance _x < _range * _noise
+                private _d = _unit distance _x;
+                _d < _range * _noise || {_d < _range * 6 && {_x call _isLit}}
             }
         } == -1}) then {
         private _base = if (isNil "_saved" || _changed) then { _now } else { _saved select [0, 2] };

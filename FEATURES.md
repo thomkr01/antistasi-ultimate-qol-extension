@@ -282,6 +282,7 @@ In the dark, enemy AI without night vision struggle to find you and your squad: 
   | Running (over 9 km/h, any stance) | 2 × (100 m) |
   | Sprinting (over 17 km/h) | 3 × (150 m) |
   | A vehicle with its engine on | 4 × (200 m) |
+  | Lit: your weapon light or headlights on, a working street lamp within 15 m, or a flare (hand, grenade-launcher or mortar, in the air or on the ground) within 120 m | 6 × (300 m) |
 
   The setting is `auqol_night_closeRange` (50 m). Firing is always heard, as the engine already does.
 - Day: the values AUQOL replaced are put back, also for units that moved between the server and a headless client. If Antistasi or another mod changed the skills meanwhile, their value is kept.

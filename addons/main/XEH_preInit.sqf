@@ -550,7 +550,7 @@ private _nightChanged = { if (auqol_ready) then { [] call AUQOL_fnc_nightApply }
 
 [
     "auqol_night_closeRange", "SLIDER",
-    ["Noticed by noise and movement within (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4. Gunfire is always heard."],
+    ["Noticed by noise and movement within (m)", "For a soldier walking upright, 10 to 200 m. Inside it an enemy spots you as well as by day. Other movement scales it: prone x0.4, crouched x0.7, running x2, sprinting x3, a vehicle with its engine on x4, and x6 when you are lit (your weapon light or headlights on, a street lamp, a flare near you). Gunfire is always heard."],
     [_category, "Night spotting"],
     [10, 200, 50, 0], 1, _nightChanged
 ] call CBA_fnc_addSetting;
