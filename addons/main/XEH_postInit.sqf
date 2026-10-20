@@ -54,8 +54,8 @@
 // out of the fight gets no second round and the next vehicle gets it (AUQOL_fnc_squadLaunchers). Only
 // where AUQOL already runs that check: your squad with the launcher switch on, and AI groups in a smart combat fight.
 ["CAManBase", "Fired", {
-    _this call AUQOL_fnc_combatDodge;
     params ["_unit", "_weapon", "", "", "_ammo", "", "_projectile"];
+    if (_weapon == "Throw") then { _this call AUQOL_fnc_combatDodge };
     if (local _unit) then { [_unit, _weapon] call AUQOL_fnc_concealOnFired; [_unit, _weapon, _ammo] call AUQOL_fnc_concealLocateShot };
     if (!auqol_ready || {!local _unit} || {isPlayer _unit} || _weapon == "" || {_weapon != secondaryWeapon _unit}) exitWith {};
     if !([auqol_combat_antiArmor && {!isNil {group _unit getVariable "auqol_tacPFH"}}, auqol_squad_launchers] select (isPlayer leader _unit)) exitWith {};

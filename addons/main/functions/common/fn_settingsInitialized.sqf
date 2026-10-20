@@ -13,19 +13,28 @@ auqol_ready = true;
 call AUQOL_fnc_serviceApplyAll;
 call AUQOL_fnc_withstandApply;
 
+// Starts a recurring timer after its own offset, so timers whose periods share a multiple (5, 15, 30,
+// 60 s) don't all run in the same frame. Only the start moves; the period stays the same.
+private _offset = 0;
+private _every = {
+    params ["_code", "_period"];
+    _offset = _offset + 0.15;
+    [{ _this call CBA_fnc_addPerFrameHandler }, [_code, _period], _offset] call CBA_fnc_waitAndExecute;
+};
+
 if (isServer) then {
     // Antistasi garage fuel sources only drain when a vehicle is pulled out, so a slow check is enough.
-    [{ ["garage fuel", { call AUQOL_fnc_serviceGarageRestore }] call AUQOL_fnc_perfRun }, 10] call CBA_fnc_addPerFrameHandler;
+    [{ ["garage fuel", { call AUQOL_fnc_serviceGarageRestore }] call AUQOL_fnc_perfRun }, 10] call _every;
 
     // ACE limited rearm has no consumption event; sources start at a very large supply and are topped up here.
     [{ ["ACE rearm", {
         auqol_aceRearmSources = auqol_aceRearmSources select { !isNull _x };
         { [_x, auqol_service_ammo] call AUQOL_fnc_aceRearmApply } forEach +auqol_aceRearmSources; // copy: disabling removes entries
-    }] call AUQOL_fnc_perfRun }, 30] call CBA_fnc_addPerFrameHandler;
+    }] call AUQOL_fnc_perfRun }, 30] call _every;
 
     // Marks parked empty vehicles and settled wrecks for the engine's dynamic simulation. The engine does
     // the freezing and waking itself, which nobody near can see, so a slow pass is enough.
-    [{ ["vehicle freeze", { call AUQOL_fnc_freezeVehicles }] call AUQOL_fnc_perfRun }, 30] call CBA_fnc_addPerFrameHandler;
+    [{ ["vehicle freeze", { call AUQOL_fnc_freezeVehicles }] call AUQOL_fnc_perfRun }, 30] call _every;
 };
 
 // Faster AI reactions run on every machine for its own AI, so garrisons on the server or a headless
@@ -33,22 +42,22 @@ if (isServer) then {
 // join a player's group (XEH_postInit, AUQOL_fnc_squadGroupHooks); this full pass once a minute catches
 // skills Antistasi sets later. It only writes skills that are below the floor.
 [] call AUQOL_fnc_squadReactApply;
-[{ ["reaction skills", { [] call AUQOL_fnc_squadReactApply }] call AUQOL_fnc_perfRun }, 60] call CBA_fnc_addPerFrameHandler;
+[{ ["reaction skills", { [] call AUQOL_fnc_squadReactApply }] call AUQOL_fnc_perfRun }, 60] call _every;
 
 // Night spotting: enemy AI are checked when they spawn and change owner (XEH_postInit). No engine event
 // says an enemy came close or a soldier left a vehicle with thermal sights, so this polls every 5 s; by
 // day it only looks at units that still carry reduced skills.
 [] call AUQOL_fnc_nightApply;
-[{ ["night spotting", { [] call AUQOL_fnc_nightApply }] call AUQOL_fnc_perfRun }, 5] call CBA_fnc_addPerFrameHandler;
+[{ ["night spotting", { [] call AUQOL_fnc_nightApply }] call AUQOL_fnc_perfRun }, 5] call _every;
 
 // Faster AI animations: units are set when they spawn; this pass catches values reset by others (ACE
 // medical sets a medic back to 1) and units that became or stopped being players. One getter per unit.
 [] call AUQOL_fnc_animAiApply;
-[{ ["AI animation speed", { [] call AUQOL_fnc_animAiApply }] call AUQOL_fnc_perfRun }, 15] call CBA_fnc_addPerFrameHandler;
+[{ ["AI animation speed", { [] call AUQOL_fnc_animAiApply }] call AUQOL_fnc_perfRun }, 15] call _every;
 
 // AI stuck checks run on every machine (server, clients, headless clients) for the AI local to it.
 // No engine event reports "no progress", so this polls; the pass returns at once when the feature is off.
-[{ ["stuck AI", { call AUQOL_fnc_stuckMonitor }] call AUQOL_fnc_perfRun }, 5] call CBA_fnc_addPerFrameHandler;
+[{ ["stuck AI", { call AUQOL_fnc_stuckMonitor }] call AUQOL_fnc_perfRun }, 5] call _every;
 
 if (hasInterface) then {
     call AUQOL_fnc_aceRegisterFactors;
@@ -74,11 +83,11 @@ if (hasInterface) then {
     ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat; [units group player] call AUQOL_fnc_squadReactApply }, true] call CBA_fnc_addPlayerEventHandler;
     // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
     // without a hit, such as the 0.25 Antistasi's revive leaves.
-    [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call CBA_fnc_addPerFrameHandler;
+    [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call _every;
 
     // Concealment: no event says a unit lay down or an enemy came near, so the player and their squad
     // are checked every second (a handful of units); hits, near shots and getting in are events.
-    [{ ["concealment", { [] call AUQOL_fnc_concealTick }] call AUQOL_fnc_perfRun }, 1] call CBA_fnc_addPerFrameHandler;
+    [{ ["concealment", { [] call AUQOL_fnc_concealTick }] call AUQOL_fnc_perfRun }, 1] call _every;
     ["Antistasi Ultimate QoL by TchicX", "auqol_conceal_toggle", ["Toggle hiding", "Switch concealment off or on for you and your squad, for example to be seen on purpose."], {
         auqol_conceal_off = !auqol_conceal_off;
         [] call AUQOL_fnc_concealTick;
@@ -116,7 +125,7 @@ if (hasInterface) then {
         params ["_opened"];
         if (_opened) then { auqol_map_nextIdle = 0; call AUQOL_fnc_mapVehicleMarkers };
     }];
-    [{ ["map markers", { call AUQOL_fnc_mapVehicleMarkers }] call AUQOL_fnc_perfRun }, 1] call CBA_fnc_addPerFrameHandler;
+    [{ ["map markers", { call AUQOL_fnc_mapVehicleMarkers }] call AUQOL_fnc_perfRun }, 1] call _every;
 
     // Launchers are checked when the group spots a new enemy (AUQOL_fnc_squadGroupHooks) and on the
     // Reveal target key; this 5 s pass catches targets that only become visible later and new launchers.
@@ -124,7 +133,7 @@ if (hasInterface) then {
     [{
         if (isNull player || {isNull (player findNearestEnemy player)}) exitWith {};
         ["launchers", { call AUQOL_fnc_squadLaunchers }] call AUQOL_fnc_perfRun;
-    }, 5] call CBA_fnc_addPerFrameHandler;
+    }, 5] call _every;
 };
 
 call AUQOL_fnc_diagnostics;

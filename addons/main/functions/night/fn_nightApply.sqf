@@ -26,7 +26,8 @@
 if (!auqol_ready) exitWith {};
 
 params [["_units", nil, [[]]]];
-if (isNil "_units") then { _units = allUnits };
+private _full = isNil "_units";
+if (_full) then { _units = allUnits };
 
 // A clear full moon takes 60 % of the darkness away; clouds hide the moon.
 private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
@@ -45,6 +46,20 @@ private _isLit = {
     _this setVariable ["auqol_nightLit", [_pass, _lit]];
     _lit
 };
+// Enemies of a side that could give themselves away (crew left out, as nearEntities does). A full pass
+// lists every entity once (when the first soldier needs it) and splits it per side, so each soldier
+// only filters that short list; a check of a single unit (spawn, change of owner) asks nearEntities.
+private _hostileOf = createHashMap;
+private _enemiesOf = createHashMap;
+private ["_entities"];
+private _nearbyEnemies = if (_full) then {
+    { (_enemiesOf getOrDefaultCall [_side, {
+        if (isNil "_entities") then { _entities = entities [["CAManBase", "LandVehicle", "Air", "Ship"], [], false, true] };
+        _entities select { (_side getFriend side _x) < 0.6 }
+    }, true]) inAreaArray [getPosATL _unit, _reach, _reach] }
+} else {
+    { (_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _reach]) select { (_side getFriend side _x) < 0.6 } }
+};
 
 {
     private _unit = _x;
@@ -54,9 +69,9 @@ private _isLit = {
     private _changed = !isNil "_saved" && {abs ((_now select 0) - (_saved select 2)) > 0.01 || {abs ((_now select 1) - (_saved select 3)) > 0.01}};
 
     private _side = side group _unit;
-    if (_factor < 1 && {[_side] call AUQOL_fnc_isHostileSide} && {!([_unit] call AUQOL_fnc_nightHasVision)}
-        && {_reach == 0 || {(_unit nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], _reach]) findIf {
-            alive _x && {(_side getFriend side _x) < 0.6} && {
+    if (_factor < 1 && {_hostileOf getOrDefaultCall [_side, { [_side] call AUQOL_fnc_isHostileSide }, true]} && {!([_unit] call AUQOL_fnc_nightHasVision)}
+        && {_reach == 0 || {(call _nearbyEnemies) findIf {
+            alive _x && {
                 private _noise = [1, 4] select isEngineOn _x;
                 if (auqol_night_noise) then {
                     if (_x isKindOf "CAManBase") then {
