@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.4
+
+Not tested in game yet. From Thomas's first timing log (singleplayer, 1.20.3).
+
+- Night spotting was the most expensive AUQOL pass: 1.5 to 3.2 ms on average, up to 7 ms, all in one frame every 5 s. It now does a fifth of the enemy AI every second, so each soldier is still checked every 5 s but no frame carries the whole pass.
+- Fixed RPT errors: recruiting an AI (`fn_squadSelfTreat`, "Type Group, expected Object") and pressing the Reveal target key (`fn_squadLaunchers`, "Type Bool, expected Array"). Both functions fell back to the right default, so nothing in game was affected; the log is clean now.
+- The startup diagnostics line no longer says AUQOL's hiding stays off when Hide Among The Grass isn't loaded.
+
 ## 1.20.3
 
 Docs only, nothing in game changes.

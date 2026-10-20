@@ -278,3 +278,4 @@ Nothing should look or play differently from 1.20.0.
 2. **Timings:** turn `auqol_debug` on and play 5 minutes at night near a garrison. The `night spotting` line in the RPT should be lower than in 1.20.0.
 3. **Self-treat and loot (1.20.2):** a wounded squad AI with a first aid kit still treats itself, and every vehicle still offers Gather Scattered Loot.
 4. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.
+5. **Night pass spread (1.20.4):** with debug logging on, the `night spotting` line now shows about 300 runs per 5 minutes, and its worst time stays well under the 7 ms seen in 1.20.3. Recruiting AI and pressing T leave no AUQOL errors in the RPT.

@@ -24,6 +24,7 @@ auqol_conceal_off = false; // the local player switched concealment off for thei
 auqol_conceal_surfaceCache = createHashMap; // surface class -> has ground clutter
 auqol_conceal_ghillieCache = createHashMap; // uniform class -> is a ghillie suit
 auqol_conceal_camoCache = createHashMap; // uniform class -> camouflage multiplier (AUQOL_fnc_concealCamo)
+auqol_night_slice = 0; // which fifth of the units the 1 s night spotting pass checks
 auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
