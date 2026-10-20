@@ -134,8 +134,10 @@ Open **Options → Addon Options → Antistasi Ultimate QoL by TchicX**. "Server
 | `auqol_conceal_surfaces` | Checkbox | Off | Server | Only hide in grass or field clutter, next to a bush or under a roof. |
 | `auqol_conceal_distance` | Slider 0–100 m | 10 | Server | No hiding with an enemy this close prone (×2 crouched, ×4 standing; halved for night, rain, fog, roof, ghillie). Shots within it reveal you. |
 | `auqol_conceal_cooldown` | Slider 0–600 s | 15 | Server | How long you stay visible after being hit, shot near or firing too much. |
-| `auqol_conceal_shots` | Slider −1–60 | 4 | Server | Shots from one spot before you are revealed (randomised, more with ghillie or suppressor). Launchers always reveal. −1: never. |
+| `auqol_conceal_shots` | Slider −1–60 | 4 | Server | Shots from one spot before you are revealed (randomised, more with ghillie, camouflage uniform or suppressor). Launchers always reveal. −1: never. |
 | `auqol_conceal_partial` | Checkbox | On | Server | When you can't hide: prone ×0.5, crouched ×0.75, vegetation ×0.7, ghillie ×0.6 camouflage. |
+| `auqol_conceal_locate` | Checkbox | On | Server | Hard to locate at range: beyond the distance below, enemies don't learn where you are from your shots, only by seeing you. Works with HATG too. |
+| `auqol_conceal_locateRange` | Slider 100–1500 m | 500 | Server | How far an unsuppressed rifle shot gives you away; scaled by suppressor, flash at night, uniform camouflage, prone and repeated shots. |
 | `auqol_conceal_hud` | Checkbox | On | Client | Show HATG's hidden / revealed / disabled icon. |
 | `auqol_withstand_enabled` | Checkbox | On | Server | Replace Antistasi's 5-minute Withstand cooldown. |
 | `auqol_withstand_timeout` | Slider 1–300 | 1 | Server | Withstand cooldown in seconds. |

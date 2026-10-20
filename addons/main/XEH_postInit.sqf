@@ -13,6 +13,8 @@
 ["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
 // Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
 ["auqol_combat_reveal", { params ["_group", "_target"]; _group reveal [_target, 1.5] }] call CBA_fnc_addEventHandler;
+// Hard to locate: each machine checks the hostile groups local to it.
+["auqol_locate_shot", { _this call AUQOL_fnc_concealLocateCheck }] call CBA_fnc_addEventHandler;
 ["auqol_stuck_message", { systemChat ("[AUQOL] " + (_this select 0)) }] call CBA_fnc_addEventHandler;
 
 // Added on every machine: the handlers act only where the vehicle is local, which follows locality changes.
@@ -46,14 +48,15 @@
     [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply }, _unit, 5] call CBA_fnc_waitAndExecute;
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 
-// Grenade dodge: any unit's throw, checked for frags in the handler. Concealment counts the shots of the units it hides.
+// Grenade dodge: any unit's throw, checked for frags in the handler. Concealment counts the shots of the units it hides,
+// and hard to locate works out how far away a shot of a player or their squad gives them away.
 // Launcher rounds: once a local AI's round has hit, its launcher check runs again, so a vehicle that is
 // out of the fight gets no second round and the next vehicle gets it (AUQOL_fnc_squadLaunchers). Only
 // where AUQOL already runs that check: your squad with the launcher switch on, and AI groups in a smart combat fight.
 ["CAManBase", "Fired", {
     _this call AUQOL_fnc_combatDodge;
-    params ["_unit", "_weapon", "", "", "", "", "_projectile"];
-    if (local _unit) then { [_unit, _weapon] call AUQOL_fnc_concealOnFired };
+    params ["_unit", "_weapon", "", "", "_ammo", "", "_projectile"];
+    if (local _unit) then { [_unit, _weapon] call AUQOL_fnc_concealOnFired; [_unit, _weapon, _ammo] call AUQOL_fnc_concealLocateShot };
     if (!auqol_ready || {!local _unit} || {isPlayer _unit} || _weapon == "" || {_weapon != secondaryWeapon _unit}) exitWith {};
     if !([auqol_combat_antiArmor && {!isNil {group _unit getVariable "auqol_tacPFH"}}, auqol_squad_launchers] select (isPlayer leader _unit)) exitWith {};
     private _recheck = { [{ [[_this]] call AUQOL_fnc_squadLaunchers }, _this select 0, 1] call CBA_fnc_waitAndExecute };

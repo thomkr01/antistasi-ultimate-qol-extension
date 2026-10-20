@@ -147,6 +147,9 @@ class CfgFunctions {
             class concealFactor {};
             class concealOnFired {};
             class concealHud {};
+            class concealCamo {};
+            class concealLocateShot {};
+            class concealLocateCheck {};
         };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";

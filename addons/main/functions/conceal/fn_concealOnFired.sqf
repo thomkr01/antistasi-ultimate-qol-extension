@@ -4,8 +4,8 @@
     after). Shots fired within 10 m of where the count started are counted; moving farther starts a new
     count. A unit is revealed for auqol_conceal_cooldown seconds when it fires a launcher or goes over
     its allowed shots there: a random 4 to 8 at the default auqol_conceal_shots of 4, plus as many again
-    with a ghillie suit, plus twice the setting with a suppressor, and half without one. -1 allows any
-    number of shots.
+    with a ghillie suit, plus twice the setting with a suppressor, and half without one, then divided by
+    the uniform's camouflage (AUQOL_fnc_concealCamo). -1 allows any number of shots.
 
     Arguments:
     0: Unit <OBJECT>
@@ -31,6 +31,8 @@ if (_allowed == -1) then {
     private _muzzle = (_unit weaponAccessories _weapon) param [0, ""];
     private _suppressed = _muzzle != "" && {getNumber (configFile >> "CfgWeapons" >> _muzzle >> "ItemInfo" >> "AmmoCoef" >> "audibleFire") < 1};
     _allowed = [round (_allowed / 2), _allowed + _shots * 2] select _suppressed;
+    // A camouflage uniform hides the shooter's position longer: 0.5 camouflage allows twice the shots.
+    _allowed = round (_allowed / ([_unit] call AUQOL_fnc_concealCamo));
 };
 _unit setVariable ["auqol_concealShots", [_pos, _count, _allowed]];
 
