@@ -2,6 +2,17 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.5
+
+Not tested in game yet. From Thomas's report of squad AA soldiers not firing at an attacking A-10.
+
+- Squad AA soldiers now take out their launchers against jets. The launcher check ran every 5 seconds and wanted a clear view of more than half the aircraft at that instant, so a jet's attack run was often over before it caught it. While an enemy aircraft is known it now runs every second, and any line of sight to an aircraft is enough.
+- A gunner who takes out his launcher is now told to fire as well as aim (not on Hold fire).
+- The T key focus no longer pulls a gunner off a vehicle his launcher is on, so an AA soldier stays on the jet when you mark an enemy soldier.
+- Enemy parachutes are never launcher targets.
+- T no longer needs you exactly on an enemy: with none under the crosshair it takes the visible enemy nearest to where you look, within 15 degrees and 1500 m.
+- Pressing T now shows a short notification, only for you, when an enemy was marked for your squad.
+
 ## 1.20.4
 
 Not tested in game yet. From Thomas's first timing log (singleplayer, 1.20.3).

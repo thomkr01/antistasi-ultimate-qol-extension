@@ -5,6 +5,7 @@ auqol_service_cache = createHashMap;
 auqol_aceRearmSources = [];
 auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> [its vehicle, position AUQOL or Antistasi last gave it]
 auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
+auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
 auqol_map_pending = createHashMap; // new markers waiting for their text -> time first seen
 auqol_map_nextScan = 0;

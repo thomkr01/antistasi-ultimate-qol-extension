@@ -129,12 +129,16 @@ if (hasInterface) then {
     [{ ["map markers", { call AUQOL_fnc_mapVehicleMarkers }] call AUQOL_fnc_perfRun }, 1] call _every;
 
     // Launchers are checked when the group spots a new enemy (AUQOL_fnc_squadGroupHooks) and on the
-    // Reveal target key; this 5 s pass catches targets that only become visible later and new launchers.
-    // It is skipped while the player's group knows of no enemy, since the events cover the start of contact.
+    // Reveal target key; this pass catches targets that only become visible later and new launchers.
+    // It runs every 5 s while the player knows of an enemy vehicle, and every second while one is an
+    // aircraft, since a jet's attack run is over within a few seconds.
     [{
-        if (isNull player || {isNull (player findNearestEnemy player)}) exitWith {};
+        if (isNull player) exitWith {};
+        private _vehicles = (player targets [true, 2000]) select { !(_x isKindOf "Man") };
+        if (_vehicles isEqualTo [] || {time < auqol_launcherNext && {_vehicles findIf { _x isKindOf "Air" } == -1}}) exitWith {};
+        auqol_launcherNext = time + 5;
         ["launchers", { call AUQOL_fnc_squadLaunchers }] call AUQOL_fnc_perfRun;
-    }, 5] call _every;
+    }, 1] call _every;
 };
 
 call AUQOL_fnc_diagnostics;
