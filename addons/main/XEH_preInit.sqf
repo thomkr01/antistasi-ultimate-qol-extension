@@ -72,6 +72,21 @@ private _serviceChanged = { if (auqol_ready) then { call AUQOL_fnc_serviceApplyA
     true, 1
 ] call CBA_fnc_addSetting;
 
+// --- Vehicle damage (checked where each vehicle is local)
+[
+    "auqol_service_scratches", "CHECKBOX",
+    ["Clear scratches", "A vehicle with only light damage (a bullet or two, nothing broken) is set back to undamaged 2 s after the hit, so Repair only shows up when something needs fixing. Works with vanilla and ACE repair."],
+    [_category, "Vehicle damage"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_service_scratchLevel", "SLIDER",
+    ["Scratch level", "Damage below this, on the whole vehicle and on every part (0 = intact, 1 = destroyed), counts as a scratch and is cleared. Anything at or above it stays and can be repaired as usual."],
+    [_category, "Vehicle damage"],
+    [0.01, 0.3, 0.1, 2], 1
+] call CBA_fnc_addSetting;
+
 // --- Local player (server-forced, applied on each player's own machine)
 private _playerChanged = { if (auqol_ready) then { call AUQOL_fnc_playerApply } };
 

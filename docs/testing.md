@@ -228,4 +228,11 @@ Static checks only show the fixes are in the code. These need a person in game, 
 10. **1.15.0 launchers and fixes:** give a squad AA soldier two rounds and fly two enemy helicopters in (Zeus or debug console). After the first hit sends one down, the second round goes to the other helicopter, not the falling one. Same with an AT soldier and two APCs: once one can neither move nor fire, the next round goes to the other. Shoot only the tracks of a tank whose gun still works: it still gets rounds. Press T on a helicopter, shoot it down: the squad stops firing at it. With ACE Advanced Throwing, cook a grenade next to your squad: nobody runs until you throw it. In a fight, let an Antistasi medic revive an enemy AI, then keep fighting that group: no script errors in the RPT, and its soldiers keep moving between cover.
 11. **1.15.1 features together:** with a squad AT soldier holding his launcher, press T on an enemy soldier: he switches to his rifle. Wound a squad AI so it treats itself, then press T on an enemy at once: it finishes treating first. Get spotted, then within 10 s press T on a different enemy: a friendly AI group within 300 m still learns about it. Suppress an enemy patrol that is fighting from behind walls: the soldiers stay crouched behind the walls when the fire stops instead of standing up.
 
+### 16. Smart combat cover and scratches (1.16.0)
+
+1. **Cover at contact:** run `tests/ingame/combat_test.sqf` near trees, rocks or walls. Within a few seconds of contact every soldier of the enemy team is behind something, including the team that is covering; the ones moving go from cover to cover. They keep returning fire and suppressing as before.
+2. **Behind the object:** a soldier behind a tree or rock stands right at its back, not a few metres away.
+3. **Defending:** attack a group holding a position: soldiers stay at the covered spots they took instead of swapping places every 20 s.
+4. **Scratches:** shoot a car once in the body: after 2 s `damage _car` is 0 and no Repair action is offered. Shoot a wheel until it is flat: Repair is offered as usual.
+
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
