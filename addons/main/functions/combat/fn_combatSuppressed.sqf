@@ -3,7 +3,8 @@
     Smart combat reactions, from the unit's Suppressed event (a hostile round passed close). Runs where
     the unit is local, at most once every 2 s per unit:
     - auqol_combat_revealShooter: the unit's group learns where the fire came from, so it can answer
-      it instead of scanning for it. reveal only ever raises knowledge.
+      it instead of scanning for it. reveal only ever raises knowledge. Not for a shooter farther away
+      than his shot gives him away (hard to locate).
     - auqol_combat_takeCover: a standing AI on foot crouches, or goes prone under heavy fire, and goes
       back to its own stance choice 10 s after the last close round, unless it sits behind outdoor cover
       that smart combat picked, where it stays crouched and smart combat's fire team pass takes the stance over. Never prone with auqol_combat_noProne. Only units whose stance is left to
@@ -30,6 +31,11 @@ _unit setVariable ["auqol_combatNext", time + 2];
 [group _unit] call AUQOL_fnc_combatStart;
 
 private _enemy = [_instigator, _shooter] select isNull _instigator;
+// Hard to locate (AUQOL_fnc_concealLocateCheck): a round from beyond the distance where a shot gives the
+// shooter away doesn't tell this group where he is, so no reveal and no firing back at him.
+private _locate = _enemy getVariable ["auqol_locate", []];
+if (_locate isNotEqualTo [] && {time - (_locate select 0) < 5}
+    && {_unit distance _enemy > ([_locate select 1, _locate select 2] select ([_unit] call AUQOL_fnc_nightHasVision))}) then { _enemy = objNull };
 if (auqol_combat_revealShooter && {alive _enemy}) then { (group _unit) reveal [_enemy, 1.5] };
 
 if (isPlayer leader group _unit) exitWith {};

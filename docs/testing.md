@@ -259,4 +259,13 @@ Without the Hide Among The Grass mod loaded:
 5. Bind Toggle hiding and press it: the disabled icon shows and nobody in your squad hides.
 6. With HATG loaded: no AUQOL icon, HATG's own indicator works, and the RPT diagnostics line says AUQOL's concealment is off.
 
+### 20. Hard to locate at range (1.20.0)
+
+Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
+1. At night, prone in a ghillie suit with a suppressed rifle, 300 m from an enemy patrol that hasn't seen you: shoot one of them. The rest go alert but don't fire back at you or move straight at you, and the RPT shows "Hard to locate: ... lost ...". `_enemy knowsAbout player` on the server is 0 after about 2 s.
+2. Same without the suppressor: after a few shots from the same spot they find you (the distance grows with each shot) and fire back.
+3. Same at 50 m with the suppressor: they find you.
+4. With the Hide Among The Grass mod loaded instead of AUQOL's concealment: step 1 behaves the same.
+5. Antistasi may still call support on the position after a kill; that is Antistasi's own reaction.
+
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.

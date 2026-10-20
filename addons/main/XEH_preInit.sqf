@@ -23,6 +23,7 @@ auqol_conceal_hidden = []; // units this machine has hidden
 auqol_conceal_off = false; // the local player switched concealment off for their squad with the toggle key
 auqol_conceal_surfaceCache = createHashMap; // surface class -> has ground clutter
 auqol_conceal_ghillieCache = createHashMap; // uniform class -> is a ghillie suit
+auqol_conceal_camoCache = createHashMap; // uniform class -> camouflage multiplier (AUQOL_fnc_concealCamo)
 auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
@@ -645,6 +646,20 @@ private _concealChanged = { if (auqol_ready) then { [] call AUQOL_fnc_concealTic
     ["Show hidden indicator", "A stealth icon at the bottom of the screen: grey HIDDEN, white SEEN, red OFF after the toggle key."],
     [_category, "Concealment"],
     true, 0, _concealChanged
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_locate", "CHECKBOX",
+    ["Hard to locate at range", "Enemies farther away than the distance below don't learn where you or your squad are from your shots alone, only by seeing you. Also works with the Hide Among The Grass mod."],
+    [_category, "Concealment"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_conceal_locateRange", "SLIDER",
+    ["Shot gives you away within (m)", "For an unsuppressed rifle, 100 to 1500. Scaled by the round's and muzzle device's loudness from config (a suppressor brings 500 m down to 100 to 160 m), muzzle flash in the dark (open muzzle x1.2 at night, suppressor less; night vision sees it as by day), uniform camouflage (ghillie x0.6), prone x0.8, +25 % for each further shot from the same spot (up to x3), and a random x0.8 to 1.2."],
+    [_category, "Concealment"],
+    [100, 1500, 500, 0], 1
 ] call CBA_fnc_addSetting;
 
 // --- Antistasi "Withstand" self-revive cooldown (read on each client, so the setting script applies it everywhere)

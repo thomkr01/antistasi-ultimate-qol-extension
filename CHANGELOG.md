@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.20.0
+
+Not tested in game yet.
+
+- New: hard to locate at range (`auqol_conceal_locate`, on). Enemies farther away than the distance where a shot gives you away don't learn where you or your squad are from the shot; they have to see you. That distance comes from the gear's own config values: 500 m for an unsuppressed rifle (`auqol_conceal_locateRange`), scaled by the round's loudness and the muzzle device (a suppressor brings it to about 100 to 160 m), muzzle flash in the dark (open muzzle farther, suppressor less; enemies with night vision see it as by day), uniform camouflage (ghillie ×0.6), prone ×0.8, and 25 % more for each further shot from the same spot. Works with AUQOL's hide among the grass and with the Hide Among The Grass mod.
+- Hide among the grass: a camouflage uniform now also raises the shots you can fire from one spot before you are revealed (divided by the uniform's camouflage value).
+- Smart combat: a soldier a far shooter's round passes close to no longer learns where the shooter is or fires back at him.
+
 ## 1.19.0
 
 Not tested in game yet.
