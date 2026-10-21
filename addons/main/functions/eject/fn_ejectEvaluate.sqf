@@ -19,7 +19,7 @@ if (!alive _vehicle || {unitIsUAV _vehicle} || {_vehicle getVariable ["auqol_noE
 if (_vehicle getVariable ["auqol_eject_pending", false]) exitWith {};
 if !([_vehicle] call AUQOL_fnc_ejectIsImmobilized) exitWith {
     // A crippled aircraft may still be falling: look again in 3 s (at most 10 times), since the landing may raise no event.
-    if (_vehicle isKindOf "Air" && {auqol_eject_aircraft} && {!canMove _vehicle} && {_retry < 10}
+    if (_vehicle isKindOf "Air" && auqol_eject_aircraft && {!canMove _vehicle} && _retry < 10
         && {!(_vehicle getVariable ["auqol_eject_airWait", false])}) then {
         _vehicle setVariable ["auqol_eject_airWait", true];
         [{
