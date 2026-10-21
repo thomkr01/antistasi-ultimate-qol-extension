@@ -3,7 +3,7 @@
     Look to spot. Every 0.5 s on the player's machine: living hostile soldiers and vehicles within 1500 m
     that the player can see and that are within auqol_squad_lookAngle degrees of the centre of the view
     are revealed (reveal level 3) to the AI of the player's group local to this machine, unless the group
-    already knows them at that level. Every enemy in the cone counts. No focus is set, so the squad's smart
+    already knows them at that level, and told to nearby friendly AI groups (AUQOL_fnc_combatShareContact). Every enemy in the cone counts. No focus is set, so the squad's smart
     combat AI (fire team target split, launchers) decides which enemy to fight first; the Reveal target
     key (AUQOL_fnc_squadRevealTarget) keeps its focus behaviour. The launcher check runs when something new
     was revealed. Nothing is sent over the network and no message is shown. Skipped while the map is open.
@@ -34,6 +34,10 @@ if (_new isEqualTo []) exitWith {};
     private _unit = _x;
     { _unit reveal [_x, 3] } forEach _new;
 } forEach _ai;
+
+// Nearby friendly AI groups (300 m, smart combat contact sharing) learn about up to three of them too,
+// at the same level, so their own combat starts. Only knowledge is shared, no orders.
+{ [_group, _x, true, 3] call AUQOL_fnc_combatShareContact } forEach (_new select [0, 3]);
 
 [] call AUQOL_fnc_squadLaunchers;
 [format ["Look to spot: %1 enemies revealed to %2 units", count _new, count _ai]] call AUQOL_fnc_log;

@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.26.0
+
+Not tested in game yet. Thomas wants what he looks at to reach nearby allies, not only his squad, and a hard answer on contact.
+
+- Look to spot now also tells friendly AI groups within 300 m (the same range, 6 group cap and `auqol_combat_shareContacts` switch as the T key and contact reports) about up to three of the enemies it reveals, at reveal level 3 instead of 1.5. Their own smart combat starts from that and fights as before: cover, suppressive fire, target split. Only knowledge is shared, so Antistasi's and PATCOM's orders are untouched.
+- No new firepower system: the allies' reaction is the existing fire team and return-fire logic, now triggered sooner.
+
 ## 1.25.0
 
 Not tested in game yet. Thomas: after reviving himself the launcher came out, a slow animation that locks movement.
