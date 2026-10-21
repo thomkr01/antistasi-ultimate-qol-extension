@@ -90,6 +90,7 @@ The T key setting only touches AI in your own group. Self-treat and the launcher
 | `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | Ladder speed without the key. |
 | `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | Speed with the key held while climbing (any ladder state without `down` in its name). |
 | `auqol_anim_ladderSlideSpeed` | Slider 1–6 | 4 | Server | Speed with the key held on ladder states with `down` in their name, so you slide down. |
+| `auqol_player_wakePrimary` | Checkbox | On | Server | After the last `unconscious` animation state of your unit (Antistasi revive and Withstand, ACE), a launcher in hand is swapped for your primary weapon, or your handgun if you have none, for 3 s, from the same `AnimStateChanged` handler. Skipped in a vehicle. |
 
 The boost is sent to every machine with a CBA global event, so others see you climb at the same speed. Under ACE Advanced Fatigue, `auqol` is added to `ace_advanced_fatigue_setAnimExclusions` while the boost lasts, which is ACE's own way to keep its 1 s loop from resetting the speed.
 

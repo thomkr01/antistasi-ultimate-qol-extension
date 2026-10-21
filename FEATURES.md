@@ -232,6 +232,8 @@ Switching to or from your handgun plays twice as fast, and the moment the pistol
 - Works with ACE Advanced Fatigue, which is told to leave the speed alone while the boost lasts.
 - `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2), `auqol_anim_ladder` (on), `auqol_anim_ladderSpeed` (1.5), `auqol_anim_ladderFastSpeed` (2.5), `auqol_anim_ladderSlideSpeed` (4).
 
+Getting up from unconscious (Antistasi revive, Withstand, ACE) the engine brings the launcher out, a slow animation that locks movement. For 3 s after the last unconscious animation, a launcher in hand is swapped for your primary weapon, or your handgun if you have none (`auqol_player_wakePrimary`, on). A launcher you take on purpose within those 3 s is swapped back.
+
 ## 21. Smart combat AI
 
 AI squads fight like a unit using cover, both sides, any faction:

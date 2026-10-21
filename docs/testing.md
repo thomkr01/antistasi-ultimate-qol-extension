@@ -296,6 +296,14 @@ Not tested in game yet.
 2. Look away and back at an already known enemy: no new RPT line (nothing is repeated). Press T on one: it becomes the focus as before.
 3. Open the map, or turn the setting off: nothing is revealed.
 
+### 25. Primary weapon after getting up (1.25.0)
+
+Not tested in game yet.
+
+1. Carry a rifle and a launcher. Get downed, then self-revive (Withstand). You get up with the rifle in hand and can move at once, no launcher animation.
+2. Same with the launcher selected when you go down, and with no rifle but a pistol (the pistol comes up). With no primary and no handgun nothing is switched.
+3. Turn `auqol_player_wakePrimary` off: the old behavior returns. With ACE medical, wake from ACE unconsciousness: rifle in hand.
+
 ### 21. Optimization pass (1.20.1)
 
 Nothing should look or play differently from 1.20.0.

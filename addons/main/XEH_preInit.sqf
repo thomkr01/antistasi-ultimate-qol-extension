@@ -270,6 +270,13 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     [1, 6, 4, 2], 1
 ] call CBA_fnc_addSetting;
 
+[
+    "auqol_player_wakePrimary", "CHECKBOX",
+    ["Primary weapon after getting up", "After you get up from unconscious (Antistasi revive or Withstand, ACE), your primary weapon (else your handgun) comes up instead of the engine's slow launcher animation."],
+    [_category, "Player animations"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 // --- Smart combat AI (runs where each AI group is local, from its EnemyDetected and Suppressed events)
 [
     "auqol_combat_tactics", "CHECKBOX",

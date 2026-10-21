@@ -1,6 +1,8 @@
 /*
     Author: AUQOL
-    Faster pistol swap and faster ladders for the local player. Runs from the player's
+    Faster pistol swap and faster ladders for the local player, and the primary weapon (else the handgun)
+    in hand after getting up from unconscious: the engine brings the launcher out then, a slow animation
+    that locks movement. For 3 s after the last "unconscious" state, a launcher in hand is swapped back. Runs from the player's
     AnimStateChanged event and when the fast-ladder key is pressed or released. While the player is in
     a weapon switch to or from the handgun, or on a ladder, their animations play faster; any other
     state puts them back to normal speed. Names are matched by pattern, so addon animations that follow
@@ -20,6 +22,23 @@ params ["_unit", "_anim"];
 if (_unit isNotEqualTo player || {!auqol_ready}) exitWith {};
 
 _anim = toLowerANSI _anim;
+
+if (auqol_player_wakePrimary) then {
+    if ("unconscious" in _anim) then {
+        _unit setVariable ["auqol_wasDown", true];
+    } else {
+        if (_unit getVariable ["auqol_wasDown", false]) then {
+            _unit setVariable ["auqol_wasDown", false];
+            _unit setVariable ["auqol_wakeUntil", time + 3];
+        };
+        // shortcut: a launcher you pick on purpose within these 3 s is swapped back, upgrade if that gets in the way.
+        private _launcher = secondaryWeapon _unit;
+        if (time < _unit getVariable ["auqol_wakeUntil", 0] && _launcher != "" && {currentWeapon _unit == _launcher} && {isNull objectParent _unit} && {local _unit}) then {
+            private _weapon = [handgunWeapon _unit, primaryWeapon _unit] select (primaryWeapon _unit != "");
+            if (_weapon != "") then { _unit selectWeapon _weapon };
+        };
+    };
+};
 private _coef = 1;
 if (auqol_anim_ladder && {"ladder" in _anim}) then {
     // With the key held: faster climbing up, sliding on the way down.
