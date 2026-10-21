@@ -95,6 +95,12 @@ if (hasInterface) then {
         false
     }, {}, [-1, [false, false, false]]] call CBA_fnc_addKeybind; // no default key
 
+    // Slide down the ladder you are on (AUQOL_fnc_animLadderSlide).
+    ["Antistasi Ultimate QoL by TchicX", "auqol_anim_ladderSlideKey", ["Slide down ladder", "While on a ladder, slide to its foot."], {
+        call AUQOL_fnc_animLadderSlide;
+        false
+    }, {}, [0x1F, [false, true, false]]] call CBA_fnc_addKeybind; // 0x1F: DIK_S, with Ctrl
+
     // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
     addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];
 
