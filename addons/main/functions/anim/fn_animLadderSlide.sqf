@@ -11,7 +11,7 @@
 */
 
 private _unit = player;
-if (!auqol_ready || {!auqol_anim_ladderSlide} || {!alive _unit} || {!("ladder" in toLowerANSI animationState _unit)}) exitWith {};
+if (!auqol_ready || {!auqol_anim_ladderSlide} || {!alive _unit} || {!local _unit} || {!("ladder" in toLowerANSI animationState _unit)}) exitWith {};
 
 private _best = [];
 private _bestDist = 0.8; // m from the ladder line
@@ -46,7 +46,7 @@ _unit action ["ladderOff", _building];
         params ["_args", "_handle"];
         _args params ["_unit", "_from", "_target", "_start", "_duration"];
         private _t = (time - _start) / (_duration max 0.1);
-        if (_t >= 1 || {!alive _unit} || {!isNull objectParent _unit} || {lifeState _unit == "INCAPACITATED"}) exitWith {
+        if (_t >= 1 || {!alive _unit} || {!isNull objectParent _unit} || {lifeState _unit == "INCAPACITATED"} || {!local _unit}) exitWith {
             [_handle] call CBA_fnc_removePerFrameHandler;
         };
         _unit setPosASL (_from vectorAdd ((_target vectorDiff _from) vectorMultiply _t));
