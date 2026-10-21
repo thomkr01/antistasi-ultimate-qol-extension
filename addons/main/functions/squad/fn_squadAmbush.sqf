@@ -1,0 +1,29 @@
+/*
+    Author: AUQOL
+    Ambush discipline. While you lead your group in STEALTH behaviour with its combat mode on fire at
+    will (YELLOW or RED), the group is put on Hold fire (GREEN) so nobody gives the position away; the
+    first shot you fire (the Fired handler, XEH_postInit), leaving STEALTH, or a combat mode you set
+    yourself puts the original mode back and the whole squad opens up on what it knows. Under Hold fire
+    the engine still lets AI defend themselves. Runs every second on the player's machine.
+    Arguments:
+    0: You fired <BOOL> (default: false)
+    Return Value: none
+*/
+params [["_fired", false]];
+private _player = player;
+if (!hasInterface || {isNull _player}) exitWith {};
+private _group = group _player;
+if (!local _group) exitWith {};
+private _held = _group getVariable ["auqol_ambushMode", ""];
+private _stealth = auqol_squad_ambush && {leader _group isEqualTo _player} && {behaviour _player == "STEALTH"};
+if (_held != "") exitWith {
+    if (_fired || {!_stealth} || {combatMode _group != "GREEN"}) then {
+        // A mode you set yourself while holding stays.
+        if (combatMode _group == "GREEN") then { _group setCombatMode _held };
+        _group setVariable ["auqol_ambushMode", nil];
+    };
+};
+if (_stealth && {!_fired} && {combatMode _group in ["YELLOW", "RED"]}) then {
+    _group setVariable ["auqol_ambushMode", combatMode _group];
+    _group setCombatMode "GREEN";
+};

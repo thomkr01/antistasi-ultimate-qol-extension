@@ -59,6 +59,8 @@ if (leader _group isEqualTo _player) then {
 // Nearby friendly AI groups learn about it too (smart combat contact sharing).
 [_group, _target, true] call AUQOL_fnc_combatShareContact;
 
+[_target] call AUQOL_fnc_squadBreach;
+[_target] call AUQOL_fnc_squadCallout;
 // Knowledge just changed, so check launchers now instead of at the next pass.
 [] call AUQOL_fnc_squadLaunchers;
 

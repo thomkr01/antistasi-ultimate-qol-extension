@@ -58,6 +58,7 @@
 ["CAManBase", "Fired", {
     params ["_unit", "_weapon", "", "", "_ammo", "", "_projectile"];
     if (_weapon == "Throw") then { _this call AUQOL_fnc_combatDodge };
+    if (_unit isEqualTo player) then { [true] call AUQOL_fnc_squadAmbush };
     if (local _unit) then { [_unit, _weapon] call AUQOL_fnc_concealOnFired; [_unit, _weapon, _ammo] call AUQOL_fnc_concealLocateShot };
     if (!auqol_ready || {!local _unit} || {isPlayer _unit} || _weapon == "" || {_weapon != secondaryWeapon _unit}) exitWith {};
     if !([auqol_combat_antiArmor && {!isNil {group _unit getVariable "auqol_tacPFH"}}, auqol_squad_launchers] select (isPlayer leader _unit)) exitWith {};

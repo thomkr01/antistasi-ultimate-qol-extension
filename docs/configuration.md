@@ -57,6 +57,18 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 
 With `auqol_player_squad` off these only affect the local player's unit. With it on they also cover the AI in your own group, applied when a recruit joins and re-checked every 15 seconds as a fallback. AI outside your group are never changed. An AI that leaves your group keeps the values it had (Antistasi normally deletes dismissed AI).
 
+## Squad tactics (1.28.0)
+
+All Server scope, all on by default. They only order your own squad, only from your own actions, and never touch Antistasi's groups.
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_squad_callouts` | Checkbox | On | Server | One of your AI calls out an enemy shown by the Reveal target key or look to spot in group chat (type, clock position, distance), at most every 4 s. |
+| `auqol_squad_ambush` | Checkbox | On | Server | While you lead your group in `STEALTH` behaviour with combat mode YELLOW or RED, the group is set to GREEN (hold fire). Your first shot, leaving Stealth, or a combat mode you set yourself restores the saved mode. Checked every second. |
+| `auqol_squad_overwatch` | Checkbox | On | Server | With a known enemy within 300 m and you still for 3 s, free AI (`AUQOL_fnc_combatIsEligible`) take cover within 15 m (`AUQOL_fnc_combatFindCover`, two units per pass), carrying the smart combat spot variables so stuck recovery skips them. They go back to formation when you move or the enemy is gone. |
+| `auqol_squad_breach` | Checkbox | On | Server | Reveal target on an enemy soldier inside a building within 150 m: the two free AI nearest the building `doMove` to the building positions nearest him, released after 30 s. |
+| `auqol_squad_nvDiscipline` | Checkbox | On | Server | At night (`sunOrMoon` below 0.3), friendly AI with night vision (`AUQOL_fnc_nightHasVision`) get `enableGunLights "ForceOff"` and `enableIRLasers true`; set back to Auto by day or when the setting is off. Covers your squad, and all friendly AI with `auqol_squad_reactionAll`. |
+
 ## Squad reactions
 
 | Setting | Type | Default | Scope | Description |

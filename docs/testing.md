@@ -315,6 +315,17 @@ Not tested in game yet.
 4. A group medic treating a wounded mate while no enemy is within 60 m is not sent to cover mid-treatment.
 5. `units group player apply { _x skill "courage" }` is at least the floor. Turn `auqol_squad_reaction` off: the old values return.
 
+### 27. Squad tactics (1.28.0)
+
+Not tested in game yet.
+
+1. Press T on an enemy: group chat shows "Contact! ..." from one AI with a plausible clock position.
+2. Set the squad to Stealth with Open fire: they stop shooting at an enemy walking past. Fire one shot: all open up. Same if you leave Stealth.
+3. In contact, stop for 3 s: free AI move to nearby cover. Walk off: they rejoin. An AI you told to move or stay is not touched.
+4. Mark an enemy inside a house with T: two AI go into the house to positions near him; after 30 s they rejoin.
+5. At night with NVGs on the squad and a weapon light on a rifle: the light stays off; by day it is Auto again.
+6. With `auqol_debug`, no script errors; stuck recovery reports nothing for overwatch or breach units.
+
 ### 21. Optimization pass (1.20.1)
 
 Nothing should look or play differently from 1.20.0.

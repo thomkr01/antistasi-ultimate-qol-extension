@@ -51,6 +51,17 @@ private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding", "cou
             _unit setVariable ["auqol_reactSkills", nil, true];
         };
     };
+    // Light discipline: night vision users keep weapon lights off (IR lasers stay on) so only NV sees them.
+    private _dark = sunOrMoon < 0.3;
+    private _lit = _unit getVariable ["auqol_lightsOff", false];
+    if (_dark || _lit) then {
+        private _ours = isPlayer leader group _unit || {auqol_squad_reactionAll && {side group _unit == _friendly}};
+        if (auqol_squad_nvDiscipline && _ours && _dark && {[_unit] call AUQOL_fnc_nightHasVision}) then {
+            if (!_lit) then { _unit setVariable ["auqol_lightsOff", true]; _unit enableGunLights "ForceOff"; _unit enableIRLasers true };
+        } else {
+            if (_lit) then { _unit setVariable ["auqol_lightsOff", nil]; _unit enableGunLights "Auto" };
+        };
+    };
 } forEach (_units select {
     local _x && {!isPlayer _x} && {alive _x}
     && {side group _x == _friendly || {group _x == _playerGroup} || {!isNil {_x getVariable "auqol_reactSkills"}}}

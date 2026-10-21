@@ -329,6 +329,17 @@ Look at enemies and your squad learns about them, without pressing T.
 - Friendly AI groups within 300 m also learn about up to three of the enemies you reveal (1.26.0), at the same level as your squad (3), so they join the fight and their smart combat takes over. Same rules as the T key sharing: 6 groups at most, not player-led groups, off with `auqol_combat_shareContacts` or when a yielding AI mod is loaded. Only knowledge is shared; no orders are given.
 - `auqol_squad_lookSpot` (on).
 
+## 27. Squad tactics (1.28.0)
+
+Your own squad, from your own actions only. Smart combat still leaves player-led groups alone.
+
+- **Radio call-outs.** The Reveal target key and look to spot make one AI say "Contact! infantry, 2 o'clock, 120 m" in group chat.
+- **Ambush discipline.** In Stealth behaviour your squad holds fire until you shoot, then the original combat mode returns and all open up. Leaving Stealth or setting the mode yourself also ends it.
+- **Overwatch.** Stop with an enemy within 300 m: free AI take cover within 15 m. Move and they rejoin formation.
+- **Breach and clear.** T on an enemy inside a building within 150 m sends the two nearest free AI in for 30 s.
+- **Light discipline.** At night AI with night vision keep weapon lights off and use IR lasers.
+- **Together with other features.** Orders you gave, stopped units, treating units and vehicle crews are never touched; stuck recovery skips overwatch and breach units; self-treat and launchers work as before; Antistasi's groups and PATCOM are not involved. Settings: `auqol_squad_callouts`, `auqol_squad_ambush`, `auqol_squad_overwatch`, `auqol_squad_breach`, `auqol_squad_nvDiscipline` (all on).
+
 ## Features working together
 
 - Look to spot (26) only reveals, it never sets the 30 s T focus or touches orders, so T focus, smart combat target split, launcher switching, self-treat and stuck recovery work as before; the launcher check simply runs when a new enemy is revealed. Hard to locate and hiding only affect what enemies know about you, not what your squad knows about them.
