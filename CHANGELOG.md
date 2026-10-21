@@ -9,6 +9,14 @@ Not tested in game yet. Thomas asked for the DEVGRU tactics ideas from the 1.27 
 - Radio call-outs, ambush discipline (Stealth = hold fire until you shoot), overwatch when you stop in contact, breach and clear on T at an enemy in a building, and light discipline at night (NV users: weapon lights off, IR on). Five settings, all on, in "Squad tactics".
 - Checked against: smart combat (player-led groups still skipped; overwatch reuses its cover search and spot variables), stuck recovery (skips these units), self-treat, launchers, T focus (breach adds orders, focus unchanged), grenade dodge (drops the spot; the unit then rejoins), hard to locate and night spotting (enemy side only), reactions (courage etc. unchanged), Antistasi PATCOM (never involved), ACE medical, LAMBS and Vcom (these only order your own squad, as the player's helper).
 
+## 1.27.1
+
+Thomas tested in game: the ladder animation played faster but the climb itself was slower than vanilla. Nothing else in AUQOL changes the player's speed on a ladder; the engine times each step itself, so a faster animation cannot speed up the climb. The ladder boost is removed.
+
+- Removed: faster ladders, the Fast ladder climbing key, the ladder slide and the settings `auqol_anim_ladder`, `auqol_anim_ladderSpeed`, `auqol_anim_ladderFastSpeed`, `auqol_anim_ladderSlideSpeed` (old saved values are ignored). Ladders are vanilla again.
+- Kept: the pistol swap speed-up, the primary weapon after getting up, and AI animation speed (AI ladder use was never changed).
+- Checked against: AI animation speed (players still skipped), stuck recovery (still skips ladders), smart combat, ACE Advanced Fatigue exclusion (still used by the pistol swap), wake primary (same handler, unchanged).
+
 ## 1.27.0
 
 Not tested in game yet. Thomas asked for an edge-case review of friendly and enemy AI and a DEVGRU feel. Findings: `/mnt/project-files/reports/auqol-1.27-ai-tactics-review.md`.

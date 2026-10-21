@@ -224,13 +224,13 @@ Every AI soldier of every faction plays its animations 25% faster by default, ad
 - A new value reaches every AI within 15 seconds.
 - `auqol_anim_ai` (on), `auqol_anim_aiSpeed` (1.25).
 
-## 20. Faster pistol swap and faster ladders
+## 20. Faster pistol swap
 
-Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Climbing ladders is 1.5 times as fast. Hold the *Fast ladder climbing* key (Left Shift by default, under Controls > Configure Addons) to climb at 2.5 times, or to slide down at 4 times. All speeds can be set.
+Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Ladders are vanilla: a faster ladder animation only looked quicker while the climb itself got slower (1.11.0 to 1.27.0 had a ladder boost, removed in 1.27.1).
 
 - Only your own character. Everyone else sees you at the same speed.
 - Works with ACE Advanced Fatigue, which is told to leave the speed alone while the boost lasts.
-- `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2), `auqol_anim_ladder` (on), `auqol_anim_ladderSpeed` (1.5), `auqol_anim_ladderFastSpeed` (2.5), `auqol_anim_ladderSlideSpeed` (4).
+- `auqol_anim_pistolSwap` (on), `auqol_anim_pistolSwapSpeed` (2).
 
 Getting up from unconscious (Antistasi revive, Withstand, ACE) the engine brings the launcher out, a slow animation that locks movement. For 3 s after the last unconscious animation, a launcher in hand is swapped for your primary weapon, or your handgun if you have none (`auqol_player_wakePrimary`, on). A launcher you take on purpose within those 3 s is swapped back.
 
@@ -405,7 +405,7 @@ There are no per-frame handlers. The AI animation speed has a 15-second pass on 
 - Antistasi stores no link between a vehicle marker and its vehicle, so AUQOL pairs each marker with the nearest vehicle of the matching kind when it appears. In a tight convoy of same-kind vehicles two markers can still swap; Antistasi's own once-a-minute update then shows the swap and AUQOL re-pairs the marker, so a wrong pairing lasts at most about a minute.
 - "Copy from user" keeps only items the arsenal has unlimited. Items with a limited count, and slots holding locked items, are left to Antistasi's random pick, and the chat line lists them.
 - Animation speed (`setAnimSpeedCoef`) doesn't change reloading or other upper-body animations; that is an engine limit. Faster AI animations therefore don't speed up AI reloads.
-- The pistol swap and ladder boosts recognise animations by their vanilla-style names (a weapon switch with `wpst` on one side, any state with `ladder` in it). Addon animations named differently play at normal speed.
+- The pistol swap boost recognises animations by their vanilla-style names (a weapon switch with `wpst` on one side). Addon animations named differently play at normal speed.
 - Smart combat AI moves group members, never the leader, so the group still goes where Antistasi (or the mission) sends it; members fight from cover around that. Cover is judged by a line from where the group believes the enemy is, so cover against a second enemy elsewhere is not guaranteed. It does not retreat or call for help: Antistasi does that.
 - Night spotting judges overall darkness from the sky (sun, moon, clouds). Lights count only around you: your weapon light, headlights, a street lamp within 15 m or a flare within 120 m. Fires, burning wrecks and building lights do not. A soldier gets normal spotting back within 5 s of an enemy coming close or lit. Enemy groups still share sightings by radio, so one enemy with night vision who sees you can tell the others.
 - Hide among the grass makes enemy AI unable to see you (very low camouflage), as the HATG mod does with its invisible screen. AI that already know where you are keep that knowledge until it fades, and contact reports between enemy groups still pass your last position. Ghillie suits are recognised by "ghillie" in the uniform's class name. A hidden AI that changes owner in multiplayer is only made visible again once it is in that player's squad.
