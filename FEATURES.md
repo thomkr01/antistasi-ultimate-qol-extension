@@ -226,7 +226,7 @@ Every AI soldier of every faction plays its animations 25% faster by default, ad
 
 ## 20. Faster pistol swap
 
-Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Ladders are vanilla: a faster ladder animation only looked quicker while the climb itself got slower (1.11.0 to 1.27.0 had a ladder boost, removed in 1.27.1).
+Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Ladders are a separate feature, see section 28.
 
 - Only your own character. Everyone else sees you at the same speed.
 - Works with ACE Advanced Fatigue, which is told to leave the speed alone while the boost lasts.
@@ -339,6 +339,14 @@ Your own squad, from your own actions only. Smart combat still leaves player-led
 - **Breach and clear.** T on an enemy inside a building within 150 m sends the two nearest free AI in for 30 s.
 - **Light discipline.** At night AI with night vision keep weapon lights off and use IR lasers.
 - **Together with other features.** Orders you gave, stopped units, treating units and vehicle crews are never touched; stuck recovery skips overwatch and breach units; self-treat and launchers work as before; Antistasi's groups and PATCOM are not involved. Settings: `auqol_squad_callouts`, `auqol_squad_ambush`, `auqol_squad_overwatch`, `auqol_squad_breach`, `auqol_squad_nvDiscipline` (all on).
+
+## 28. Faster ladders (1.29.0)
+
+Climbing a ladder is 2.5 times as fast, for the player and every AI. It is the engine's own ladder speed (`CfgAnimation >> ladderSpeed`, vanilla 0.5, set to 1.25), the same value the Ladder Tweak Remastered mod uses, so the climb itself moves faster and not only the animation (the 1.11 to 1.27 animation boost did the latter and was removed in 1.27.1).
+
+- No setting: it is static config, like the weight cap. Always on, on every machine.
+- Loading Ladder Tweak Remastered too changes nothing (same value). Its slide-down is not part of AUQOL.
+- Not touched: AI animation speed (AI climb at both, 1.25 times faster again), stuck recovery (still skips ladders), pistol swap, ACE fatigue.
 
 ## Features working together
 

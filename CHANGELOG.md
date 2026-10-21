@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.29.0
+
+Not tested in game yet. Thomas wants ladders to climb as fast as with Ladder Tweak Remastered, which he reports really does.
+
+- Faster ladders again, this time in config: `CfgAnimation >> ladderSpeed` is 1.25 (vanilla 0.5, 2.5 times), the engine's own climb speed, same value that mod uses. No settings or keybind; applies to every unit. Its slide-down and animation files are not copied (its code and animations are not under a licence we can reuse).
+- Checked against: AI animation speed (stacks for AI), stuck recovery (still skips ladders), pistol swap and wake primary (unchanged), ACE fatigue, the real Ladder Tweak loaded too (identical value).
+
 ## 1.28.0
 
 Not tested in game yet. Thomas asked for the DEVGRU tactics ideas from the 1.27 review (not casualty drag).

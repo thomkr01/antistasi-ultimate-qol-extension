@@ -35,6 +35,13 @@ class CfgSurfaces {
     };
 };
 
+// Ladder climbing speed: the engine's global ladderSpeed (vanilla 0.5) times 2.5, the value Ladder Tweak
+// Remastered uses, so loading both changes nothing. Static config, so it applies to every unit, AI
+// included, and every machine. Replaces the 1.11-1.27 animation boost, which only changed the look.
+class CfgAnimation {
+    ladderSpeed = 1.25;
+};
+
 class Extended_PreInit_EventHandlers {
     class auqol_main {
         init = "call compileScript ['\z\auqol\addons\main\XEH_preInit.sqf']";
