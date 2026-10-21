@@ -12,7 +12,6 @@ Every setting takes effect immediately, with no mission restart.
 | --- | --- | --- | --- | --- |
 | `auqol_eject_enabled` | Checkbox | On | Server | When an enemy AI land vehicle becomes immobilized, move its eligible occupants out. |
 | `auqol_eject_outOfFuel` | Checkbox | On | Server | `canMove` ignores fuel for land vehicles. With this on, a tank of exactly 0 fuel also counts as immobilized. |
-
 | `auqol_eject_aircraft` | Checkbox | On | Server | Also eject enemy crew from helicopters and planes that are on the ground and cannot fly (`canMove` false) or are over 80 % damaged. Stops a shot down aircraft that did not explode from firing on the ground. |
 
 **How immobilization is detected.**

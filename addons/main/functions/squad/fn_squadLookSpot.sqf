@@ -35,6 +35,12 @@ if (_new isEqualTo []) exitWith {};
     { _unit reveal [_x, 3] } forEach _new;
 } forEach _ai;
 
+// Reveal level 3 fades, so an enemy you keep looking at comes back here: the call-out, the ally share and
+// the log only repeat for it after 20 s.
+_new = _new select { time - (_x getVariable ["auqol_lookAt", -100]) > 20 };
+if (_new isEqualTo []) exitWith {};
+{ _x setVariable ["auqol_lookAt", time] } forEach _new;
+
 // Nearby friendly AI groups (300 m, smart combat contact sharing) learn about up to three of them too,
 // at the same level, so their own combat starts. Only knowledge is shared, no orders.
 { [_group, _x, true, 3] call AUQOL_fnc_combatShareContact } forEach (_new select [0, 3]);

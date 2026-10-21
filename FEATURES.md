@@ -334,6 +334,7 @@ Look at enemies and your squad learns about them, without pressing T.
 Your own squad, from your own actions only. Smart combat still leaves player-led groups alone.
 
 - **Radio call-outs.** The Reveal target key and look to spot make one AI say "Contact! infantry, 2 o'clock, 120 m" in group chat.
+- **Repeat guard (1.29.1).** Look to spot announces and shares the same enemy again only after 20 s.
 - **Ambush discipline.** In Stealth behaviour your squad holds fire until you shoot, then the original combat mode returns and all open up. Leaving Stealth or setting the mode yourself also ends it.
 - **Overwatch.** Stop with an enemy within 300 m: free AI take cover within 15 m. Move and they rejoin formation.
 - **Breach and clear.** T on an enemy inside a building within 150 m sends the two nearest free AI in for 30 s.
@@ -424,4 +425,4 @@ Troubleshooting is in [docs/installation.md](docs/installation.md#troubleshootin
 
 ## Status
 
-Built and statically validated: the config, SQF and every API reference are checked. Sway, recoil, stamina, running, weight, service stock and looting have been reported working in game. Item caches have been reported working too. Crew ejection and Withstand have not been reported yet. Copy from user has been reported working, and squad perks and AI stuck recovery "seem fine". Squad reactions, the T key, squad launchers and live vehicle markers are new in 1.6.0, and faster reactions for all friendly AI in 1.7.0. Self-treatment, the recoil slider, the T key focus and instant contact sharing are new in 1.9.0. None of them is tested in game yet. Faster AI animations, pistol swap and ladders are new in 1.11.0, the full smart combat AI in 1.12.0, its remaining parts and the cross-feature links in 1.13.0, AI group self-treatment and AA launchers in 1.14.0, the no-wasted-rounds launcher rule in 1.15.0, and the cross-feature fixes in 1.15.1; none of them is tested in game yet. Night spotting is new in 1.18.0, hide among the grass in 1.19.0 and hard to locate at range in 1.20.0; none of them is tested in game yet. The in-game test plan is in [docs/testing.md](docs/testing.md).
+What has been reported working in game, and what is still untested, is kept in [docs/testing.md](docs/testing.md) under "In-game results". The in-game test plan is in the same file.

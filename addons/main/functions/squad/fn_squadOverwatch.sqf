@@ -29,6 +29,10 @@ _group setVariable ["auqol_owStill", _group getVariable ["auqol_owStill", time]]
 if (!_fight || {!_halted} || {!isNull objectParent _player}) exitWith {};
 private _ePos = _player getHideFrom _enemy;
 if (_ePos isEqualTo [0, 0, 0]) exitWith {};
+if (time >= _group getVariable ["auqol_owLogAt", 0]) then {
+    _group setVariable ["auqol_owLogAt", time + 15];
+    [format ["Overwatch: %1 of %2 squad AI can be moved", count (_ai select { [_x] call AUQOL_fnc_combatIsEligible }), count _ai], true] call AUQOL_fnc_log;
+};
 private _taken = _ai apply { _x getVariable ["auqol_tacDest", getPosATL _x] };
 private _done = 0;
 {

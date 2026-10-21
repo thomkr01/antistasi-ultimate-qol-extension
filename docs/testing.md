@@ -56,26 +56,7 @@ The checks were themselves tested by mutation. Adding an invented command, an in
 
 ### Results of the last run
 
-Run on 2026-10-19 for 1.8.1 against CBA_A3 `cd4361a`, ACE3 `a17210f`, Antistasi Ultimate `ac4eb28`, arma3-wiki `dist` `b414af7`, HEMTT 1.22.0:
-
-```
-PASS  CfgFunctions: every function has a file, every file is registered, every call is defined
-PASS  config.cpp: XEH paths exist, PBO prefix matches, CBA is the only hard dependency
-PASS  FILEMAP.md lists every code folder and doc
-PASS  CBA settings: unique, documented in docs/configuration.md, no undeclared auqol_ globals
-PASS  Regression guards: loot request, nested loadout items, skill baselines, sway/recoil restore, ejection, stuck progress, marker pairing
-PASS  SQF: every command used exists in the Arma 3 wiki command list
-PASS  Event handlers: names exist and the parameter positions used match the wiki
-PASS  Locality (heuristic): local-argument commands are guarded
-PASS  CBA_A3: every CBA function, event and config class used exists
-PASS  ACE3: every ACE function, variable, constant and class used exists
-PASS  Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist
-hemtt check --pedantic --error-on-all: 1 addon config rapified, 45 SQF files compiled, no warnings
-tools/check_ingame_scripts.sh: 5 SQF files compiled, no warnings
-hemtt release: 1 PBO built (auqol_main), signed with HEMTT's generated key, releases/auqol-1.8.1.zip
-```
-
-The `expectedDestination` planning modes the stuck check relies on ("DoNotPlan", "LEADER DIRECT", "FORMATION PLANNED", "DoNotPlanFormation") are not in the parsed wiki data, so they were checked by hand against the BI wiki page for `expectedDestination`. The Random button IDC 44150 used for "Copy from user" (`IDC_RSCDISPLAYARSENAL_CONTROLSBAR_BUTTONRANDOM` in the game's `defineResinclDesign.inc`, which no source here contains) was taken from a Bohemia forums thread that disables that button by this IDC. The static check only confirms Antistasi blanks the Random button; the IDC itself is confirmed in game by test 9.
+The CI run on each push is the record: it runs every check above against the current CBA_A3, ACE3, Antistasi Ultimate and arma3-wiki sources. A local run on 2026-10-21 (1.29.0, wiki and Antistasi sources) passed every check it could run; the CBA and ACE checks were skipped there.
 
 ### Not covered by static checks
 
