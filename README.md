@@ -18,7 +18,7 @@ AUQOL is a CBA addon. It hooks into Arma and Antistasi through events and their 
 
 ## Install
 
-Needs [CBA_A3](https://github.com/CBATeam/CBA_A3) and Arma 3 2.12+. Download `@auqol` from [Releases](https://github.com/thomkr01/antistasi-ultimate-qol-extension/releases) and load it on the server and every client, for example `-mod=@CBA_A3;@AntistasiUltimate;@auqol`.
+Needs [CBA_A3](https://github.com/CBATeam/CBA_A3) and Arma 3 2.14+. Download `@auqol` from [Releases](https://github.com/thomkr01/antistasi-ultimate-qol-extension/releases) and load it on the server and every client, for example `-mod=@CBA_A3;@AntistasiUltimate;@auqol`.
 
 ## More
 

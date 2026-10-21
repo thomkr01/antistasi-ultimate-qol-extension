@@ -2,6 +2,17 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.29.1
+
+Not tested in game yet. Fixes from the full audit (`/mnt/project-files/reports/auqol-1.29-full-audit.md`).
+
+- Requires Arma 3 2.14 (config, README): `remoteControlled`, used by smart combat and stuck recovery, is 2.14.
+- Ambush hold fire: if you change group while the squad is held, the old group gets its combat mode back.
+- Look to spot: the call-out, ally share and log repeat for the same enemy only after 20 s (the reveal itself still refreshes).
+- Debug logging: smart combat and overwatch log how many AI can be moved (every 15 s per group), to answer "why did nobody move".
+- Docs: stale status and test-run text replaced, ejection table fixed, `mod.cpp` overview shortened.
+- Checked against: T key and breach (unchanged, cooldown only on look to spot), ambush and overwatch (same group variable use), smart combat (log only), LAMBS and Vcom (unchanged).
+
 ## 1.29.0
 
 Not tested in game yet. Thomas wants ladders to climb as fast as with Ladder Tweak Remastered, which he reports really does.

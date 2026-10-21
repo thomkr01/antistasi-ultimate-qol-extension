@@ -83,6 +83,10 @@ private _members = (units _group - [_leader]) select { [_x] call AUQOL_fnc_comba
 { [_x] call AUQOL_fnc_combatRelease } forEach ((units _group - [_leader]) select {
     !(_x in _members) && {!isNil {_x getVariable "auqol_tacTeam"}} && {time >= _x getVariable ["auqol_treatUntil", 0]}
 });
+if (time >= _group getVariable ["auqol_tacLogAt", 0]) then {
+    _group setVariable ["auqol_tacLogAt", time + 15];
+    [format ["Tactics: %1 of %2 members of %3 can be moved", count _members, count units _group - 1, groupId _group], true] call AUQOL_fnc_log;
+};
 if (_members isEqualTo []) exitWith {};
 
 {

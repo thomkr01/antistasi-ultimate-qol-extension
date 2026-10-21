@@ -10,8 +10,8 @@ class CfgPatches {
         url = "https://github.com/thomkr01/antistasi-ultimate-qol-extension";
         units[] = {};
         weapons[] = {};
-        // 2.12 added the "Service" mission event handler used by the service feature.
-        requiredVersion = 2.12;
+        // 2.12 added the "Service" mission event handler used by the service feature; 2.14 added remoteControlled.
+        requiredVersion = 2.14;
         requiredAddons[] = {"cba_main"};
         version = MAJOR.MINOR;
         versionStr = QUOTE(VERSION_STR);
