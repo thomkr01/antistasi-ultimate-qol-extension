@@ -5,6 +5,7 @@ auqol_service_cache = createHashMap;
 auqol_aceRearmSources = [];
 auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> [its vehicle, position AUQOL or Antistasi last gave it]
 auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
+auqol_calloutNext = 0; // time of the next radio call-out
 auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
 auqol_map_pending = createHashMap; // new markers waiting for their text -> time first seen
@@ -207,6 +208,41 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
     "auqol_squad_launchers", "CHECKBOX",
     ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
     [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_callouts", "CHECKBOX",
+    ["Radio call-outs", "When the Reveal target key or look to spot shows your squad an enemy, one of your AI calls it out in group chat: type, clock position and distance."],
+    [_category, "Squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_ambush", "CHECKBOX",
+    ["Ambush discipline", "While you lead your group in Stealth behaviour, your squad is put on Hold fire so nobody gives the position away. The first shot you fire, leaving Stealth or setting a combat mode yourself ends it, and the squad opens up together."],
+    [_category, "Squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_overwatch", "CHECKBOX",
+    ["Overwatch when you stop", "With an enemy known within 300 m and you standing still for 3 s, your free AI take the nearest cover within 15 m and cover you. They return to formation when you move again or the enemy is gone. AI you ordered yourself are left alone."],
+    [_category, "Squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_breach", "CHECKBOX",
+    ["Breach and clear (Reveal target key)", "Pressing Reveal target on an enemy soldier inside a building within 150 m sends the two free AI nearest to the building in together, to the positions nearest him, for 30 s."],
+    [_category, "Squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_nvDiscipline", "CHECKBOX",
+    ["Light discipline at night", "At night, friendly AI with night vision or thermal keep their weapon lights off and use IR lasers, so only enemies with night vision can see them. AI without night vision are left alone."],
+    [_category, "Squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 

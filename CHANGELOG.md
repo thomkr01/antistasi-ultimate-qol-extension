@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.28.0
+
+Not tested in game yet. Thomas asked for the DEVGRU tactics ideas from the 1.27 review (not casualty drag).
+
+- Radio call-outs, ambush discipline (Stealth = hold fire until you shoot), overwatch when you stop in contact, breach and clear on T at an enemy in a building, and light discipline at night (NV users: weapon lights off, IR on). Five settings, all on, in "Squad tactics".
+- Checked against: smart combat (player-led groups still skipped; overwatch reuses its cover search and spot variables), stuck recovery (skips these units), self-treat, launchers, T focus (breach adds orders, focus unchanged), grenade dodge (drops the spot; the unit then rejoins), hard to locate and night spotting (enemy side only), reactions (courage etc. unchanged), Antistasi PATCOM (never involved), ACE medical, LAMBS and Vcom (these only order your own squad, as the player's helper).
+
 ## 1.27.0
 
 Not tested in game yet. Thomas asked for an edge-case review of friendly and enemy AI and a DEVGRU feel. Findings: `/mnt/project-files/reports/auqol-1.27-ai-tactics-review.md`.

@@ -39,5 +39,6 @@ if (_new isEqualTo []) exitWith {};
 // at the same level, so their own combat starts. Only knowledge is shared, no orders.
 { [_group, _x, true, 3] call AUQOL_fnc_combatShareContact } forEach (_new select [0, 3]);
 
+[_new select 0] call AUQOL_fnc_squadCallout;
 [] call AUQOL_fnc_squadLaunchers;
 [format ["Look to spot: %1 enemies revealed to %2 units", count _new, count _ai]] call AUQOL_fnc_log;

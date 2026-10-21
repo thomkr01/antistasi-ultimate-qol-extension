@@ -117,6 +117,10 @@ class CfgFunctions {
             class squadLookSpot {};
             class squadSelfTreat {};
             class squadIsOutOfFight {};
+            class squadCallout {};
+            class squadAmbush {};
+            class squadOverwatch {};
+            class squadBreach {};
         };
         class map {
             file = "\z\auqol\addons\main\functions\map";
