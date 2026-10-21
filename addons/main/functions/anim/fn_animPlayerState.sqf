@@ -33,7 +33,7 @@ if (auqol_player_wakePrimary) then {
         };
         // shortcut: a launcher you pick on purpose within these 3 s is swapped back, upgrade if that gets in the way.
         private _launcher = secondaryWeapon _unit;
-        if (time < _unit getVariable ["auqol_wakeUntil", 0] && {_launcher != ""} && {currentWeapon _unit == _launcher} && {isNull objectParent _unit} && {local _unit}) then {
+        if (time < _unit getVariable ["auqol_wakeUntil", 0] && _launcher != "" && {currentWeapon _unit == _launcher} && {isNull objectParent _unit} && {local _unit}) then {
             private _weapon = [handgunWeapon _unit, primaryWeapon _unit] select (primaryWeapon _unit != "");
             if (_weapon != "") then { _unit selectWeapon _weapon };
         };
