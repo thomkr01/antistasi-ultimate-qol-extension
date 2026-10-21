@@ -169,6 +169,20 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_squad_lookSpot", "CHECKBOX",
+    ["Look to spot for your squad", "Enemies you can see near where you look (within the angle below of your crosshair, up to 1500 m) are revealed to your squad without pressing anything. Every such enemy counts, and the squad's own combat AI picks which to fight first. No focus is set, unlike the Reveal target key, which still works."],
+    [_category, "Squad reactions"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_squad_lookAngle", "SLIDER",
+    ["Look to spot angle (degrees)", "How close to the centre of your view an enemy must be to be spotted, 1 to 15 degrees. About 5 is a hand's width around the crosshair on a normal screen."],
+    [_category, "Squad reactions"],
+    [1, 15, 5, 0], 1
+] call CBA_fnc_addSetting;
+
+[
     "auqol_squad_selfTreat", "CHECKBOX",
     ["Wounded squad AI treat themselves", "AI in your group that are hurt (limping, can't run) use their first aid kit on themselves at once, a few seconds after being hit. Light leftover damage that only keeps the red hurt icon up (for example after Antistasi's revive) is cleared without using a kit. Off under ACE medical, which has its own AI medical."],
     [_category, "Squad reactions"],
@@ -247,6 +261,20 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     ["Ladder slide speed", "Speed going down the ladder while the Fast ladder climbing key is held, so you slide down, 1.0 to 6.0."],
     [_category, "Player animations"],
     [1, 6, 4, 2], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_slopeRun", "CHECKBOX",
+    ["Run up slopes", "When the game drops you to a walk on a slope that you could still walk up (and you are not holding the slow-walk key), your walk plays faster, at the speed below, so you keep running pace. Flat ground and stairs are untouched."],
+    [_category, "Player animations"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_anim_slopeSpeed", "SLIDER",
+    ["Slope walk speed", "Walk animation speed on a slope while Run up slopes is on, 1.0 to 3.0. About 1.8 matches running pace."],
+    [_category, "Player animations"],
+    [1, 3, 1.8, 2], 1
 ] call CBA_fnc_addSetting;
 
 // --- Smart combat AI (runs where each AI group is local, from its EnemyDetected and Suppressed events)

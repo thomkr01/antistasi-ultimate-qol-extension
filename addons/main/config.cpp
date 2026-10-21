@@ -114,6 +114,7 @@ class CfgFunctions {
             class squadLaunchers {};
             class squadGroupHooks {};
             class squadRevealFocus {};
+            class squadLookSpot {};
             class squadSelfTreat {};
             class squadIsOutOfFight {};
         };

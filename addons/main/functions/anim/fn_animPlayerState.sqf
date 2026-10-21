@@ -9,6 +9,8 @@
     The speed is sent to every machine (setAnimSpeedCoef only takes effect where it runs), and under
     ACE Advanced Fatigue the boost is registered in its exclusion list so its 1 s loop leaves it alone.
 
+    Also: walks on a slope play faster (see the Slope comment below).
+
     Arguments:
     0: Unit <OBJECT>
     1: Animation state <STRING>
@@ -34,6 +36,11 @@ private _end = count _parts == 3 && {_parts select 2 == "end"};
 if (auqol_anim_pistolSwap && {count _parts == 2 || _end} && {("wpst" in (_parts select 0)) isNotEqualTo ("wpst" in (_parts select 1))}) then {
     _coef = auqol_anim_pistolSwapSpeed * ([1, 1.5] select _end);
 };
+
+// Slope: the game drops a run to a walk animation (mwlk) on terrain it still lets you walk. A walk you did
+// not choose (forward held, slow-walk key not held, on a slope) plays faster so you keep running pace.
+if (_coef == 1 && {auqol_anim_slopeRun} && {"mwlk" in _anim} && {isNull objectParent _unit} && {inputAction "MoveForward" > 0} && {inputAction "MoveSlow" == 0}
+    && {(surfaceNormal position _unit) select 2 < 0.97}) then { _coef = auqol_anim_slopeSpeed };
 
 private _boosted = _unit getVariable ["auqol_animBoost", false];
 if (_coef == 1 && {!_boosted}) exitWith {};
