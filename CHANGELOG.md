@@ -8,6 +8,13 @@ Not tested in game yet. Thomas asked to spot by looking.
 
 - Look to spot: enemies near the centre of your view that you can see (within 5 degrees, 1500 m, adjustable) are revealed to your squad without pressing T, all of them, and the squad's combat AI picks which to fight. T works as before (`auqol_squad_lookSpot`, `auqol_squad_lookAngle`).
 
+## 1.23.0
+
+Not tested in game yet. Thomas wants his squad to put out more fire (overwhelming firepower).
+
+- New slider `auqol_combat_fireChance` (default 80 %, was a fixed 35 %): how often each covering AI is ordered to fire every 3 s pass. Covering AI that can see an enemy are now told to fire at it (`doFire`, only if their combat mode allows firing), and those that can't still suppress where it was last seen. Still 100 % while the group is under fire.
+- Checked against: Antistasi (waypoints, behaviour and combat mode untouched, still stands down during its kill reaction), launcher gunners and the T focus (skipped when a launcher is out), spread targets (same enemy list), self-treat, stuck recovery and hide among the grass (eligibility check unchanged, firing reveals as before).
+
 ## 1.21.0
 
 Not tested in game yet. Thomas asked for the "AI avoids prone" mod's behavior.

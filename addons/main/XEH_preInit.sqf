@@ -293,6 +293,13 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_combat_fireChance", "SLIDER",
+    ["Covering fire chance (%)", "How often, every 3 s, each covering AI is ordered to fire: at an enemy it sees, or (with Suppressive fire) at where it was last seen. 100 % is every pass; every pass anyway while the group is under fire. 0 to 100."],
+    [_category, "Smart combat AI"],
+    [0, 100, 80, 0], 1
+] call CBA_fnc_addSetting;
+
+[
     "auqol_combat_grenades", "CHECKBOX",
     ["Hand grenades at hidden enemies", "An AI 12 to 35 m from an enemy it can't see (behind cover or inside a building) throws a hand grenade at it, if it has one and no friend is near that spot. At most once every 40 s per AI."],
     [_category, "Smart combat AI"],
