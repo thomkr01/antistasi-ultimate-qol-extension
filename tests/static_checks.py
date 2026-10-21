@@ -178,9 +178,9 @@ def check_regressions():
             or 'if (isNil "_saved"' not in react:
         problems.append("squadReactApply: original skills must be saved once and publicly")
     night = code("functions/night/fn_nightApply.sqf")
-    if 'setVariable ["auqol_nightSkills", _base +' not in night or ', true];' not in night \
-            or "if (!_changed)" not in night:
-        problems.append("nightApply: original skills must be saved publicly and others' later values kept on restore")
+    if 'setVariable ["auqol_nightSkills", _base +' not in night or "if (!_changed)" not in night \
+            or 'setVariable ["auqol_nightSkills", _night, true]' not in code("XEH_postInit.sqf"):
+        problems.append("nightApply: original skills must be published when the unit changes owner and others' later values kept on restore")
     if "auqol_nightSkills" not in code("functions/squad/fn_squadReactApply.sqf"):
         problems.append("squadReactApply: must hand back night skills before saving its baseline")
     player = code("functions/player/fn_playerApply.sqf")

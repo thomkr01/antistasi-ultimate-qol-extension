@@ -14,6 +14,7 @@
 // Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
 ["auqol_combat_reveal", { params ["_group", "_target", ["_level", 1.5]]; _group reveal [_target, _level] }] call CBA_fnc_addEventHandler;
 // Hard to locate: each machine checks the hostile groups local to it.
+["auqol_combat_dodge", { _this call AUQOL_fnc_combatDodgeMove }] call CBA_fnc_addEventHandler;
 ["auqol_locate_shot", { _this call AUQOL_fnc_concealLocateCheck }] call CBA_fnc_addEventHandler;
 ["auqol_stuck_message", { systemChat ("[AUQOL] " + (_this select 0)) }] call CBA_fnc_addEventHandler;
 
@@ -43,7 +44,14 @@
     _unit addEventHandler ["Local", {
         params ["_unit", "_isLocal"];
         [_unit] call AUQOL_fnc_combatGroupHook;
-        if (_isLocal) then { [[_unit]] call AUQOL_fnc_squadReactApply; [[_unit]] call AUQOL_fnc_nightApply };
+        if (_isLocal) then {
+            [[_unit]] call AUQOL_fnc_squadReactApply;
+            // The old owner publishes the saved night skills as it lets go; 2 s lets them arrive before the baseline is read.
+            [{ [[_this]] call AUQOL_fnc_nightApply }, _unit, 2] call CBA_fnc_waitAndExecute;
+        } else {
+            private _night = _unit getVariable "auqol_nightSkills";
+            if (!isNil "_night") then { _unit setVariable ["auqol_nightSkills", _night, true] };
+        };
     }];
     if (!local _unit) exitWith {};
     [[_unit]] call AUQOL_fnc_squadReactApply;

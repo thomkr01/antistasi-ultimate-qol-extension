@@ -209,7 +209,7 @@ Since 1.17.0, a really hurt unit that a known enemy within 500 m can see first r
 
 Empty vehicles standing still, and wrecks that have come to rest, stop being simulated while no player is within 500 m. They wake as soon as a player comes closer, so you never see one freeze. This saves CPU on the server, mostly at a busy HQ and after big fights.
 
-- Uses Arma's own dynamic simulation. The server only marks which vehicles may sleep, every 30 seconds.
+- Uses Arma's own dynamic simulation. The server and each player machine mark the vehicles local to them that may sleep, every 30 seconds (the engine flag acts only where it is set; 1.29.2).
 - Never marked: vehicles with living crew, moving ones, ones in the air, attached, towed or on a rope, static weapons, and anything hidden or already frozen by ACE cargo, Antistasi logistics or another mod.
 - Only players wake a frozen vehicle. AI far from every player find it as it was left.
 - `auqol_freeze_parked` (on) and `auqol_freeze_wrecks` (on).
@@ -248,7 +248,7 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Armor.** Against a known tank or APC, AT gunners take out their launchers and target it, and everyone else takes cover further away.
 - **Target spread.** The covering team splits the known enemies between them.
 - **Contact reports.** A sighting by a group, by your squad, or what you look at (look to spot), reaches AI groups of the same side within 300 m, so they join the fight.
-- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it. An AI group's leader gets his current waypoint set again afterwards (no doFollow on himself), so Antistasi's patrol carries on (1.27.0). With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
+- **Grenade dodge.** The thrower's machine tells every machine where the grenade is, so AI on a client, the server or a headless client all dodge (1.29.2). AI within 10 m of a thrown grenade run away from it. An AI group's leader gets his current waypoint set again afterwards (no doFollow on himself), so Antistasi's patrol carries on (1.27.0). With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
 - **Ammo sharing.** An AI down to its last magazine gets one from a nearby group mate.
 - **Medics.** Once the enemy is more than 60 m away, a group's medic treats wounded mates. Downed soldiers stay with Antistasi's revive, and it's off under ACE medical.
 - **Reacting to fire.** When rounds pass close, the group learns where they came from, and standing soldiers crouch (or go prone under heavy fire, unless no-prone is on) until 10 s after the fire stops.

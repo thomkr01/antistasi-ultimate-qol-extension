@@ -2,6 +2,16 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.29.2
+
+Not tested in game yet. Second step of the full audit fixes.
+
+- Grenade dodge works across machines: the thrower's machine sends the grenade position to everyone, each machine moves its own AI. On a dedicated server, enemy grenades now make your squad dodge and yours make server AI dodge.
+- Vehicle freeze runs on the server and each player machine for the vehicles local to them (the engine flag only acts where it is set).
+- Night spotting no longer publishes its saved skills on every change; the old owner publishes them when an AI changes machine, and the new owner waits 2 s before reading them. Less network traffic at night.
+- Look to spot checks the view angle before the side lookup (cheaper on big maps).
+- Checked against: smart combat and stuck recovery (dodgers still skipped), ACE Advanced Throwing (wait for the grenade to leave the hand kept), hard to locate and reactions (unchanged), headless client moves (night baseline), Antistasi dynamic-simulation props (unchanged), LAMBS and Vcom (dodge still stands down).
+
 ## 1.29.1
 
 Not tested in game yet. Fixes from the full audit (`/mnt/project-files/reports/auqol-1.29-full-audit.md`).
