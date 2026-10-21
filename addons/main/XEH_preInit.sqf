@@ -18,7 +18,6 @@ auqol_freeze_marked = []; // vehicles AUQOL marked for dynamic simulation
 auqol_freeze_ownsSystem = false; // AUQOL switched the engine's dynamic simulation on
 auqol_perf_stats = createHashMap; // timer name -> [total ms, runs, worst ms], debug logging only
 auqol_perf_nextReport = 0;
-auqol_anim_ladderKeyHeld = false;
 auqol_conceal_hatg = isClass (configFile >> "CfgPatches" >> "hatg_core"); // Hide Among The Grass loaded: AUQOL concealment stays off
 auqol_conceal_hidden = []; // units this machine has hidden
 auqol_conceal_off = false; // the local player switched concealment off for their squad with the toggle key
@@ -26,7 +25,7 @@ auqol_conceal_surfaceCache = createHashMap; // surface class -> has ground clutt
 auqol_conceal_ghillieCache = createHashMap; // uniform class -> is a ghillie suit
 auqol_conceal_camoCache = createHashMap; // uniform class -> camouflage multiplier (AUQOL_fnc_concealCamo)
 auqol_night_slice = 0; // which fifth of the units the 1 s night spotting pass checks
-auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal // the fast-ladder key is held (local player)
+auqol_night_visionCache = createHashMap; // "CfgWeapons>class" or "CfgVehicles>class" -> has night vision or thermal
 // LAMBS Danger and Vcom AI react to suppression themselves (auqol_combat_yieldToAIMods).
 auqol_combat_throwables = createHashMap; // magazine -> [Throw muzzle, "frag" / "smoke" / ""]
 auqol_aceMedical = isClass (configFile >> "CfgPatches" >> "ace_medical_engine"); // ACE medical loaded: self-treat and group medics stay off
@@ -240,34 +239,6 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     ["Pistol swap speed", "1.0 is vanilla, 3.0 is three times as fast."],
     [_category, "Player animations"],
     [1, 3, 2, 2], 1
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_anim_ladder", "CHECKBOX",
-    ["Faster ladders", "Climbing up and down ladders plays faster, at the speed below, and faster still while you hold the Fast ladder climbing key (Left Shift by default, in Controls > Configure Addons)."],
-    [_category, "Player animations"],
-    true, 1
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_anim_ladderSpeed", "SLIDER",
-    ["Ladder speed", "1.0 is vanilla, 3.0 is three times as fast."],
-    [_category, "Player animations"],
-    [1, 3, 1.5, 2], 1
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_anim_ladderFastSpeed", "SLIDER",
-    ["Ladder speed with the key held", "Climbing speed up the ladder while the Fast ladder climbing key is held, 1.0 to 4.0."],
-    [_category, "Player animations"],
-    [1, 4, 2.5, 2], 1
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_anim_ladderSlideSpeed", "SLIDER",
-    ["Ladder slide speed", "Speed going down the ladder while the Fast ladder climbing key is held, so you slide down, 1.0 to 6.0."],
-    [_category, "Player animations"],
-    [1, 6, 4, 2], 1
 ] call CBA_fnc_addSetting;
 
 [

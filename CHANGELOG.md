@@ -2,6 +2,14 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.27.1
+
+Thomas tested in game: the ladder animation played faster but the climb itself was slower than vanilla. Nothing else in AUQOL changes the player's speed on a ladder; the engine times each step itself, so a faster animation cannot speed up the climb. The ladder boost is removed.
+
+- Removed: faster ladders, the Fast ladder climbing key, the ladder slide and the settings `auqol_anim_ladder`, `auqol_anim_ladderSpeed`, `auqol_anim_ladderFastSpeed`, `auqol_anim_ladderSlideSpeed` (old saved values are ignored). Ladders are vanilla again.
+- Kept: the pistol swap speed-up, the primary weapon after getting up, and AI animation speed (AI ladder use was never changed).
+- Checked against: AI animation speed (players still skipped), stuck recovery (still skips ladders), smart combat, ACE Advanced Fatigue exclusion (still used by the pistol swap), wake primary (same handler, unchanged).
+
 ## 1.27.0
 
 Not tested in game yet. Thomas asked for an edge-case review of friendly and enemy AI and a DEVGRU feel. Findings: `/mnt/project-files/reports/auqol-1.27-ai-tactics-review.md`.
