@@ -9,7 +9,7 @@
     systemChat localize (_this select 0);
     playSound "A3AP_UiFailure";
 }] call CBA_fnc_addEventHandler;
-// Player animation boosts (ladder, pistol swap): setAnimSpeedCoef only acts on the machine that runs it.
+// Player animation boosts (pistol swap): setAnimSpeedCoef only acts on the machine that runs it.
 ["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
 // Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
 ["auqol_combat_reveal", { params ["_group", "_target", ["_level", 1.5]]; _group reveal [_target, _level] }] call CBA_fnc_addEventHandler;

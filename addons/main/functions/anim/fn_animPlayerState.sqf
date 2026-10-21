@@ -1,11 +1,11 @@
 /*
     Author: AUQOL
-    Faster pistol swap and faster ladders for the local player, and the primary weapon (else the handgun)
+    Faster pistol swap for the local player, and the primary weapon (else the handgun)
     in hand after getting up from unconscious: the engine brings the launcher out then, a slow animation
     that locks movement. For 3 s after the last "unconscious" state, a launcher in hand is swapped back. Runs from the player's
-    AnimStateChanged event and when the fast-ladder key is pressed or released. While the player is in
-    a weapon switch to or from the handgun, or on a ladder, their animations play faster; any other
-    state puts them back to normal speed. Names are matched by pattern, so addon animations that follow
+    AnimStateChanged event. While the player is in a weapon switch to or from the handgun, their
+    animations play faster; any other state puts them back to normal speed. Ladders are not sped up: a
+    faster animation only made the climb look quicker, the engine's own step timing made it slower. Names are matched by pattern, so addon animations that follow
     the vanilla naming work too.
 
     The speed is sent to every machine (setAnimSpeedCoef only takes effect where it runs), and under
@@ -40,12 +40,6 @@ if (auqol_player_wakePrimary) then {
     };
 };
 private _coef = 1;
-if (auqol_anim_ladder && {"ladder" in _anim}) then {
-    // With the key held: faster climbing up, sliding on the way down.
-    _coef = if (auqol_anim_ladderKeyHeld) then {
-        [auqol_anim_ladderFastSpeed, auqol_anim_ladderSlideSpeed] select ("down" in _anim)
-    } else { auqol_anim_ladderSpeed };
-};
 // Weapon switch states are "<from>_<to>", some with an "_end" part; the handgun is "wpst" in exactly
 // one of the two. The end part, where the pistol comes up, plays 1.5 times faster again.
 private _parts = _anim splitString "_";

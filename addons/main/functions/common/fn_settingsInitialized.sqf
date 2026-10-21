@@ -67,7 +67,7 @@ if (hasInterface) then {
     // (AUQOL_fnc_squadGroupHooks). Antistasi re-applies role traits (loadCoef) shortly after respawn
     // without an event, so a unit change re-applies again 3 s later. The 15 s pass is the fallback for
     // anything else; it is three cheap getters per unit and only writes when a value drifted.
-    // Faster pistol swap and ladders follow the player's animation state on their current unit.
+    // Faster pistol swap follows the player's animation state on their current unit.
     ["unit", {
         params ["_unit"];
         if (isNil {_unit getVariable "auqol_animEH"}) then {
@@ -94,17 +94,6 @@ if (hasInterface) then {
         [] call AUQOL_fnc_concealTick;
         false
     }, {}, [-1, [false, false, false]]] call CBA_fnc_addKeybind; // no default key
-
-    // Fast ladder climbing key. Not blocking the key: Left Shift is still sprint off the ladder.
-    ["Antistasi Ultimate QoL by TchicX", "auqol_anim_ladderFast", ["Fast ladder climbing (hold)", "While on a ladder, climb at the 'Ladder speed with the key held' setting."], {
-        auqol_anim_ladderKeyHeld = true;
-        [player, animationState player] call AUQOL_fnc_animPlayerState;
-        false
-    }, {
-        auqol_anim_ladderKeyHeld = false;
-        [player, animationState player] call AUQOL_fnc_animPlayerState;
-        false
-    }, [0x2A, [true, false, false]]] call CBA_fnc_addKeybind; // 0x2A: DIK_LSHIFT
 
     // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
     addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];

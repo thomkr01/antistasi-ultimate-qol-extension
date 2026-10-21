@@ -30,7 +30,7 @@ if (isNil "_units") then { _units = allUnits };
         };
     } else {
         if (!isNil "_ours") then {
-            // Players keep any boost the ladder or pistol feature gave them (AUQOL_fnc_animPlayerState).
+            // Players keep any boost the pistol feature gave them (AUQOL_fnc_animPlayerState).
             if !(_x getVariable ["auqol_animBoost", false]) then { _x setAnimSpeedCoef 1 };
             _x setVariable ["auqol_animAi", nil];
         };
