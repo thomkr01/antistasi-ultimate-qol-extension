@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.25.0
+
+Not tested in game yet. Thomas: after reviving himself the launcher came out, a slow animation that locks movement.
+
+- Getting up from unconscious now brings up your primary weapon, or your handgun if you have none, instead of the launcher (`auqol_player_wakePrimary`, default on). Antistasi's revive and Withstand never pick the launcher; it is the engine's get-up, so this watches your unit's animation state (the existing `AnimStateChanged` handler, no new timer).
+- Checked against: Withstand (same revive, nothing else touched), ACE medical (its unconscious states also contain `unconscious`), pistol swap speed (a handgun fallback gets the same boost), AI animation speed (player only), launcher logic and self-treat (AI only, never the player), smart combat and stuck recovery (AI only), hide among the grass (no change to stance), and vehicles (skipped).
+
 ## 1.24.0
 
 Not tested in game yet. Thomas: a shot down helicopter or jet that did not explode kept shooting from the ground.
