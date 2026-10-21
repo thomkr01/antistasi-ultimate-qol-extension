@@ -15,7 +15,7 @@ if (!hasInterface || {isNull _player}) exitWith {};
 private _group = group _player;
 // A group held earlier that is no longer yours (you changed group) gets its mode back.
 private _old = missionNamespace getVariable ["auqol_ambushGroup", grpNull];
-if (!isNull _old && {_old isNotEqualTo _group}) then {
+if (!isNull _old && _old isNotEqualTo _group) then {
     private _oldMode = _old getVariable ["auqol_ambushMode", ""];
     if (_oldMode != "" && {local _old} && {combatMode _old == "GREEN"}) then { _old setCombatMode _oldMode };
     _old setVariable ["auqol_ambushMode", nil];
