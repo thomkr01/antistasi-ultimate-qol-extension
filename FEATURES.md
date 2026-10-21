@@ -254,12 +254,13 @@ Rules:
 - **Antistasi stays in charge of its AI.** Group waypoints, behaviour, combat mode, formation and speed are never touched, and the leader is never moved. Only the members move between cover around where Antistasi sends the group, and they rejoin formation when the fight ends.
 - Units Antistasi has busy are never moved: garrisons, statics, vehicles, incapacitated, surrendered, captive, fleeing, healing, rearming, or under one of its own move orders. During Antistasi's reaction to a kill (support call, suppressing fire, smoke charge) no new orders are given.
 - Groups led by a player are left to the player.
+- **Covering fire chance** (`auqol_combat_fireChance`, 80 %): each pass, covering AI that see an enemy are told to fire at it, and those that don't suppress its last known position.
 - **No prone.** On by default, AUQOL never puts AI prone. Stances set by a no-prone mod or by Antistasi are never overridden either way.
 - When LAMBS Danger or Vcom AI is loaded everything here stands down, since they run their own combat AI.
 - Grenades are found by what their ammo does, so RHS, CUP and any other mod's grenades work.
 - Not added: retreat and morale, because Antistasi already decides when its soldiers flee or surrender, and AUQOL taking over would fight it. Investigating heard gunfire, because that means moving the whole group, which is Antistasi's job (its PATCOM already sends groups toward contact).
 - Event-driven: a group costs nothing until it detects an enemy or is shot at, and its 3 s pass stops 30 s after the fight.
-- `auqol_combat_tactics`, `auqol_combat_buildings`, `auqol_combat_flank`, `auqol_combat_assault`, `auqol_combat_defend`, `auqol_combat_antiArmor`, `auqol_combat_spreadTargets`, `auqol_combat_shareContacts`, `auqol_combat_dodge`, `auqol_combat_resupply`, `auqol_combat_medics`, `auqol_combat_suppressiveFire`, `auqol_combat_grenades`, `auqol_combat_smoke`, `auqol_combat_revealShooter`, `auqol_combat_takeCover`, `auqol_combat_noProne`, `auqol_combat_yieldToAIMods` (all on), `auqol_combat_range` (500 m).
+- `auqol_combat_tactics`, `auqol_combat_buildings`, `auqol_combat_flank`, `auqol_combat_assault`, `auqol_combat_defend`, `auqol_combat_antiArmor`, `auqol_combat_spreadTargets`, `auqol_combat_shareContacts`, `auqol_combat_dodge`, `auqol_combat_resupply`, `auqol_combat_medics`, `auqol_combat_fireChance`, `auqol_combat_suppressiveFire`, `auqol_combat_grenades`, `auqol_combat_smoke`, `auqol_combat_revealShooter`, `auqol_combat_takeCover`, `auqol_combat_noProne`, `auqol_combat_yieldToAIMods` (all on), `auqol_combat_range` (500 m).
 
 ## 22. Clear scratches
 

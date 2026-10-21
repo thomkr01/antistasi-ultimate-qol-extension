@@ -28,8 +28,9 @@
     covered spot they already hold when the teams swap.
     Covering team: units in cover crouch outdoors (only if their stance is left to the AI), and with
     auqol_combat_spreadTargets they are spread over the known enemies. Those without a line of sight
-    lay suppressive fire on where the enemy was last seen (auqol_combat_suppressiveFire; a 35% chance
-    per pass, every pass while the group is under fire), and one 12
+    lay suppressive fire on where the enemy was last seen (auqol_combat_suppressiveFire), and those who
+    do see one are told to fire at it (doFire, only if their combat mode allows firing); both with
+    the auqol_combat_fireChance per pass, every pass while the group is under fire, and one 12
     to 35 m from an enemy it can't see, with no friend near that spot, throws a hand grenade
     (auqol_combat_grenades). Ammo sharing and medics run from AUQOL_fnc_combatSupport.
 
@@ -216,7 +217,7 @@ if (auqol_combat_antiArmor && {_enemies findIf { !(_x isKindOf "Man") } > -1}) t
 
 // --- Covering team
 // Under fire (AUQOL_fnc_combatSuppressed), every covering unit that can't see the enemy suppresses each pass.
-private _suppressChance = [0.35, 1] select (time < _group getVariable ["auqol_tacUnderFire", 0]);
+private _suppressChance = [auqol_combat_fireChance / 100, 1] select (time < _group getVariable ["auqol_tacUnderFire", 0]);
 private _men = _enemies select { _x isKindOf "CAManBase" };
 {
     private _unit = _x;
@@ -249,7 +250,11 @@ private _men = _enemies select { _x isKindOf "CAManBase" };
         if (getAttackTarget _unit isNotEqualTo _target) then { _unit doTarget _target };
     };
     private _sees = [_unit, "VIEW", _enemy] checkVisibility [eyePos _unit, AGLToASL _ePos vectorAdd [0, 0, 1.2]] > 0.3;
-    if (!_sees) then {
+    if (_sees) then {
+        // Keeps the covering team shooting instead of waiting for the engine's own pace; not a gunner with his launcher out.
+        if (_men isNotEqualTo [] && {random 1 < _suppressChance} && {combatMode _unit in ["YELLOW", "RED"]}
+            && {currentWeapon _unit isEqualTo primaryWeapon _unit}) then { _unit doFire (_men select (_forEachIndex % count _men)) };
+    } else {
         private _d = _unit distance2D _ePos;
         if (auqol_combat_grenades && _d > 12 && _d < 35 && {(_ePos nearEntities ["CAManBase", 8]) findIf { side group _x == side _group } == -1}) then {
             [_unit, _ePos, "frag"] call AUQOL_fnc_combatThrow;
