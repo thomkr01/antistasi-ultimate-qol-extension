@@ -102,6 +102,8 @@ Run this in single player first, then on a dedicated server with a second client
 3. Negative checks: friendly AI, or a vehicle with you in it, is not ejected. Prisoners in a convoy truck (captive) stay inside. An enemy that surrendered stays. A vehicle that is merely stopped or parked keeps its crew.
 4. Dedicated server with a headless client, if you use one: ejection still happens for HC-owned groups.
 
+5. Downed aircraft (1.24.0): spawn an enemy crewed helicopter (e.g. `O_Heli_Light_02_F`) and plane near you, hit the rotor/engine until it crashes without exploding (`setHitPointDamage ["HitEngine", 1]` works). Expected: once it is on the ground its crew climbs out within about 10 s and the guns stay silent. A healthy landed enemy helicopter keeps its crew. A crashed friendly aircraft and surrendered crew are untouched. Turn `auqol_eject_aircraft` off: nobody is ejected.
+
 ### 3. Service stock
 
 1. Run `tests/ingame/service_test.sqf`. Expected after 30 s: truck service stock `1`, truck engine fuel still `0.5`, and the car's fuel above 0.

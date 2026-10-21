@@ -21,7 +21,8 @@ When an enemy AI land vehicle is immobilized, its living enemy AI crew get out a
 - **Who stays in:** players, friendly AI, captives, surrendered units (Antistasi convoy prisoners and POWs), ACE-handcuffed or ACE-surrendering units, and units or vehicles tagged with `auqol_noEject`. UAVs and static weapons are ignored.
 - **No repeats or loops.** Triggering is event-driven, from the engine's damage, fuel and get-in events. There is no per-frame scan. Each vehicle has one pending check at a time and waits until it has nearly stopped, for at most a few retries. Right before ejecting, the setting, the vehicle and the crew are checked again, so turning the feature off stops a pending ejection. If the vehicle changes owner during the wait (for example to a headless client), the check is handed to the new owner. Ejected units are unassigned from the vehicle, so they don't climb back in.
 - **Correct locality.** The vehicle's owner decides. Each unit is moved out on the machine that owns it, which covers headless clients.
-- **Settings:** `auqol_eject_enabled` and `auqol_eject_outOfFuel`, both server-wide and on by default.
+- **Downed aircraft.** An enemy AI helicopter or plane counts as immobilized once it is on the ground and either cannot fly (`canMove` false) or is over 80 % damaged. Its crew gets out the same way, so a shot down aircraft that did not explode stops firing. A healthy landed aircraft, UAVs and aircraft still falling are left alone; a crippled one that is still falling is checked again every 3 s (at most 10 times) until it lands.
+- **Settings:** `auqol_eject_enabled`, `auqol_eject_outOfFuel` and `auqol_eject_aircraft`, all server-wide and on by default.
 
 ## 2. Infinite stock for service vehicles
 
@@ -373,7 +374,7 @@ There are no per-frame handlers. The AI animation speed has a 15-second pass on 
 
 ## Known limitations
 
-- Static weapons, aircraft and boats are never ejected. Ejecting from aircraft in flight would kill the crew.
+- Static weapons and boats are never ejected. Aircraft are ejected only on the ground, never in flight, which would kill the crew.
 - An overturned vehicle with no damage is left to the engine, which ejects crews from upside-down vehicles on its own.
 - ACE rearm's "magazine supply" mode is a stockpile of specific magazines and is not made infinite.
 - ACE limited rearm supply is set to 1,000,000 points and topped up every 30 seconds. ACE raises no event when supply is used, so this is effectively infinite rather than literally infinite.

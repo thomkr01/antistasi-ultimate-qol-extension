@@ -17,7 +17,21 @@ params ["_vehicle", ["_retry", 0]];
 if (!local _vehicle || {!auqol_ready} || {!auqol_eject_enabled}) exitWith {};
 if (!alive _vehicle || {unitIsUAV _vehicle} || {_vehicle getVariable ["auqol_noEject", false]}) exitWith {};
 if (_vehicle getVariable ["auqol_eject_pending", false]) exitWith {};
-if !([_vehicle] call AUQOL_fnc_ejectIsImmobilized) exitWith {};
+if !([_vehicle] call AUQOL_fnc_ejectIsImmobilized) exitWith {
+    // A crippled aircraft may still be falling: look again in 3 s (at most 10 times), since the landing may raise no event.
+    if (_vehicle isKindOf "Air" && auqol_eject_aircraft && {!canMove _vehicle} && _retry < 10
+        && {!(_vehicle getVariable ["auqol_eject_airWait", false])}) then {
+        _vehicle setVariable ["auqol_eject_airWait", true];
+        [{
+            params ["_vehicle", "_retry"];
+            _vehicle setVariable ["auqol_eject_airWait", nil];
+            if (!alive _vehicle) exitWith {};
+            if (local _vehicle) then { [_vehicle, _retry + 1] call AUQOL_fnc_ejectEvaluate } else {
+                ["auqol_eject_evaluate", [_vehicle, _retry + 1], _vehicle] call CBA_fnc_targetEvent;
+            };
+        }, [_vehicle, _retry], 3] call CBA_fnc_waitAndExecute;
+    };
+};
 if ((crew _vehicle) findIf { [_x] call AUQOL_fnc_ejectIsEligible } == -1) exitWith {};
 
 _vehicle setVariable ["auqol_eject_pending", true];
