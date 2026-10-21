@@ -97,7 +97,7 @@ private _nearbyEnemies = if (_full) then {
         if (isNil "_saved" || _changed || {(_saved select 4) != _factor}) then {
             _unit setSkill ["spotDistance", _want select 0];
             _unit setSkill ["spotTime", _want select 1];
-            _unit setVariable ["auqol_nightSkills", _base + [_unit skill "spotDistance", _unit skill "spotTime", _factor], true];
+            _unit setVariable ["auqol_nightSkills", _base + [_unit skill "spotDistance", _unit skill "spotTime", _factor]];
         };
     } else {
         if (isNil "_saved") exitWith {};
@@ -105,7 +105,7 @@ private _nearbyEnemies = if (_full) then {
             _unit setSkill ["spotDistance", _saved select 0];
             _unit setSkill ["spotTime", _saved select 1];
         };
-        _unit setVariable ["auqol_nightSkills", nil, true];
+        _unit setVariable ["auqol_nightSkills", nil];
     };
 } forEach (_units select {
     local _x && {!isPlayer _x} && {alive _x} && {_factor < 1 || {!isNil {_x getVariable "auqol_nightSkills"}}}

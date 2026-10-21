@@ -31,9 +31,12 @@ if (isServer) then {
         auqol_aceRearmSources = auqol_aceRearmSources select { !isNull _x };
         { [_x, auqol_service_ammo] call AUQOL_fnc_aceRearmApply } forEach +auqol_aceRearmSources; // copy: disabling removes entries
     }] call AUQOL_fnc_perfRun }, 30] call _every;
+};
 
-    // Marks parked empty vehicles and settled wrecks for the engine's dynamic simulation. The engine does
-    // the freezing and waking itself, which nobody near can see, so a slow pass is enough.
+// Marks parked empty vehicles and settled wrecks for the engine's dynamic simulation. The engine does the
+// freezing and waking itself, which nobody near can see, so a slow pass is enough. The flag acts only on the
+// machine that sets it, so the server and every player machine mark their own vehicles.
+if (isServer || hasInterface) then {
     [{ ["vehicle freeze", { call AUQOL_fnc_freezeVehicles }] call AUQOL_fnc_perfRun }, 30] call _every;
 };
 

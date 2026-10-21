@@ -155,6 +155,7 @@ class CfgFunctions {
             class combatRelease {};
             class combatShareContact {};
             class combatDodge {};
+            class combatDodgeMove {};
             class combatSupport {};
         };
         class night {

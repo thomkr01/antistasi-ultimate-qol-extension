@@ -1,7 +1,7 @@
 /*
     Author: AUQOL
     Lets the engine stop simulating parked empty vehicles and settled wrecks while no player is near
-    (server, every 30 s). It uses Arma's own dynamic simulation: AUQOL only marks which vehicles may
+    (every 30 s, on the server and each player machine, for the vehicles local to it). It uses Arma's own dynamic simulation: AUQOL only marks which vehicles may
     sleep, and the engine wakes each one as soon as a player comes within 500 m, so nobody sees a
     vehicle freeze or wake. Enemy and friendly AI keep their normal simulation.
 
@@ -18,7 +18,8 @@
     Return Value: none
 */
 
-if (!isServer || {!auqol_ready}) exitWith {};
+// Dynamic simulation acts only where it is set, so each server or player machine marks the vehicles local to it.
+if (!(isServer || hasInterface) || {!auqol_ready}) exitWith {};
 
 private _parked = auqol_freeze_parked;
 private _wrecks = auqol_freeze_wrecks;
@@ -37,13 +38,14 @@ if (!dynamicSimulationSystemEnabled) then {
 
 private _canSleep = {
     params ["_veh"];
-    ([_parked, _wrecks] select !alive _veh)
+    local _veh
+    && {([_parked, _wrecks] select !alive _veh)
     && {(crew _veh) findIf { alive _x } == -1}
     && {speed _veh < 1}
     && {(getPos _veh select 2) < 1}
     && {isNull attachedTo _veh}
     && {isNull ropeAttachedTo _veh}
-    && {(ropes _veh) isEqualTo []}
+    && {(ropes _veh) isEqualTo []}}
 };
 
 private _marked = [];
