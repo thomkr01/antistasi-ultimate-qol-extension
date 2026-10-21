@@ -6,7 +6,8 @@ Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new
 
 Not tested in game yet. Thomas wants ladders to climb as fast as with Ladder Tweak Remastered, which he reports really does.
 
-- Faster ladders again, this time in config: `CfgAnimation >> ladderSpeed` is 1.25 (vanilla 0.5, 2.5 times), the engine's own climb speed, same value that mod uses. No settings or keybind; applies to every unit. Its slide-down and animation files are not copied (its code and animations are not under a licence we can reuse).
+- Faster ladders again, this time in config: `CfgAnimation >> ladderSpeed` is 1.25 (vanilla 0.5, 2.5 times), the engine's own climb speed, same value that mod uses. No setting; applies to every unit.
+- New: *Slide down ladder* key (Ctrl+S, `auqol_anim_ladderSlide`, on), written from scratch; Ladder Tweak Remastered's slide script and animation files are not copied (no reusable licence).
 - Checked against: AI animation speed (stacks for AI), stuck recovery (still skips ladders), pistol swap and wake primary (unchanged), ACE fatigue, the real Ladder Tweak loaded too (identical value).
 
 ## 1.28.0

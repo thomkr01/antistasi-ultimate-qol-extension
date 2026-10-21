@@ -141,6 +141,7 @@ class CfgFunctions {
             file = "\z\auqol\addons\main\functions\anim";
             class animAiApply {};
             class animPlayerState {};
+            class animLadderSlide {};
         };
         class combat {
             file = "\z\auqol\addons\main\functions\combat";

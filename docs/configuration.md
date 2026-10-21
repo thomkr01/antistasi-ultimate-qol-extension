@@ -98,6 +98,7 @@ The T key setting only touches AI in your own group. Self-treat and the launcher
 | --- | --- | --- | --- | --- |
 | `auqol_anim_pistolSwap` | Checkbox | On | Server | An `AnimStateChanged` handler on your unit speeds up weapon switch states to or from the handgun: names of the form `<from>_<to>` with `wpst` in exactly one half, and their `<from>_<to>_end` part at 1.5 times that speed (2 and 3 by default). The next state goes back to 1. |
 | `auqol_anim_pistolSwapSpeed` | Slider 1–3 | 2 | Server | The speed during the swap. |
+| `auqol_anim_ladderSlide` | Checkbox | On | Server | The CBA keybind *Slide down ladder* (Ctrl+S by default, under Controls > Configure Addons > Antistasi Ultimate QoL by TchicX) works while you are on a ladder: you step off and slide to its foot at about 5 m/s. The ladder is found from the nearby objects' `ladders` config lines; no animation files, nothing attached, only your own unit moves. Off: the key does nothing. |
 | `auqol_player_wakePrimary` | Checkbox | On | Server | After the last `unconscious` animation state of your unit (Antistasi revive and Withstand, ACE), a launcher in hand is swapped for your primary weapon, or your handgun if you have none, for 3 s, from the same `AnimStateChanged` handler. Skipped in a vehicle. |
 
 The pistol boost is sent to every machine with a CBA global event, so others see you climb at the same speed. Under ACE Advanced Fatigue, `auqol` is added to `ace_advanced_fatigue_setAnimExclusions` while the boost lasts, which is ACE's own way to keep its 1 s loop from resetting the speed.

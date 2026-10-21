@@ -344,8 +344,9 @@ Your own squad, from your own actions only. Smart combat still leaves player-led
 
 Climbing a ladder is 2.5 times as fast, for the player and every AI. It is the engine's own ladder speed (`CfgAnimation >> ladderSpeed`, vanilla 0.5, set to 1.25), the same value the Ladder Tweak Remastered mod uses, so the climb itself moves faster and not only the animation (the 1.11 to 1.27 animation boost did the latter and was removed in 1.27.1).
 
-- No setting: it is static config, like the weight cap. Always on, on every machine.
-- Loading Ladder Tweak Remastered too changes nothing (same value). Its slide-down is not part of AUQOL.
+- The speed has no setting: it is static config, like the weight cap. Always on, on every machine.
+- *Slide down ladder* (Ctrl+S by default, under Controls > Configure Addons; `auqol_anim_ladderSlide`, on): on a ladder, you step off and slide to its foot at about 5 m/s. Our own code with the vanilla animations; Ladder Tweak Remastered's code and animations are not used.
+- Loading Ladder Tweak Remastered too changes the speed not at all (same value). Its slide key is Ctrl+S too: use one of the two.
 - Not touched: AI animation speed (AI climb at both, 1.25 times faster again), stuck recovery (still skips ladders), pistol swap, ACE fatigue.
 
 ## Features working together
