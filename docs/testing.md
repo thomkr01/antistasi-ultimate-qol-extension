@@ -286,6 +286,14 @@ Not tested in game yet.
 2. Your squad does the same. A stance you order yourself (command menu, Prone) still works.
 3. With `auqol_combat_noProne` off, heavy suppression may still order AI down.
 
+### 24. Look to spot (1.22.0)
+
+Not tested in game yet.
+
+1. Have two enemies about 150 m apart in view of your squad's blind side. Put the crosshair between them without pressing T: with `auqol_debug` on, the RPT shows "Look to spot: 2 enemies revealed", and the squad turns and engages. They split targets on their own.
+2. Look away and back at an already known enemy: no new RPT line (nothing is repeated). Press T on one: it becomes the focus as before.
+3. Open the map, or turn the setting off: nothing is revealed.
+
 ### 21. Optimization pass (1.20.1)
 
 Nothing should look or play differently from 1.20.0.

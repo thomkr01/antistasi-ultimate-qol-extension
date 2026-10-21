@@ -109,6 +109,10 @@ if (hasInterface) then {
     // The engine's own Reveal target key (T by default); the handler checks auqol_squad_revealKey.
     addUserActionEventHandler ["revealTarget", "Activate", { call AUQOL_fnc_squadRevealTarget }];
 
+    // Look to spot: no event says the view moved over an enemy, so the view is checked twice a second.
+    // The pass returns before any scan when the feature is off or the squad has no AI local here.
+    [{ ["look to spot", { [] call AUQOL_fnc_squadLookSpot }] call AUQOL_fnc_perfRun }, 0.5] call _every;
+
     // Antistasi moves its vehicle markers once a minute; new markers arrive through MarkerCreated, and the
     // 1 s pass only moves tracked markers whose vehicle moved. It does the work every second only while the
     // map or GPS panel is open and every 10 s otherwise; opening the map runs it at once.

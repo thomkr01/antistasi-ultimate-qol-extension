@@ -2,6 +2,12 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.22.0
+
+Not tested in game yet. Thomas asked to spot by looking.
+
+- Look to spot: enemies near the centre of your view that you can see (within 5 degrees, 1500 m, adjustable) are revealed to your squad without pressing T, all of them, and the squad's combat AI picks which to fight. T works as before (`auqol_squad_lookSpot`, `auqol_squad_lookAngle`).
+
 ## 1.21.0
 
 Not tested in game yet. Thomas asked for the "AI avoids prone" mod's behavior.

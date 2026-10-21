@@ -6,7 +6,7 @@ An Arma 3 mod that adds quality-of-life features and smarter AI to Antistasi Ult
 
 - **For you and your squad:** no weapon sway, unlimited stamina, no weight limit, a recoil slider, faster pistol swap and ladders, and a 1-second Withstand cooldown. Your squad AI get your perks.
 - **Logistics:** service trucks never run dry, any vehicle can gather scattered loot (and empties nearby enemy supply crates), light scratches no longer ask for Repair, map markers follow their vehicles live, and "Copy from user" in the rebel loadout editor.
-- **AI:** friendly AI react and move faster, no AI going prone, the T key alerts your squad, launchers come out at once against vehicles, wounded AI treat themselves, stuck AI get freed, and AI squads fight from cover as fire teams.
+- **AI:** friendly AI react and move faster, no AI going prone, looking at enemies or pressing T alerts your squad, launchers come out at once against vehicles, wounded AI treat themselves, stuck AI get freed, and AI squads fight from cover as fire teams.
 - **Stealth:** enemies without night vision see less at night, you can hide in the grass (like the HATG mod), and far shots don't give away where you are.
 - **Enemy vehicles:** crews leave vehicles that can no longer move. Parked vehicles and wrecks far from players are frozen to save server work.
 
