@@ -13,10 +13,13 @@ Every setting takes effect immediately, with no mission restart.
 | `auqol_eject_enabled` | Checkbox | On | Server | When an enemy AI land vehicle becomes immobilized, move its eligible occupants out. |
 | `auqol_eject_outOfFuel` | Checkbox | On | Server | `canMove` ignores fuel for land vehicles. With this on, a tank of exactly 0 fuel also counts as immobilized. |
 
+| `auqol_eject_aircraft` | Checkbox | On | Server | Also eject enemy crew from helicopters and planes that are on the ground and cannot fly (`canMove` false) or are over 80 % damaged. Stops a shot down aircraft that did not explode from firing on the ground. |
+
 **How immobilization is detected.**
 
 - Each land vehicle except static weapons gets `Dammaged`, `Fuel` and `GetIn` handlers on every machine, added by a CBA `InitPost` class handler. These events are global, and the handler exits immediately unless the vehicle is local, so only its owner acts. That stays true when locality changes, for example when an AI group moves to a headless client.
 - On each event the vehicle counts as immobilized if `!canMove vehicle` is true, meaning engine, wheels or tracks are damaged beyond use, or if `fuel vehicle == 0` and the fuel option is on. A parked vehicle, a vehicle waiting for orders, or one with its engine off is still `canMove` true and keeps its crew.
+- Aircraft get the same handlers. One counts as immobilized only when it is touching the ground (or under 2 m) and is either `!canMove` or over 80 % damaged. A crippled aircraft still in the air is re-checked every 3 s, at most 10 times, since landing may raise no event. UAVs are skipped.
 - If eligible crew are aboard, ejection waits until the vehicle is below 3 km/h, for up to 8 seconds, so nobody is dropped out at speed. After that it retries at most 3 times, then waits for the next event. A per-vehicle pending flag prevents duplicate scheduling. There is no loop. When the wait ends, `auqol_eject_enabled`, the vehicle and the crew are checked again; if the vehicle changed owner during the wait, the check is sent to the new owner with the `auqol_eject_evaluate` CBA event.
 
 **Who is ejected:** living AI that are not players and whose side is hostile to the rebels. Hostile means `getFriend` is below 0.6 toward Antistasi's `teamPlayer` side, or toward any player's side outside Antistasi. Units that are `captive`, Antistasi `surrendered`, ACE handcuffed or ACE surrendering are never ejected. Friendly AI, civilians and players are never ejected either.

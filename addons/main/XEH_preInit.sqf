@@ -52,6 +52,13 @@ private _category = "Antistasi Ultimate QoL by TchicX";
     true, 1
 ] call CBA_fnc_addSetting;
 
+[
+    "auqol_eject_aircraft", "CHECKBOX",
+    ["Eject enemy crew from downed aircraft", "When an enemy AI helicopter or plane has crashed or landed on the ground and cannot fly any more (or is over 80% damaged), its living enemy AI occupants are moved out, so a shot down aircraft stops firing from the ground."],
+    [_category, "Enemy crew ejection"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 // --- Service stock (applied where each service object is local, and on the server for ACE and the Antistasi garage)
 // Setting scripts also fire for the initial value, before AUQOL_fnc_settingsInitialized has run; auqol_ready skips that call.
 private _serviceChanged = { if (auqol_ready) then { call AUQOL_fnc_serviceApplyAll } };

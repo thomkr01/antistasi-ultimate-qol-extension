@@ -26,7 +26,7 @@ private _lines = [
     format ["Detected: Antistasi=%1 (garage data=%2) ACE=%3 RHS=%4 CUP=%5",
         "A3A_core" call _isLoaded, !isNil "HR_GRG_Vehicles", "ace_main" call _isLoaded,
         ("rhs_main_loadorder" call _isLoaded) || {"rhsusf_main_loadorder" call _isLoaded}, "CUP_Vehicles_LoadOrder" call _isLoaded],
-    format ["Ejection: %1 (out of fuel counts: %2)", ("auqol_eject_enabled" call _setting) call _onOff, ("auqol_eject_outOfFuel" call _setting) call _onOff],
+    format ["Ejection: %1 (out of fuel counts: %2, downed aircraft: %3)", ("auqol_eject_enabled" call _setting) call _onOff, ("auqol_eject_outOfFuel" call _setting) call _onOff, ("auqol_eject_aircraft" call _setting) call _onOff],
     format ["Fuel service: %1 | handled by %2 | garage sources: %3",
         ("auqol_service_fuel" call _setting) call _onOff,
         ["vanilla fuel cargo", "ACE refuel infinite source"] select _aceRefuel,

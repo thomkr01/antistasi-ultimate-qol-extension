@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.24.0
+
+Not tested in game yet. Thomas: a shot down helicopter or jet that did not explode kept shooting from the ground.
+
+- Downed aircraft: an enemy AI helicopter or plane that is on the ground and cannot fly any more (`canMove` false) or is over 80 % damaged has its enemy AI crew moved out, like immobilized land vehicles, so nobody is left to fire its guns. A falling aircraft is checked every 3 s until it lands (`auqol_eject_aircraft`, default on).
+- Checked against: ejection of land vehicles (same code path, same eligibility, same opt-out `auqol_noEject`), Antistasi air support (healthy landed aircraft keep their crew; UAVs skipped), scratch clearing (only below 10 % damage, so it never repairs a downed aircraft), vehicle freezing (only empty parked vehicles), launcher/AA logic (a grounded wreck is out of the fight once crewless), smart combat (ejected crew fight from cover), stuck recovery (not involved: crew leaves on its own), surrendered and captive crew (never ejected).
+
 ## 1.23.0
 
 Not tested in game yet. Thomas wants his squad to put out more fire (overwhelming firepower).
