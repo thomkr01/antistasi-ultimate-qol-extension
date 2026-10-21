@@ -1,7 +1,7 @@
 /*
     Author: AUQOL
     Faster reactions for friendly AI local to this machine: raises the sub-skills that decide how
-    quickly AI spot, share and turn onto a target (spotTime, spotDistance, aimingSpeed, commanding)
+    quickly AI spot, share and turn onto a target (spotTime, spotDistance, aimingSpeed, commanding) and keeps them from breaking and fleeing (courage)
     to at least auqol_squad_reactionSkill. Accuracy (aimingAccuracy, aimingShake) is left to
     Antistasi, which scales it with rebel training, so AI react sooner but do not hit better.
 
@@ -10,7 +10,7 @@
     every machine for its own AI. Event-driven: a unit is checked when it spawns and again 5 s later
     (after Antistasi has set its skills), when it becomes local to this machine (server <-> headless
     client) and when it joins a player's group. A full pass every 60 s catches skills set later and
-    units that stopped being covered. Each unit costs four skill reads; it only writes when a value
+    units that stopped being covered. Each unit costs five skill reads; it only writes when a value
     is below the floor, and units no longer covered get back the values AUQOL replaced. The saved values are a public
     unit variable, so they survive a change of owner (server <-> headless client).
 
@@ -28,7 +28,7 @@ if (isNil "_units") then { _units = allUnits };
 private _friendly = missionNamespace getVariable ["teamPlayer", sideUnknown];
 if !(_friendly isEqualType sideUnknown) then { _friendly = sideUnknown };
 private _playerGroup = if (hasInterface) then { group player } else { grpNull };
-private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding"];
+private _skills = ["spotTime", "spotDistance", "aimingSpeed", "commanding", "courage"];
 
 {
     private _unit = _x;

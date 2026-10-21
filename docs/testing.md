@@ -305,6 +305,16 @@ Not tested in game yet.
 2. Same with the launcher selected when you go down, and with no rifle but a pistol (the pistol comes up). With no primary and no handgun nothing is switched.
 3. Turn `auqol_player_wakePrimary` off: the old behavior returns. With ACE medical, wake from ACE unconsciousness: rifle in hand.
 
+### 26. AI edge cases (1.27.0)
+
+Not tested in game yet.
+
+1. Stand a friendly AI next to a squadmate and let the squadmate fire bursts past him: he crouches but does not start suppressive fire at the squadmate's position (no `doSuppressiveFire` toward your squad).
+2. Throw a grenade next to an Antistasi patrol leader: he runs, and afterwards walks on along his waypoint (`currentWaypoint` unchanged, he is not idle).
+3. Get an AI soldier in a small room, 12 m from an enemy he cannot see but with a wall right in front of him: no frag is thrown at the wall.
+4. A group medic treating a wounded mate while no enemy is within 60 m is not sent to cover mid-treatment.
+5. `units group player apply { _x skill "courage" }` is at least the floor. Turn `auqol_squad_reaction` off: the old values return.
+
 ### 21. Optimization pass (1.20.1)
 
 Nothing should look or play differently from 1.20.0.

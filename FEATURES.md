@@ -152,7 +152,7 @@ The unit's health, gear, group, rank and role are never changed. When every enab
 
 The AI in your own group, and by default every friendly AI, spot enemies sooner, tell each other faster and turn onto targets quicker.
 
-- Antistasi gives recruits low skills early in the campaign (about 0.2 to 0.4), which is why they react slowly. AUQOL raises four of them to at least `auqol_squad_reactionSkill` (default 0.8): spot time, spot distance, aiming speed and commanding (how fast sightings pass through the group).
+- Antistasi gives recruits low skills early in the campaign (about 0.2 to 0.4), which is why they react slowly. AUQOL raises five of them to at least `auqol_squad_reactionSkill` (default 0.8): spot time, spot distance, aiming speed, commanding (how fast sightings pass through the group) and courage (since 1.27.0: they hold the line instead of breaking and fleeing out of formation).
 - Accuracy and aim shake are not changed, so they react faster but don't hit better than Antistasi's rebel training allows. Skills already higher are left alone.
 - `auqol_squad_reactionAll` (on) extends it to every friendly AI: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Off: only AI in groups a player leads.
 - A unit gets it when it spawns, again 5 seconds later once Antistasi has set its skills, when it moves between the server and a headless client, and when it joins your group. A check once a minute catches anything else. Only values that are too low are written. Enemy AI are never changed.
@@ -241,14 +241,14 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Buildings.** AI fight from inside houses, standing at the windows. An enemy hiding in a building within 80 m is cleared: two soldiers take the rooms nearest to it.
 - **Flanking.** In squads of four or more, the second team swings out to one side of the enemy.
 - **Suppressive fire.** Covering soldiers who can't see the enemy fire at where it was last seen. While the group is being shot at they do it every pass (about one in three otherwise), and a soldier who is shot at fires back at once at where he thinks the shooter is, to win the firefight.
-- **Grenades.** A soldier 12 to 35 m from an enemy he can't see throws a hand grenade, if no friend is near that spot.
+- **Grenades.** A soldier 12 to 35 m from an enemy he can't see throws a hand grenade, if no friend is near that spot and nothing solid (wall, ceiling, window frame) is within 4 m in front of him, so a frag never bounces back onto his own team (1.27.0).
 - **Smoke.** A soldier caught with no cover near throws smoke toward the enemy first.
 - **Assault.** Within 50 m and at least twice the enemy's number, the moving team closes in on it.
 - **Defend.** A group that isn't going anywhere (Antistasi defend orders, a hold waypoint, a stopped leader) takes cover around its leader, preferably in buildings, instead of advancing.
 - **Armor.** Against a known tank or APC, AT gunners take out their launchers and target it, and everyone else takes cover further away.
 - **Target spread.** The covering team splits the known enemies between them.
 - **Contact reports.** A sighting by a group, by your squad, or what you look at (look to spot), reaches AI groups of the same side within 300 m, so they join the fight.
-- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it. With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
+- **Grenade dodge.** AI within 10 m of a thrown grenade run away from it. An AI group's leader gets his current waypoint set again afterwards (no doFollow on himself), so Antistasi's patrol carries on (1.27.0). With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
 - **Ammo sharing.** An AI down to its last magazine gets one from a nearby group mate.
 - **Medics.** Once the enemy is more than 60 m away, a group's medic treats wounded mates. Downed soldiers stay with Antistasi's revive, and it's off under ACE medical.
 - **Reacting to fire.** When rounds pass close, the group learns where they came from, and standing soldiers crouch (or go prone under heavy fire, unless no-prone is on) until 10 s after the fire stops.
