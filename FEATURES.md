@@ -247,7 +247,7 @@ AI squads fight like a unit using cover, both sides, any faction:
 - **Defend.** A group that isn't going anywhere (Antistasi defend orders, a hold waypoint, a stopped leader) takes cover around its leader, preferably in buildings, instead of advancing.
 - **Armor.** Against a known tank or APC, AT gunners take out their launchers and target it, and everyone else takes cover further away.
 - **Target spread.** The covering team splits the known enemies between them.
-- **Contact reports.** A sighting by a group, or by your squad, reaches AI groups of the same side within 300 m, so they join the fight.
+- **Contact reports.** A sighting by a group, by your squad, or what you look at (look to spot), reaches AI groups of the same side within 300 m, so they join the fight.
 - **Grenade dodge.** AI within 10 m of a thrown grenade run away from it. With ACE Advanced Throwing, the dodge waits until the grenade has left the thrower's hand, so a cooked grenade does not send everyone away from the player.
 - **Ammo sharing.** An AI down to its last magazine gets one from a nearby group mate.
 - **Medics.** Once the enemy is more than 60 m away, a group's medic treats wounded mates. Downed soldiers stay with Antistasi's revive, and it's off under ACE medical.
@@ -326,6 +326,7 @@ Look at enemies and your squad learns about them, without pressing T.
 - No focus is set: the squad's smart combat AI (fire team target split, launcher choice) decides which enemy is the bigger threat. T still sets a 30 s focus, so use it when you want them on one target.
 - Skips enemies the group already knows at that level, so it does nothing while you keep looking at the same enemy. Nothing is shown and nothing goes over the network. Skipped with the map open or while you are down.
 - Needs line of sight (the same visibility check as T). Squads on a headless client (high command) are not told, as with T.
+- Friendly AI groups within 300 m also learn about up to three of the enemies you reveal (1.26.0), at the same level as your squad (3), so they join the fight and their smart combat takes over. Same rules as the T key sharing: 6 groups at most, not player-led groups, off with `auqol_combat_shareContacts` or when a yielding AI mod is loaded. Only knowledge is shared; no orders are given.
 - `auqol_squad_lookSpot` (on).
 
 ## Features working together

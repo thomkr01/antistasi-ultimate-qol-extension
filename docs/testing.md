@@ -295,6 +295,7 @@ Not tested in game yet.
 1. Have two enemies about 150 m apart in view of your squad's blind side. Put the crosshair between them without pressing T: with `auqol_debug` on, the RPT shows "Look to spot: 2 enemies revealed", and the squad turns and engages. They split targets on their own.
 2. Look away and back at an already known enemy: no new RPT line (nothing is repeated). Press T on one: it becomes the focus as before.
 3. Open the map, or turn the setting off: nothing is revealed.
+4. (1.26.0) Stand near a friendly garrison or AI squad (within 300 m) and look at an enemy neither group has seen: they should turn to face it and fight from cover within seconds.
 
 ### 25. Primary weapon after getting up (1.25.0)
 

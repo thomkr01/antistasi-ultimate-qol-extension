@@ -12,12 +12,13 @@
     Arguments:
     0: Reporting group <GROUP>
     1: Detected enemy <OBJECT>
-    2: Always share, ignoring the 10 s limit <BOOL> (default: false; the T key passes true)
+    2: Always share, ignoring the 10 s limit <BOOL> (default: false; the T key and look to spot pass true)
+    3: Reveal level the receivers get <NUMBER> (default: 1.5; look to spot passes 3, the level its own squad gets)
 
     Return Value: none
 */
 
-params ["_group", "_target", ["_always", false]];
+params ["_group", "_target", ["_always", false], ["_level", 1.5]];
 if (!auqol_ready || {!auqol_combat_shareContacts} || {!alive _target} || {!_always && {time < _group getVariable ["auqol_tacNextShare", 0]}}) exitWith {};
 if (auqol_combat_yieldToAIMods && auqol_combat_aiModLoaded) exitWith {};
 _group setVariable ["auqol_tacNextShare", time + 10];
@@ -29,5 +30,5 @@ private _receivers = allGroups select {
     && {alive leader _x} && {leader _x distance2D _origin < 300}
 };
 {
-    ["auqol_combat_reveal", [_x, _target], leader _x] call CBA_fnc_targetEvent;
+    ["auqol_combat_reveal", [_x, _target, _level], leader _x] call CBA_fnc_targetEvent;
 } forEach (_receivers select [0, 6]);
