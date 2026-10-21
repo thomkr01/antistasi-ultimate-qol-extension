@@ -2,6 +2,18 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.27.0
+
+Not tested in game yet. Thomas asked for an edge-case review of friendly and enemy AI and a DEVGRU feel. Findings: `/mnt/project-files/reports/auqol-1.27-ai-tactics-review.md`.
+
+- Friendly rounds no longer count as a shooter: smart combat's `Suppressed` handler ignored who fired, so a squadmate's burst past a friendly AI could make it suppress his position. Only hostile shooters are answered now.
+- Grenade dodge: an AI group's leader who dodged was sent `doFollow` on himself, which could leave a PATCOM leader off his waypoint. He now gets his current waypoint set again (the stuck recovery's refresh).
+- Frag safety: a soldier no longer throws a frag when a wall or ceiling is within 4 m in front of him.
+- Group medics are marked busy while treating, so smart combat no longer moves the medic away mid-treatment (the patient already was).
+- Faster reactions now also raise courage (same floor, same restore), so friendly AI hold the line instead of breaking and fleeing out of formation.
+- Look to spot skips captive enemies.
+- Checked against: Antistasi PATCOM (waypoints, behaviour, leader orders untouched; only the dodge's waypoint refresh added), stuck recovery (dodgers and treating units still skipped), self-treat, T key and look to spot (knowledge only), hard to locate and night spotting (enemy-only, unchanged), launchers, ACE medical (medic step off as before), LAMBS and Vcom (all still stand down).
+
 ## 1.26.0
 
 Not tested in game yet. Thomas wants what he looks at to reach nearby allies, not only his squad, and a hard answer on contact.

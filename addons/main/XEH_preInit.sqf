@@ -149,14 +149,14 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 
 [
     "auqol_squad_reaction", "CHECKBOX",
-    ["Faster squad reactions", "The AI in groups led by a player spot enemies sooner, pass sightings to each other faster and turn onto targets quicker: their spot time, spot distance, aiming speed and commanding skills are raised to at least the value below. Accuracy is not changed."],
+    ["Faster squad reactions", "The AI in groups led by a player spot enemies sooner, pass sightings to each other faster and turn onto targets quicker: their spot time, spot distance, aiming speed, commanding and courage (they hold the line instead of breaking and fleeing) skills are raised to at least the value below. Accuracy is not changed."],
     [_category, "Squad reactions"],
     true, 1, _squadChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_reactionSkill", "SLIDER",
-    ["Minimum reaction skill", "The floor for those four skills, 0.3 to 1. Skills already higher are left alone. Antistasi recruits start around 0.2 to 0.4."],
+    ["Minimum reaction skill", "The floor for those five skills, 0.3 to 1. Skills already higher are left alone. Antistasi recruits start around 0.2 to 0.4."],
     [_category, "Squad reactions"],
     [0.3, 1, 0.8, 2], 1, _squadChanged
 ] call CBA_fnc_addSetting;

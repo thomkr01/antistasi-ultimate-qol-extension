@@ -33,7 +33,13 @@ private _dodge = { [{
         _unit setVariable ["auqol_tacDodge", true];
         [{
             params ["_unit"];
-            if (alive _unit && {local _unit} && {_unit getVariable ["auqol_tacDodge", false]} && {currentCommand _unit in ["", "MOVE"]}) then { _unit doFollow leader _unit };
+            if (alive _unit && {local _unit} && {_unit getVariable ["auqol_tacDodge", false]} && {currentCommand _unit in ["", "MOVE"]}) then {
+                private _group = group _unit;
+                // A leader has nobody to follow: his current waypoint is set again (the stuck recovery's refresh), so Antistasi's patrol carries on.
+                if (_unit isEqualTo leader _group) then {
+                    if (currentWaypoint _group < count waypoints _group) then { _group setCurrentWaypoint [_group, currentWaypoint _group] };
+                } else { _unit doFollow leader _unit };
+            };
             _unit setVariable ["auqol_tacDodge", nil];
         }, [_unit], 6] call CBA_fnc_waitAndExecute;
     } forEach ((_pos nearEntities ["CAManBase", 10]) select { [_x] call AUQOL_fnc_combatIsEligible });

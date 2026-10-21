@@ -24,7 +24,7 @@ if (_ai isEqualTo []) exitWith {};
 private _eye = AGLToASL positionCameraToWorld [0, 0, 0];
 private _look = getCameraViewDirection _player;
 private _new = (_player nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], 1500]) select {
-    alive _x && {[side _x] call AUQOL_fnc_isHostileSide} && {_group knowsAbout _x < 3}
+    alive _x && {[side _x] call AUQOL_fnc_isHostileSide} && {!captive _x} && {_group knowsAbout _x < 3}
     && {acos (_look vectorCos (aimPos _x vectorDiff _eye)) < auqol_squad_lookAngle}
     && {([_player, "VIEW", _x] checkVisibility [_eye, aimPos _x]) > 0.2}
 };

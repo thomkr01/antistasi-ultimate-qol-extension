@@ -31,6 +31,8 @@ _unit setVariable ["auqol_combatNext", time + 2];
 [group _unit] call AUQOL_fnc_combatStart;
 
 private _enemy = [_instigator, _shooter] select isNull _instigator;
+// A round from a friend that passed close (Suppressed also fires for it) is no shooter to answer.
+if (!isNull _enemy && {(side group _unit getFriend side _enemy) >= 0.6}) then { _enemy = objNull };
 // Hard to locate (AUQOL_fnc_concealLocateCheck): a round from beyond the distance where a shot gives the
 // shooter away doesn't tell this group where he is, so no reveal and no firing back at him.
 private _locate = _enemy getVariable ["auqol_locate", []];

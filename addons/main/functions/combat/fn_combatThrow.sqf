@@ -43,7 +43,9 @@ private _muzzle = "";
     if (_info select 1 == _kind) exitWith { _muzzle = _info select 0 };
 } forEach (magazines _unit arrayIntersect magazines _unit);
 if (_muzzle isEqualTo "") exitWith {};
-
+// A frag thrown at a wall or ceiling right in front of the thrower bounces back onto his own team.
+if (!_smoke) then { _muzzle = ["", _muzzle] select (lineIntersectsSurfaces [eyePos _unit, eyePos _unit vectorAdd (((eyePos _unit vectorFromTo AGLToASL _pos) vectorMultiply 4) vectorAdd [0, 0, 0.3]), _unit, objNull, true, 1, "GEOM", "NONE"] isEqualTo []) };
+if (_muzzle isEqualTo "") exitWith {};
 _holder setVariable [_key, time + ([40, 60] select _smoke)];
 _unit doWatch _pos;
 [{
