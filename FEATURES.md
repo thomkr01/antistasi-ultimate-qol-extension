@@ -324,19 +324,9 @@ Look at enemies and your squad learns about them, without pressing T.
 - Needs line of sight (the same visibility check as T). Squads on a headless client (high command) are not told, as with T.
 - `auqol_squad_lookSpot` (on).
 
-## 27. Run up slopes (1.22.0)
-
-If you can walk up a slope, you keep running pace on it.
-
-- The game turns your run into a walk animation on some slopes. While you hold forward, are on foot on a slope (terrain more than about 14 degrees off flat) and are not holding the slow-walk key, that walk plays at 1.8 times speed (`auqol_anim_slopeSpeed`, 1 to 3), about running pace.
-- It is a speed boost on the walk the game picked, so it looks like a fast walk, not a jog. AUQOL cannot lift the engine's own slope limit: slopes too steep to walk are still too steep.
-- Same mechanism as the ladder and pistol boosts: only your character, sent to every machine while it lasts, registered with ACE Advanced Fatigue. Ladder and pistol boosts win when they apply.
-- Not verified in game yet: the walk-animation name (`mwlk`) and the input action names come from the game's naming, not from a test.
-- `auqol_anim_slopeRun` (on).
-
 ## Features working together
 
-- Look to spot (26) only reveals, it never sets the 30 s T focus or touches orders, so T focus, smart combat target split, launcher switching, self-treat and stuck recovery work as before; the launcher check simply runs when a new enemy is revealed. Hard to locate and hiding only affect what enemies know about you, not what your squad knows about them. Run up slopes (27) uses the same animation boost as ladders and pistol swap and never overrides them.
+- Look to spot (26) only reveals, it never sets the 30 s T focus or touches orders, so T focus, smart combat target split, launcher switching, self-treat and stuck recovery work as before; the launcher check simply runs when a new enemy is revealed. Hard to locate and hiding only affect what enemies know about you, not what your squad knows about them.
 
 Every AUQOL feature knows about the others:
 - **Stuck recovery and smart combat.** Stuck recovery never moves a soldier that smart combat is moving to cover or away from a grenade. Smart combat has its own stuck handling for its movers: a soldier who makes no progress to its spot for 9 s gets a new one, and the stuck spot is avoided. After three failed spots it rejoins its leader for 30 s, and stuck recovery takes over from there once the fight is over.

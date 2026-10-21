@@ -4,10 +4,9 @@ Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new
 
 ## 1.22.0
 
-Not tested in game yet. Thomas asked to spot by looking, and to run wherever he can walk.
+Not tested in game yet. Thomas asked to spot by looking.
 
 - Look to spot: enemies near the centre of your view that you can see (within 5 degrees, 1500 m, adjustable) are revealed to your squad without pressing T, all of them, and the squad's combat AI picks which to fight. T works as before (`auqol_squad_lookSpot`, `auqol_squad_lookAngle`).
-- Run up slopes: when the game puts you in a walk animation on a slope, it plays at 1.8 times speed so you keep running pace (`auqol_anim_slopeRun`, `auqol_anim_slopeSpeed`). The engine's own slope limit cannot be removed from a mod.
 
 ## 1.21.0
 

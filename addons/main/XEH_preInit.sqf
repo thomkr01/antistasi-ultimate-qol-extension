@@ -263,20 +263,6 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     [1, 6, 4, 2], 1
 ] call CBA_fnc_addSetting;
 
-[
-    "auqol_anim_slopeRun", "CHECKBOX",
-    ["Run up slopes", "When the game drops you to a walk on a slope that you could still walk up (and you are not holding the slow-walk key), your walk plays faster, at the speed below, so you keep running pace. Flat ground and stairs are untouched."],
-    [_category, "Player animations"],
-    true, 1
-] call CBA_fnc_addSetting;
-
-[
-    "auqol_anim_slopeSpeed", "SLIDER",
-    ["Slope walk speed", "Walk animation speed on a slope while Run up slopes is on, 1.0 to 3.0. About 1.8 matches running pace."],
-    [_category, "Player animations"],
-    [1, 3, 1.8, 2], 1
-] call CBA_fnc_addSetting;
-
 // --- Smart combat AI (runs where each AI group is local, from its EnemyDetected and Suppressed events)
 [
     "auqol_combat_tactics", "CHECKBOX",

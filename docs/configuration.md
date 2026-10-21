@@ -86,8 +86,6 @@ The T key setting only touches AI in your own group. Self-treat and the launcher
 | `auqol_anim_ladder` | Checkbox | On | Server | The same handler speeds up every state with `ladder` in its name. The CBA keybind *Fast ladder climbing (hold)* (Left Shift by default, under Controls > Configure Addons > Antistasi Ultimate QoL by TchicX) switches to the faster speed below while held; it doesn't block the key, so Left Shift still sprints off the ladder. |
 | `auqol_anim_ladderSpeed` | Slider 1–3 | 1.5 | Server | Ladder speed without the key. |
 | `auqol_anim_ladderFastSpeed` | Slider 1–4 | 2.5 | Server | Speed with the key held while climbing (any ladder state without `down` in its name). |
-| `auqol_anim_slopeRun` | Checkbox | On | Server | In `AnimStateChanged`: a walk state (`mwlk` in the name) on foot with `MoveForward` held, `MoveSlow` not held and `surfaceNormal` z below 0.97 gets `setAnimSpeedCoef` of the value below. Ladder and pistol states take priority. |
-| `auqol_anim_slopeSpeed` | Slider 1–3 | 1.8 | Server | Walk animation speed on slopes. |
 | `auqol_anim_ladderSlideSpeed` | Slider 1–6 | 4 | Server | Speed with the key held on ladder states with `down` in their name, so you slide down. |
 
 The boost is sent to every machine with a CBA global event, so others see you climb at the same speed. Under ACE Advanced Fatigue, `auqol` is added to `ace_advanced_fatigue_setAnimExclusions` while the boost lasts, which is ACE's own way to keep its 1 s loop from resetting the speed.
