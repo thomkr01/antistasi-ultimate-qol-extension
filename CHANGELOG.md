@@ -11,6 +11,7 @@ Not tested in game yet. Thomas: smart combat and the squad AI should supplement 
 - Fix: self-treat and medic treatment drop the unit's old spot, so it picks a new one afterwards instead of counting a failed spot.
 - Fix: overwatch and breach units that cannot reach their spot in 15 s are handed back (30 s rest, stuck recovery can see them).
 - Fix: ambush discipline came back within a second of your first shot while still in Stealth. It now stays ended until you leave Stealth. Breach also ends it.
+- Behaviour modes: overwatch is off on Safe; smart combat groups on Stealth keep quiet (cover and movement only, no suppression, frags, smoke or fire orders) until shot at. Table in FEATURES.md section 29.
 - Checked against: every pairing of smart combat, T focus, look to spot and ally sharing, launchers, self-treat and medics, overwatch, breach, ambush, call-outs, light discipline, dodge, stuck recovery and Antistasi's flags (see the report). Player-led groups are still skipped by smart combat; Antistasi PATCOM is never touched.
 
 ## 1.29.5

@@ -200,7 +200,7 @@ if (_toPick isNotEqualTo []) then {
             if (_pos isEqualTo [] && _assault) then { _pos = [_ePos getPos [4, _ePos getDir _unit], false] };
         };
         if (_pos isEqualTo []) then {
-            if (auqol_combat_smoke && _distEnemy < 200 && !_defend) then { [_unit, _ePos, "smoke"] call AUQOL_fnc_combatThrow };
+            if (auqol_combat_smoke && _distEnemy < 200 && !_defend && {behaviour _leader != "STEALTH"}) then { [_unit, _ePos, "smoke"] call AUQOL_fnc_combatThrow };
         } else {
             _pos params ["_spot", "_indoor"];
             _taken pushBack _spot;
@@ -218,6 +218,10 @@ if (_toPick isNotEqualTo []) then {
 
 // Any known vehicle, not only armor, so AA launchers come out against aircraft too; the function filters by launcher and range.
 if (auqol_combat_antiArmor && {_enemies findIf { !(_x isKindOf "Man") } > -1}) then { [_members] call AUQOL_fnc_squadLaunchers };
+
+// A group on STEALTH behaviour (allied recon, spec-ops) keeps quiet: no suppression, frags, smoke or fire orders
+// until it is shot at, so smart combat's cover and movement work with Stealth instead of giving the group away.
+private _quiet = behaviour _leader == "STEALTH" && {time >= _group getVariable ["auqol_tacUnderFire", 0]};
 
 // --- Covering team
 // Under fire (AUQOL_fnc_combatSuppressed), every covering unit that can't see the enemy suppresses each pass.
@@ -261,7 +265,7 @@ private _men = _enemies select { _x isKindOf "CAManBase" };
         (_unit getVariable ["auqol_tacProgress", [_left, time]]) params ["_best", "_bestAt"];
         if (_left < _best - 0.5) then { _unit setVariable ["auqol_tacProgress", [_left, time]]; _walking = true } else { _walking = time - _bestAt <= 9 };
     };
-    if (_walking) then { continue };
+    if (_walking || _quiet) then { continue };
     private _sees = [_unit, "VIEW", _enemy] checkVisibility [eyePos _unit, AGLToASL _ePos vectorAdd [0, 0, 1.2]] > 0.3;
     if (_sees) then {
         // Keeps the covering team shooting instead of waiting for the engine's own pace; not a gunner with his launcher out.

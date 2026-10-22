@@ -360,6 +360,7 @@ Smart combat (AI groups), the squad features (T key, look to spot, launchers, se
 - **Overwatch and breach hand back blocked units.** A unit that has not reached its spot in 15 s is released, rests 30 s from new spots and is open to stuck recovery.
 - **Breach ends ambush discipline.** Sending the squad in is an order to engage, so Hold fire ends.
 - **Ambush stays ended.** After your first shot (or a mode you set) the hold does not start again until you leave Stealth. Before, it came back within a second.
+- **Behaviour modes.** Safe: the squad stays relaxed (no overwatch); call-outs, look to spot, launchers, light discipline and an explicit T breach still work. Stealth: your squad holds fire (ambush discipline) and takes overwatch cover; allied AI-led groups on Stealth keep quiet (no suppression, frags, smoke or fire orders) until shot at, but still use cover. Aware and Combat: everything runs. Smart combat never changes a group's behaviour, and the squad features never touch an AI-led group's.
 - **Allies can still open fire early.** Ambush discipline only holds your own squad; allied AI groups that learn of an enemy fight as usual.
 
 ## Features working together

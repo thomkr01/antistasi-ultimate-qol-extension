@@ -401,7 +401,8 @@ What it does: smart combat, squad features and squad tactics hand units to each 
 3. **Treat and return:** hurt a smart combat soldier so it treats itself: afterwards it takes a new spot (RPT "Tactics" lines), with no "rests 30 s" after a single treatment.
 4. **Blocked overwatch:** put a wall between a squad AI and its cover spot: after 15 s it rejoins formation and is not re-sent for 30 s.
 5. **Ambush:** in Stealth, fire one shot: the squad opens up and stays free to fire until you leave and re-enter Stealth. Breach with T while holding fire: the hold ends.
-6. **Settings menu:** the three groups appear together as "Combat AI: ...".
+6. **Modes:** set your squad to Safe and stop in contact: no overwatch. Stealth: they hold fire and take cover. An allied AI group on Stealth (Zeus) near an enemy moves between cover without shooting until shot at. Aware and Combat: everything runs as before.
+7. **Settings menu:** the three groups appear together as "Combat AI: ...".
 
 ### ❌ 31. Audit follow-ups to look at (1.29.0 to 1.29.2)
 
