@@ -2,6 +2,12 @@
 
 The Arma 3 engine can't run in CI or in the environment this mod was written in. Validation is split into static checks, which run automatically, and in-game tests, which a person has to run. Nothing in this repository claims an in-game result that nobody observed.
 
+This file is the whole test list. Every feature in [FEATURES.md](../FEATURES.md) has a numbered test below, with what the feature does, the steps to run and what you should see. Nothing you need is kept in other files. Test scripts for the debug console are in `tests/ingame/`.
+
+**Marks.** ✅ means confirmed working in game. ❌ means not tested yet, or not confirmed. Change a ❌ to ✅ on the heading (and in the results table) once you have seen the test pass.
+
+**Setup.** Run each test in single player first, then on a dedicated server with a second client (and a headless client where a test mentions one), and once with ACE3 loaded. Turn on `auqol_debug` (Esc, Configure, Configure Addons, AUQOL) to get per-action lines in the RPT; quick switch from the debug console: `auqol_debug = true;`. Look in the RPT for `[AUQOL]` lines and for any script error naming `auqol` or `AUQOL_fnc_`.
+
 ## In-game results
 
 Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate). ✅ = confirmed working in game, ❌ = not tested or not confirmed yet (same marks on each test heading below):
@@ -72,20 +78,25 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### ❌ 1. Startup and diagnostics
 
+What it does: Checks the mod loads and reports itself.
+
 1. Start Antistasi Ultimate with CBA and AUQOL, without ACE.
-2. Check the RPT for the `[AUQOL] Version 1.5.0 ...` block. Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
-3. Open Addon Options and check the 33 settings listed in `docs/configuration.md`.
+2. Check the RPT for the `[AUQOL] Version ...` block (the version in `script_version.hpp`). Run `call AUQOL_fnc_diagnostics` and check every feature shows the vanilla handler.
+3. Open Addon Options and check the 96 settings listed in `docs/configuration.md`.
 
 ### ✅ 2. Enemy crew ejection
+
+What it does: Enemy crews climb out of vehicles that can no longer move, so you can capture them (1.1.0, aircraft 1.24.0).
 
 1. Run `tests/ingame/eject_test.sqf`. Expected: the damaged MRAP reports `canMove=false` and `crew now=0`. The parked MRAP keeps its crew.
 2. In a real Antistasi fight, immobilize an enemy APC or tank by tracks or engine, without destroying it. The crew should climb out within a few seconds and not get back in.
 3. Negative checks: friendly AI, or a vehicle with you in it, is not ejected. Prisoners in a convoy truck (captive) stay inside. An enemy that surrendered stays. A vehicle that is merely stopped or parked keeps its crew.
 4. Dedicated server with a headless client, if you use one: ejection still happens for HC-owned groups.
-
 5. ❌ Downed aircraft (1.24.0): spawn an enemy crewed helicopter (e.g. `O_Heli_Light_02_F`) and plane near you, hit the rotor/engine until it crashes without exploding (`setHitPointDamage ["HitEngine", 1]` works). Expected: once it is on the ground its crew climbs out within about 10 s and the guns stay silent. A healthy landed enemy helicopter keeps its crew. A crashed friendly aircraft and surrendered crew are untouched. Turn `auqol_eject_aircraft` off: nobody is ejected.
 
 ### ✅ 3. Service stock
+
+What it does: Ammo, repair and fuel trucks never run out of stock (1.0.0).
 
 1. Run `tests/ingame/service_test.sqf`. Expected after 30 s: truck service stock `1`, truck engine fuel still `0.5`, and the car's fuel above 0.
 2. Rearm a vehicle from an ammo truck several times, then check `getAmmoCargo` on the truck. It should be 1. Repeat for repair with `getRepairCargo`.
@@ -96,6 +107,8 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### ✅ 4. Player features
 
+What it does: No weapon sway, unlimited stamina, running not slowed by weight, and a Recoil slider for you (1.0.0 to 1.9.0).
+
 1. Run `tests/ingame/player_test.sqf`. Expected: aim coef `0`, stamina enabled `false`, loadCoef `0`, recoil coef `1` (the Recoil slider is at 100% by default) and a total carry limit of 10000000.
 2. Aim down sights while standing after a sprint: there should be no sway. Sprint for several minutes: there should be no exhaustion. Fill a backpack with heavy items and sprint: no slowdown or forced walking.
 3. Respawn, with Antistasi re-applying your role, and run `player_test.sqf` again. The same values should come back within about 3 s.
@@ -105,11 +118,15 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### ✅ 5. Total weight limit
 
+What it does: There is no limit on how much you can carry (1.2.0).
+
 1. Put something very heavy in your inventory (a launcher and rockets, or several machine guns) until you are past 1000 mass (`loadAbs player`). You should still be able to add more items as long as the container has room.
 2. Your backpack should not hold more than its normal size.
 3. `call AUQOL_fnc_diagnostics` should show a total carry limit of 10000000.
 
 ### ✅ 6. Loot from vehicles
+
+What it does: Any vehicle gets a Gather Scattered Loot action that pulls gear from nearby bodies and item caches (1.2.0 to 1.4.1).
 
 1. Kill a few enemies, walk up to any vehicle on foot and hold "Gather Scattered Loot". Their gear and dropped weapons should end up in the vehicle's inventory and the bodies should be stripped.
 2. Set `auqol_loot_radius` to 2000 and check that bodies far away are gathered too. Set it to 10 and check that they aren't.
@@ -120,11 +137,15 @@ Run this in single player first, then on a dedicated server with a second client
 
 ### ✅ 7. Withstand
 
+What it does: A downed player can self-revive again after 1 second instead of 5 minutes (1.3.0).
+
 1. In a mission with the Withstand self-revive parameter on, get downed and press H with a first aid kit.
 2. Get downed again right away. The countdown hint should say Withstand is ready, and H should work again after about 1 second.
 3. Turn `auqol_withstand_enabled` off. The next cooldown should be 5 minutes.
 
 ### ❌ 8. Squad perks
+
+What it does: Your squad AI get your perks: no sway, stamina and weight (1.5.0).
 
 1. Recruit two AI into your squad. Right after they join, run in the debug console: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected for the AI: `0`, `false`, `0`.
 2. Turn `auqol_player_squad` off. The AI should go back to `1`, `true` and their previous loadCoef. Your own values stay as they were.
@@ -132,6 +153,8 @@ Run this in single player first, then on a dedicated server with a second client
 4. **With ACE3:** the AI still read `0`, `false`, `0` (they use the vanilla commands).
 
 ### ✅ 9. Copy from user
+
+What it does: The rebel loadout editor gets a button that copies your own loadout onto a role (1.5.0).
 
 1. Wear a full loadout of unlocked items. Open the commander menu, Set Rebel Loadouts, and press the arsenal button of a role (for example Rifleman).
 2. The third bottom-bar button (between HIDE and the empty slots) should read COPY FROM USER. Press it: the model should wear your loadout, and the slot icons on the left of every filled slot should be green.
@@ -158,6 +181,8 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 
 ### ❌ 11. Squad reactions, T key and launchers
 
+What it does: The squad reacts faster, shares contacts, the T key marks an enemy for them, and AT/AA soldiers switch to launchers at once (1.6.0 to 1.15.1).
+
 1. Recruit two AI. Within 5 s run `units group player apply { [name _x, _x skill "spotTime", _x skill "aimingSpeed", _x skill "aimingAccuracy"] }`. Expected for the AI: spot time and aiming speed at least 0.8, accuracy unchanged. Turn `auqol_squad_reaction` off: they go back to their old values.
 2. Look at an enemy soldier far away that your squad hasn't seen and press T. Your AI should turn and engage him (with `auqol_debug` on, the RPT shows a "Reveal:" line). While they fight him, press T on a second enemy: they should switch to the second one and keep on it, and deal with the first afterwards. Set the squad to Hold fire and repeat: they should aim but not shoot. If nothing happens at all and no "Reveal:" line appears, the Reveal target action name may be wrong; please report it.
 3. Give an AI an AT launcher (RHS RPG-7 or M136) and let an enemy APC drive into view within 500 m. The AI should take out the launcher as soon as the squad spots it, at most about 5 s if it was spotted behind cover first. Repeat with an AA launcher and a helicopter within 2000 m, and with a jet making attack runs on you (1.20.5): the AA soldier should have the launcher out within a second or two of the jet coming into view and fire when it locks. A vehicle behind a hill or a building should not trigger it.
@@ -166,12 +191,16 @@ Turn on `auqol_stuck_notifyDetect` and `auqol_debug` for these tests so every st
 
 ### ❌ 11b. Wounded AI treat themselves
 
+What it does: A wounded squad AI treats itself with a first aid kit, going to cover first (1.6.0 to 1.17.0).
+
 1. Shoot a squad AI in the legs (`(units group player select 1) setHitPointDamage ["HitLegs", 0.6]`, then hit it once so the event fires). Within about 3 s it should play the treat-yourself animation and use one first aid kit, then run normally. With `auqol_debug` on, the RPT shows "Self-treat:" lines.
 2. Remove its first aid kits and repeat: it should not treat itself.
 3. Give an AI a medikit, get it downed and revive it with a non-medic. Within 15 s its red hurt icon should go away without using a kit (`damage` reads 0). Repeat with an AI without a medikit: the icon stays. Turn `auqol_squad_selfTreatMedikit` off: it goes away on that AI too.
 4. **With ACE medical:** nothing from AUQOL should happen; ACE's own medical AI decides.
 
 ### ❌ 12. Live vehicle markers
+
+What it does: Map markers of tracked vehicles follow them every second instead of once a minute (1.6.0).
 
 1. Start a convoy mission (or wait for a revealed enemy vehicle) and open the map. The vehicle's marker should follow it every second while it drives, instead of jumping once a minute. A parked vehicle's marker should stay still.
 2. Turn `auqol_map_liveVehicles` off: the marker goes back to jumping once a minute.
@@ -191,6 +220,8 @@ Static checks only show the fixes are in the code. These need a person in game, 
 
 ### ❌ 14. Performance (1.10.0)
 
+What it does: Parked empty vehicles and settled wrecks sleep when no player is near, and timers are spread out to save server time (1.10.0).
+
 1. **Vehicle freeze:** park an empty car, walk more than 500 m away, then run `dynamicSimulationEnabled _car` on the server: true. Come back: it behaves normally, can be driven, towed, loaded with ACE cargo and Antistasi logistics, and put in the garage. Save and reload with frozen vehicles at HQ: they are still there. Shoot down a helicopter far away: it falls and only freezes once it lies still.
 2. **Wrecks:** destroy a vehicle and leave: it is marked once it stops moving. Antistasi's garbage clean still deletes it.
 3. **Reactions:** recruit an AI and run `(units group player select 1) skill "spotTime"`: 0.8 within 5 s. A newly spawned garrison unit (server) gets it within 5 s too.
@@ -198,6 +229,8 @@ Static checks only show the fixes are in the code. These need a person in game, 
 5. **Timings:** turn `auqol_debug` on and play 5 minutes: the RPT shows `Timing:` lines for each AUQOL timer.
 
 ### ❌ 15. Animations and smart combat AI (1.11.0)
+
+What it does: Faster AI animation, faster pistol swap, ladders and the full smart combat AI: suppression reactions, fire teams, flanking, grenades, smoke, anti-armor and anti-air launchers (1.11.0 to 1.15.1).
 
 1. **AI speed:** run `getAnimSpeedCoef (allUnits select { !isPlayer _x } select 0)`: 1.25. Run `getAnimSpeedCoef player`: 1. Set `auqol_anim_aiSpeed` to 2: AI move visibly faster within 15 s. Turn `auqol_anim_ai` off: back to 1.
 2. **Pistol swap:** switch from your rifle to your pistol and back: both are about twice as fast. Reloading is unchanged.
@@ -213,6 +246,8 @@ Static checks only show the fixes are in the code. These need a person in game, 
 
 ### ❌ 16. Smart combat cover and scratches (1.16.0)
 
+What it does: Smart combat soldiers take real cover behind trees, rocks and walls, and light vehicle scratches are repaired (1.16.0).
+
 1. **Cover at contact:** run `tests/ingame/combat_test.sqf` near trees, rocks or walls. Within a few seconds of contact every soldier of the enemy team is behind something, including the team that is covering; the ones moving go from cover to cover. They keep returning fire and suppressing as before.
 2. **Behind the object:** a soldier behind a tree or rock stands right at its back, not a few metres away.
 3. **Defending:** attack a group holding a position: soldiers stay at the covered spots they took instead of swapping places every 20 s.
@@ -220,11 +255,15 @@ Static checks only show the fixes are in the code. These need a person in game, 
 
 ### ❌ 17. Cover before self-treatment (1.17.0)
 
+What it does: A wounded AI runs to cover before treating itself, and soldiers you shoot at answer harder (1.17.0).
+
 1. In a firefight near trees or walls, let a squad AI get hit in the legs while the enemy can see it: it runs to cover first, then plays the treat-yourself animation there, then rejoins formation. With `auqol_debug` on, the RPT shows "Self-treat: ... runs to cover before treating".
 2. Order it to Stop first, then let it get hit: it treats where it stands.
 3. **Fire back:** from cover, fire bursts near an enemy group: the soldiers you shoot at answer at once, and the group's covering team keeps suppressing your position for about 15 s after your last burst.
 
 ### ❌ 18. Night spotting (1.18.0)
+
+What it does: Enemies without night vision spot you late in the dark (1.18.0).
 
 1. **Dark:** at night with no moon (or overcast), in the debug console on the server: `[cursorTarget skill "spotDistance", cursorTarget getVariable "auqol_nightSkills"]` on an enemy without NVGs shows a value about a quarter of the first number in the saved array. An enemy with NVGs shows no saved array.
 2. **Range:** approach an enemy patrol without NVGs: crawling it notices you at about 20 m, crouched about 35 m, walking about 50 m, running about 100 m, sprinting about 150 m, and a vehicle with its engine on about 200 m. Switch on your weapon light, stand under a street lamp or fire a flare over yourself: about 300 m. By day it notices you much farther out. Fire a shot and it reacts as before.
@@ -233,6 +272,8 @@ Static checks only show the fixes are in the code. These need a person in game, 
 5. **HATG:** with Hide Among The Grass loaded, lie prone in grass at night: both work at once and nothing shows script errors in the RPT.
 
 ### ❌ 19. Hide among the grass (1.19.0)
+
+What it does: Lying still in grass hides you and your squad, like the Hide Among The Grass mod (1.19.0).
 
 Without the Hide Among The Grass mod loaded:
 1. Lie down in a field with no enemy within 10 m: HATG's hidden icon shows in grey, and `player getUnitTrait "camouflageCoef"` is about 0.01. A patrol walking past at 20 m doesn't react.
@@ -244,6 +285,8 @@ Without the Hide Among The Grass mod loaded:
 
 ### ❌ 20. Hard to locate at range (1.20.0)
 
+What it does: After you shoot from far away, enemies find you slowly, depending on suppressor and distance (1.20.0).
+
 Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 1. At night, prone in a ghillie suit with a suppressed rifle, 300 m from an enemy patrol that hasn't seen you: shoot one of them. The rest go alert but don't fire back at you or move straight at you, and the RPT shows "Hard to locate: ... lost ...". `_enemy knowsAbout player` on the server is 0 after about 2 s.
 2. Same without the suppressor: after a few shots from the same spot they find you (the distance grows with each shot) and fire back.
@@ -251,7 +294,21 @@ Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 4. With the Hide Among The Grass mod loaded instead of AUQOL's concealment: step 1 behaves the same.
 5. Antistasi may still call support on the position after a kill; that is Antistasi's own reaction.
 
+### ❌ 21. Optimization pass (1.20.1)
+
+What it does: Server, client and headless client optimizations; nothing should look different (1.20.1 to 1.20.4).
+
+Nothing should look or play differently from 1.20.0.
+
+1. **Night spotting:** repeat test 18 on a dedicated server with a headless client. Enemies without night vision still spot late, and with a weapon light on they notice you from the light distance.
+2. **Timings:** turn `auqol_debug` on and play 5 minutes at night near a garrison. The `night spotting` line in the RPT should be lower than in 1.20.0.
+3. **Self-treat and loot (1.20.2):** a wounded squad AI with a first aid kit still treats itself, and every vehicle still offers Gather Scattered Loot.
+4. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.
+5. **Night pass spread (1.20.4):** with debug logging on, the `night spotting` line now shows about 300 runs per 5 minutes, and its worst time stays well under the 7 ms seen in 1.20.3. Recruiting AI and pressing T leave no AUQOL errors in the RPT.
+
 ### ✅ 22. AA launchers against jets and T key feedback (1.20.5)
+
+What it does: Squad AA soldiers fire at jets and helicopters, and the T key picks the enemy nearest your view and shows a notification (1.20.5).
 
 1. **Jets:** with an AA soldier in your squad (RHS Igla or Stinger, CUP or vanilla Titan), have an enemy jet (A-10 or Su-25) attack you, in the open and next to buildings. Within a second or two of it coming into view he takes out his launcher and fires once it locks. With `auqol_debug` on the RPT shows a "Launcher:" line. Set the squad to Hold fire: he takes it out and aims, but does not fire.
 2. **T while the jet is up:** with the AA soldier holding his launcher on the jet, press T on an enemy soldier: he stays on the jet, the rest of the squad takes the soldier.
@@ -263,7 +320,7 @@ Please report results, including anything that didn't behave as written here, as
 
 ### ❌ 23. AI avoid prone (1.21.0)
 
-Not tested in game yet.
+What it does: AI in combat crouch or stand instead of going prone, like the AI Avoids Prone mod (1.21.0).
 
 1. Load AUQOL without the "AI avoids prone" mod. Start a firefight with enemy AI on open ground and in grass: they crouch or stand to fight and move, they don't lie flat.
 2. Your squad does the same. A stance you order yourself (command menu, Prone) still works.
@@ -271,7 +328,7 @@ Not tested in game yet.
 
 ### ❌ 24. Look to spot (1.22.0)
 
-Not tested in game yet.
+What it does: Looking at an enemy with the crosshair reveals it to your squad and to friendly groups within 300 m (1.22.0, 1.26.0).
 
 1. Have two enemies about 150 m apart in view of your squad's blind side. Put the crosshair between them without pressing T: with `auqol_debug` on, the RPT shows "Look to spot: 2 enemies revealed", and the squad turns and engages. They split targets on their own.
 2. Look away and back at an already known enemy: no new RPT line (nothing is repeated). Press T on one: it becomes the focus as before.
@@ -280,7 +337,7 @@ Not tested in game yet.
 
 ### ❌ 25. Primary weapon after getting up (1.25.0)
 
-Not tested in game yet.
+What it does: After you wake from unconsciousness your rifle comes up, not your launcher (1.25.0).
 
 1. Carry a rifle and a launcher. Get downed, then self-revive (Withstand). You get up with the rifle in hand and can move at once, no launcher animation.
 2. Same with the launcher selected when you go down, and with no rifle but a pistol (the pistol comes up). With no primary and no handgun nothing is switched.
@@ -288,7 +345,7 @@ Not tested in game yet.
 
 ### ❌ 26. AI edge cases (1.27.0)
 
-Not tested in game yet.
+What it does: Fixes from the AI edge-case review: no friendly suppressive fire, grenade dodge keeps waypoints, no frag at close walls, medics stay put, courage floor (1.27.0).
 
 1. Stand a friendly AI next to a squadmate and let the squadmate fire bursts past him: he crouches but does not start suppressive fire at the squadmate's position (no `doSuppressiveFire` toward your squad).
 2. Throw a grenade next to an Antistasi patrol leader: he runs, and afterwards walks on along his waypoint (`currentWaypoint` unchanged, he is not idle).
@@ -298,7 +355,7 @@ Not tested in game yet.
 
 ### ❌ 27. Squad tactics (1.28.0)
 
-Not tested in game yet.
+What it does: Squad tactics: call-outs, ambush hold-fire, overwatch cover, breach and clear, night light discipline (1.28.0).
 
 1. Press T on an enemy: group chat shows "Contact! ..." from one AI with a plausible clock position.
 2. Set the squad to Stealth with Open fire: they stop shooting at an enemy walking past. Fire one shot: all open up. Same if you leave Stealth.
@@ -307,12 +364,41 @@ Not tested in game yet.
 5. At night with NVGs on the squad and a weapon light on a rifle: the light stays off; by day it is Auto again.
 6. With `auqol_debug`, no script errors; stuck recovery reports nothing for overwatch or breach units.
 
-### ❌ 21. Optimization pass (1.20.1)
+### ❌ 28. Ladders (1.29.0)
 
-Nothing should look or play differently from 1.20.0.
+What it does: Climbing is 2.5 times as fast for you and every AI (engine `ladderSpeed` set in config, so the climb itself is faster, not only the animation). Ctrl+S slides you down a ladder (`auqol_anim_ladderSlide`).
 
-1. **Night spotting:** repeat test 18 on a dedicated server with a headless client. Enemies without night vision still spot late, and with a weapon light on they notice you from the light distance.
-2. **Timings:** turn `auqol_debug` on and play 5 minutes at night near a garrison. The `night spotting` line in the RPT should be lower than in 1.20.0.
-3. **Self-treat and loot (1.20.2):** a wounded squad AI with a first aid kit still treats itself, and every vehicle still offers Gather Scattered Loot.
-4. **Concealment in MP:** repeat test 19 with two players. Each one's indicator and hiding work as before, and squad AI handed to another machine (the leader leaves) are restored there.
-5. **Night pass spread (1.20.4):** with debug logging on, the `night spotting` line now shows about 300 runs per 5 minutes, and its worst time stays well under the 7 ms seen in 1.20.3. Recruiting AI and pressing T leave no AUQOL errors in the RPT.
+1. Climb a ladder in vanilla (AUQOL not loaded) and with AUQOL, timing bottom to top. AUQOL should be about 2.5 times faster. `getAnimSpeedCoef player` reads 1.
+2. On a ladder press Ctrl+S (rebind under Controls, Configure Addons): you step off and reach the foot in a second or two, taking no damage. Turn `auqol_anim_ladderSlide` off: nothing happens.
+3. Order a squad AI up a tall tower ladder. It should climb, not slower than vanilla (if it does, `auqol_anim_aiSpeed` 1.25 is slowing it; note the numbers). Stuck recovery must not report it as stuck while it climbs.
+4. With Ladder Tweak Remastered loaded as well: the speed is the same as with AUQOL alone; use only one of the two slide keys.
+
+### ❌ 29. Covering fire (1.23.0)
+
+What it does: Smart combat covering AI fire more often (`auqol_combat_fireChance`, default 80%, was 35%).
+
+1. Run `tests/ingame/combat_test.sqf`, or attack an enemy squad. Watch the covering team: at 80% most of them keep shooting at the enemy every few seconds.
+2. Set the slider to 10%: far fewer fire. Set it to 100%: every covering AI that can see an enemy fires each pass. No change to ammo use that stops them from resupplying (`auqol_combat_resupply`).
+3. Soldiers with combat mode "Hold fire" or in the Stealth ambush (test 27) do not fire.
+
+### ❌ 30. Downed aircraft and AI across machines (1.24.0, 1.29.1, 1.29.2)
+
+What it does: Enemy aircraft that crash intact lose their crew, and the grenade dodge, vehicle freeze and night spotting work on every machine in multiplayer.
+
+1. Spawn an enemy crewed helicopter and plane, shoot them down without destroying them: the crew gets out (test 2.5).
+2. **Grenade dodge across machines (dedicated server):** throw a grenade next to enemy AI on the server: they run. Have an enemy throw one next to your squad on your client: your squad runs. Both must work with `auqol_combat_dodge` on and nothing running with LAMBS or Vcom (they stand down).
+3. **Vehicle freeze per machine:** as a client, drive a car, leave it, go over 500 m away. On your machine `dynamicSimulationEnabled _car` is true (the engine flag only acts where it is set), and the server shows the same for vehicles it owns.
+4. **Night skills on a headless client:** at night, move an AI group to the headless client (or leave as host so ownership changes); its night spotting still applies after about 2 s and no RPT error appears.
+5. **Ambush hold-fire across groups (1.29.1):** put the squad in Stealth with Open fire, then regroup or join an AI to another group: the hold-fire stays active until you shoot.
+6. Check the RPT for script errors during all of the above.
+
+### ❌ 31. Audit follow-ups to look at (1.29.0 to 1.29.2)
+
+What it does: Items the full audit could not decide without a game run. Record the result next to each.
+
+1. **AI on ladders:** does an AI climb slower than vanilla with `auqol_anim_aiSpeed` 1.25? (test 28.3)
+2. **Throw aim:** an AI throwing frag or smoke at a spot turns far enough in 1 s, not throwing sideways. Place a debug marker at the target and watch the landing point.
+3. **Breach range:** T on an enemy in a building at 80 m, 120 m and 150 m: it sends AI in only within the configured range. Say whether 80 m or 40 m feels right.
+4. **Fired handler cost:** `auqol_debug` on, a large firefight for 5 minutes: the RPT `Timing:` lines for the grenade dodge and launcher re-check stay small (well under 1 ms average).
+5. **Look to spot repeat limit:** look at the same enemy repeatedly: it is announced again only after 20 s.
+

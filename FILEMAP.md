@@ -41,7 +41,7 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `docs/configuration.md` | Every setting in detail, with what it changes and what it leaves alone. |
 | `docs/compatibility.md` | ACE, Antistasi, RHS and CUP integration and multiplayer locality. |
 | `docs/service-audit.md` | Audit of every fuel, ammo, repair, medical and logistics service, and what AUQOL does with each. |
-| `docs/testing.md` | Static checks, in-game results and the in-game test plan. |
+| `docs/testing.md` | Static checks, in-game results and the complete in-game test list (every feature, steps and expected results). |
 | `CONTRIBUTING.md` | Code conventions and how to release. |
 | `mod.cpp` | Launcher name, description and link. |
 
