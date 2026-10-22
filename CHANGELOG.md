@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.31.2
+
+Not tested in game yet. Thomas: disembark was still one by one.
+
+- AI dismount all at once: the 1.31.0 version used the vanilla get-out action, which the engine queues one unit at a time (same as the get-out order), and it only acted on units without a vehicle assignment, which units given a get-out order still have. Now the others of the group that were told to leave (get-out order or unassigned) are moved out with `moveOut`: instant, no get-out animation. Units marked `incapacitated` by Antistasi are skipped too.
+- Checked against: crew ejection (`moveOut` as before, 5 s mark prevents repeats), drivers and gunners who stay (assigned and not ordered out), moving vehicles and aircraft in the air (skipped), ACE captives and unconscious units (skipped), Antistasi QRF unloading, smart combat and stuck recovery (unchanged).
+
 ## 1.31.1
 
 The logo shows where Arma uses mod.cpp images, not in the Arma 3 Launcher: `logo` is the main menu icon, `picture` the Expansions menu picture (new `picture.paa`, 2048x1024), `logoSmall` the small icon (now 64 px). The Launcher does not read these for local mods, so its tile stays the default "LOCAL FILE" card. The Launcher's Author field now says TchicX (was "AUQOL Contributors") in `mod.cpp`, `config.cpp` and the HEMTT project. No code change.

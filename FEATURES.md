@@ -226,9 +226,9 @@ Every AI soldier of every faction plays its animations 25% faster by default, ad
 
 ### AI dismount all at once (1.31.0)
 
-When AI are told to get out of a vehicle (your Disembark order, an Antistasi QRF unloading, a GETOUT waypoint), the whole group climbs out together with the normal get-out animation, the way they board, instead of one after another.
+When AI are told to get out of a vehicle (your Disembark order, an Antistasi QRF unloading, a GETOUT waypoint), the whole group is out at once instead of one after another. The engine queues the vanilla get-out (order and action), so the others are moved out instantly with `moveOut` and skip the get-out animation (1.31.2).
 
-- Triggered by the first one getting out: every other AI of the same group still in that vehicle that has also been told to leave (no vehicle assignment any more) gets the vanilla get-out action at once. Nobody is moved by script and no order, waypoint or assignment is changed, so Antistasi's AI and PATCOM decide what happens next.
+- Triggered by the first one getting out: every other AI of the same group still in that vehicle that has also been told to leave (a get-out order, or no vehicle assignment any more) is moved out at once. No order, waypoint or assignment is changed, so Antistasi's AI and PATCOM decide what happens next.
 - Left alone: crew still assigned (a driver or gunner who stays), players, captives (ACE handcuffs, surrendered) and unconscious units, other groups in the same vehicle, and everyone while the vehicle moves faster than 5 km/h or an aircraft is off the ground (paradrops and Eject stay vanilla).
 - Works for any vehicle of any mod (RHS, CUP, vanilla), on the server, headless clients and players' machines: each machine handles the units it owns.
 - `auqol_anim_fastDismount` (on).

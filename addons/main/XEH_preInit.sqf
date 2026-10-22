@@ -265,7 +265,7 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 
 [
     "auqol_anim_fastDismount", "CHECKBOX",
-    ["AI dismount all at once", "When AI are told to leave a vehicle, the whole group climbs out together with the normal get-out animation, the way they board, instead of one after another. Crew who stay (a driver or gunner still assigned), players, captives and unconscious units are left alone, and nothing happens while the vehicle is moving or an aircraft is in the air."],
+    ["AI dismount all at once", "When AI are told to leave a vehicle, the whole group is out at once, instantly and without the get-out animation (the engine queues the animated get-out one unit at a time), instead of one after another. Crew who stay (a driver or gunner still assigned), players, captives and unconscious units are left alone, and nothing happens while the vehicle is moving or an aircraft is in the air."],
     [_category, "AI animation speed"],
     true, 1
 ] call CBA_fnc_addSetting;
