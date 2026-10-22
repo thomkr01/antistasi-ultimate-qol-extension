@@ -2,6 +2,15 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.31.0
+
+Not tested in game yet.
+
+- New: AI dismount all at once (`auqol_anim_fastDismount`, on). When AI are told to leave a vehicle, the whole group starts the normal get-out animation together, the way they board, instead of one by one. Drivers or gunners who stay, players, captives, unconscious units, moving vehicles and aircraft in the air are left alone. Test 33.
+- Look to spot now acts like the T key: enemies you look at are revealed with full knowledge (level 4, was 3) to your squad and to friendly groups within 300 m, and squad AI that are not shooting at anything yet open fire on the enemy nearest your crosshair at once (combat mode respected). No 30 s focus or notification, those stay T only. Test 24.
+- Docs: `docs/testing.md` results table lists every test with its number; tests 8 (squad perks), 12 (live vehicle markers), 13 (1.8.1 fixes), 24 (look to spot) and 28 (ladders) rewritten in plain steps; new test 10b for the 1.8.0 safer stuck recovery and leaner scans. Marked confirmed by Thomas (2026-10-22): T key and nearby allies, contact sharing, faster reactions, launcher switch, faster AI animations.
+- Checked against: Antistasi AI and PATCOM (no orders, waypoints or assignments changed; only units the engine or Antistasi already told to leave), crew ejection (`moveOut` already leaves the group; the extra get-out action is a no-op for units already out), smart combat (dismounted groups start their tactics through their own EnemyDetected as before), stuck recovery (units leaving vehicles are already skipped), vehicle freeze (only empty vehicles), ACE captives and unconscious units (skipped), RHS and CUP vehicles (vanilla get-out action, any vehicle class), headless client (each machine handles its own units). Look to spot: Hold fire and Stealth ambush (doFire only under YELLOW or RED), overwatch and breach walks (aim only until arrival), self-treat (skipped while treating), T focus (look to spot only touches AI with no target, so a T focus is never replaced), launchers (rifle for a soldier, as with T).
+
 ## 1.30.2
 
 The mod has a logo: a hex nut around a scope bore with an orange cross (service, aim, healing). The launcher shows it in the mod list (`logo.paa` 512 px, `logo_small.paa` 128 px, both from `logo.svg`, original artwork) and the README shows it. No code change.

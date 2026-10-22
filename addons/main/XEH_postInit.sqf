@@ -23,7 +23,12 @@
 // Downed aircraft: same handlers; AUQOL_fnc_ejectIsImmobilized only accepts an aircraft that is on the ground and crippled.
 ["Air", "InitPost", { (_this select 0) call AUQOL_fnc_ejectInitVehicle }, true, [], true] call CBA_fnc_addClassEventHandler;
 // Scratch clearing: every vehicle and static weapon, acting where it is local (AUQOL_fnc_serviceScratches).
-["AllVehicles", "InitPost", { (_this select 0) addEventHandler ["Dammaged", { _this call AUQOL_fnc_serviceScratches }] }, true, ["Man"], true] call CBA_fnc_addClassEventHandler;
+// Fast dismount: GetOut fires on every machine; each acts on the crew local to it (AUQOL_fnc_animFastDismount).
+["AllVehicles", "InitPost", {
+    params ["_vehicle"];
+    _vehicle addEventHandler ["Dammaged", { _this call AUQOL_fnc_serviceScratches }];
+    _vehicle addEventHandler ["GetOut", { _this call AUQOL_fnc_animFastDismount }];
+}, true, ["Man"], true] call CBA_fnc_addClassEventHandler;
 // One handler for every other object. Weapon holders (dropped gear, the gear of every body) are the most
 // common spawns and are never service objects or loot targets, so they are skipped.
 ["All", "InitPost", {
