@@ -6,7 +6,7 @@
 class CfgPatches {
     class auqol_main {
         name = "Antistasi Ultimate QoL Extension by TchicX";
-        author = "AUQOL Contributors";
+        author = "TchicX";
         url = "https://github.com/thomkr01/antistasi-ultimate-qol-extension";
         units[] = {};
         weapons[] = {};

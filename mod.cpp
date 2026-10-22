@@ -1,7 +1,7 @@
 name = "Antistasi Ultimate QoL Extension by TchicX";
-author = "AUQOL Contributors";
+author = "TchicX";
 tooltip = "Antistasi Ultimate QoL Extension by TchicX";
-picture = "logo.paa";
+picture = "picture.paa";
 logo = "logo.paa";
 logoOver = "logo.paa";
 logoSmall = "logo_small.paa";
