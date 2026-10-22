@@ -233,6 +233,13 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_squad_push", "CHECKBOX",
+    ["Push with you", "In contact on Aware or Combat, when you move toward a known enemy within 300 m, your free AI fight as two teams that leapfrog with you: one moves to cover just ahead of you while the other suppresses. They return to formation 6 s after you stop pushing. AI you ordered yourself are left alone."],
+    [_category, "Combat AI: squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
     "auqol_squad_breach", "CHECKBOX",
     ["Breach and clear (Reveal target key)", "Pressing Reveal target on an enemy soldier inside a building within 150 m sends the two free AI nearest to the building in together, to the positions nearest him, for 30 s."],
     [_category, "Combat AI: squad tactics"],

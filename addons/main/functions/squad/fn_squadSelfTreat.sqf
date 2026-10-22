@@ -84,7 +84,8 @@ if (time >= _unit getVariable ["auqol_treatCoverDone", 0] && {_unit checkAIFeatu
     private _spot = _cover select 0;
     // Blocks smart combat orders, medics and a second check while it runs to cover, at most 20 s.
     // The old smart combat / overwatch spot is dropped: after treating the unit gets a fresh one instead of a stale progress record.
-    { _unit setVariable [_x, nil] } forEach ["auqol_tacDest", "auqol_tacProgress"];
+    if (!isNil {_unit getVariable "auqol_tacDest"}) then { _unit setVariable ["auqol_tacMoved", true] };
+{ _unit setVariable [_x, nil] } forEach ["auqol_tacDest", "auqol_tacProgress"];
     _unit setVariable ["auqol_treatUntil", time + 20];
     _unit setVariable ["auqol_treatCoverDone", time + 30];
     _unit setVariable ["auqol_treatMoved", true];
@@ -100,6 +101,7 @@ if (time >= _unit getVariable ["auqol_treatCoverDone", 0] && {_unit checkAIFeatu
 };
 if (!_hasKit) exitWith {};
 
+if (!isNil {_unit getVariable "auqol_tacDest"}) then { _unit setVariable ["auqol_tacMoved", true] };
 { _unit setVariable [_x, nil] } forEach ["auqol_tacDest", "auqol_tacProgress"];
 _unit action ["HealSoldierSelf", _unit];
 // The animation takes about 10 s; check again after it to clear what a first aid kit leaves.
