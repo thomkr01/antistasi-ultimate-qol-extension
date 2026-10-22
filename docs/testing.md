@@ -39,6 +39,7 @@ What Thomas has reported from his games (Antistasi Ultimate, mostly single playe
 | 28 | Faster ladders and Ctrl+S slide down | ❌ Not tested yet |
 | 29 to 32 | Covering fire, MP fixes, audit follow-ups, combat AI handoffs | ❌ Not tested yet |
 | 33 | AI dismount all at once | ❌ Not tested yet (new in 1.31.0) |
+| 35 | Planted squad AI freed | ❌ Not tested yet (new in 1.32.2) |
 | 34 | Push with you | ❌ Not tested yet (new in 1.32.0) |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
@@ -616,3 +617,17 @@ Setup: a squad of 4 or more AI on Aware or Combat, an enemy squad 150 to 250 m a
 5. With `auqol_debug` on: no script errors; stuck recovery reports nothing for pushing units.
 
 Fail if: the squad keeps lagging while you push, units get stuck standing in the open after you stop, or an overwatch or breach unit is dragged away.
+
+### ❌ 35. Planted squad AI freed (1.32.2)
+
+What it does: squad AI no longer stand on a fire order at a far or unreachable enemy; those that do are sent back after 8 s (1.32.2).
+
+Setup: a squad of 4 AI on Combat, an enemy 500 to 1000 m away across open ground, `auqol_debug` on.
+
+1. Look at the far enemy (look to spot). Expected: the squad aims but does not stop to shoot; they keep following you when you walk off.
+2. Press T on an enemy 600 m away. Expected: they aim; no AI stands still for 30 s.
+3. Press T on an enemy within 200 m with line of sight. Expected: they fire as before.
+4. Walk away while an AI keeps firing at something it cannot see. Expected: after about 8 s and 25 m the RPT shows "Unpin: ..." and it follows.
+5. Overwatch, breach, push and a launcher gunner on a vehicle are not interrupted.
+
+Fail if: the squad still freezes, an AI is pulled off a real fight at close range, or a script error appears.

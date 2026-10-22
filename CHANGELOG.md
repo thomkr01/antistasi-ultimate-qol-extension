@@ -2,6 +2,16 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.32.2
+
+Not tested in game yet. Thomas: his squad sometimes stands still in combat, ignoring new orders.
+
+- Cause (likely): look to spot and the Reveal target focus gave `doFire` to idle AI for enemies up to 1500 m away, re-sent as the group's knowledge faded. A fire order keeps a unit on the spot shooting, so a target it cannot reach planted it, and overwatch, push and release only sent units back with `doFollow` after a move command, never after a fire order. Stuck recovery ignores units in a fight on purpose, so it never saw them.
+- Fix 1: look to spot and T focus give `doFire` only for an enemy within 400 m with line of sight (checkVisibility over 0.3); farther away the AI only aim (`doTarget`). Look to spot no longer re-orders a unit that already carries a fire order.
+- Fix 2: new `auqol_squad_unpin` (on): a unit of your squad that has held a fire or attack order for 8 s, with you more than 25 m away and no target it can really see (none, over 400 m or checkVisibility under 0.1), is sent back with `doFollow` (`AUQOL_fnc_squadUnpin`, 1 s pass, your machine). Your own orders come later and win. Never for overwatch, breach or push units, units walking to a spot, treating, stopped or in a vehicle.
+- Fix 3: `AUQOL_fnc_combatRelease` (used by overwatch, push, smart combat) sends the unit back to formation also when it still carries a fire order.
+- Checked against: stuck recovery (unchanged, conservative rules stand), overwatch, breach and push (their units excluded), launchers (gunners with a visible vehicle target pass the sight check), self-treat and medics (treatUntil), ambush hold-fire (combat mode untouched), T focus and look to spot cooldowns, Antistasi and PATCOM (no waypoints or AI-led groups touched).
+
 ## 1.32.1
 
 Not tested in game yet. Thomas: Ctrl+S on a ladder did nothing.

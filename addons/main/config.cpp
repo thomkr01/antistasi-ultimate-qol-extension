@@ -129,6 +129,7 @@ class CfgFunctions {
             class squadAmbush {};
             class squadOverwatch {};
             class squadPush {};
+            class squadUnpin {};
             class squadBreach {};
         };
         class map {

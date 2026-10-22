@@ -112,7 +112,7 @@ if (hasInterface) then {
     [{ ["look to spot", { [] call AUQOL_fnc_squadLookSpot }] call AUQOL_fnc_perfRun }, 0.5] call _every;
 
     // Ambush discipline and overwatch follow your behaviour, speed and the enemies you know of; no event says any of that changed.
-    [{ ["squad tactics", { [] call AUQOL_fnc_squadAmbush; [] call AUQOL_fnc_squadOverwatch; [] call AUQOL_fnc_squadPush }] call AUQOL_fnc_perfRun }, 1] call _every;
+    [{ ["squad tactics", { [] call AUQOL_fnc_squadAmbush; [] call AUQOL_fnc_squadOverwatch; [] call AUQOL_fnc_squadPush; [] call AUQOL_fnc_squadUnpin }] call AUQOL_fnc_perfRun }, 1] call _every;
     // Antistasi moves its vehicle markers once a minute; new markers arrive through MarkerCreated, and the
     // 1 s pass only moves tracked markers whose vehicle moved. It does the work every second only while the
     // map or GPS panel is open and every 10 s otherwise; opening the map runs it at once.

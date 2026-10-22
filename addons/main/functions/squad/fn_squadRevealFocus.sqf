@@ -30,7 +30,9 @@ if ([_target] call AUQOL_fnc_squadIsOutOfFight || {time > _until} || {!auqol_squ
         _x doTarget _target;
         // doFire would cancel a walk to cover or into a building (overwatch, breach); the unit fires on arrival.
         private _dest = _x getVariable "auqol_tacDest";
-        if (combatMode _x in ["YELLOW", "RED"] && {isNil "_dest" || {_x distance2D _dest < 2.5}}) then { _x doFire _target };
+        // Within 400 m and in sight only: a fire order from farther away plants the unit (AUQOL_fnc_squadUnpin frees it).
+        if (combatMode _x in ["YELLOW", "RED"] && {isNil "_dest" || {_x distance2D _dest < 2.5}} && {_x distance _target < 400}
+            && {([_x, "VIEW", _target] checkVisibility [eyePos _x, aimPos _target]) > 0.3}) then { _x doFire _target };
     };
 } forEach (units _group select {
     local _x && {!isPlayer _x} && {alive _x} && {lifeState _x != "INCAPACITATED"} && {!(_x getVariable ["incapacitated", false])}
