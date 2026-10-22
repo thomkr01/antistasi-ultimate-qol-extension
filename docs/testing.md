@@ -33,14 +33,14 @@ What Thomas has reported from his games (Antistasi Ultimate, mostly single playe
 | 16 to 21 | Cover, self-treat in cover, night spotting, hiding in grass, hard to locate, optimizations | ❌ Not tested yet |
 | 22 | AA launchers against jets, T key notification | ✅ Works (1.20.5) |
 | 23 | AI avoid prone | ❌ Not tested yet |
-| 24 | Look to spot | ❌ Not tested yet (1.31.0 makes it act like T, see the test) |
+| 24 | Look to spot | ✅ Works (2026-10-22, 1.32.2): "firing is also good" |
 | 25 | Rifle (not launcher) after getting up from unconscious | ❌ Not tested yet |
 | 26, 27 | AI edge cases, squad tactics | ❌ Not tested yet |
 | 28 | Faster ladders and Ctrl+S slide down | ❌ Not tested yet |
 | 29 to 32 | Covering fire, MP fixes, audit follow-ups, combat AI handoffs | ❌ Not tested yet |
-| 33 | AI dismount all at once | ❌ Not tested yet (new in 1.31.0) |
-| 35 | Planted squad AI freed | ❌ Not tested yet (new in 1.32.2) |
+| 33 | AI dismount all at once | ✅ Works (2026-10-22, 1.32.2): "works perfect" |
 | 34 | Push with you | ❌ Not tested yet (new in 1.32.0) |
+| 35 | Planted squad AI freed | ✅ Works (2026-10-22, 1.32.2): the squad follows much more reliably; the "Unpin:" log lines were not checked |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -459,7 +459,7 @@ Setup: the "AI avoids prone" mod NOT loaded; open ground and tall grass; enemy s
 
 Fail if: AI go prone with the setting on, or ignore your Prone order.
 
-### ❌ 24. Look to spot (1.22.0)
+### ✅ 24. Look to spot (1.22.0)
 
 What it does: Just look at an enemy, without pressing anything: put your crosshair on it (within about a hand's width, 5 degrees) for half a second, and your squad and friendly AI groups within 300 m learn about it, the same as with T (1.22.0, 1.26.0). Since 1.31.0 it gives the same full knowledge as T, and squad AI that are not already shooting at something open fire on the enemy nearest your crosshair at once. Unlike T there is no on-screen message and no 30 s focus: AI already in a fight keep their own target. It is on by default (`auqol_squad_lookSpot`, angle `auqol_squad_lookAngle`). You only see it working when your squad has not spotted the enemy yet; if they already know it, nothing changes.
 
@@ -589,7 +589,7 @@ Setup: `auqol_debug` on, `tests/ingame/combat_test.sqf`, a squad of 3 AI, an Ant
 
 Fail if: a unit fires in the open with cover near, is re-sent immediately after a blocked walk, or keeps the hold after you shot.
 
-### ❌ 33. AI dismount all at once (1.31.0)
+### ✅ 33. AI dismount all at once (1.31.0)
 
 What it does: When AI are told to get out of a vehicle, the whole group is out at once, instantly beside the vehicle without the get-out animation (the engine queues the animated get-out one unit at a time), instead of one man after another. Crew who stay (a driver or gunner still assigned to the vehicle), players, prisoners and unconscious units are left alone, and nothing happens while the vehicle is moving or a helicopter is in the air. Setting: `auqol_anim_fastDismount` (on, under AI animation speed).
 
@@ -618,7 +618,7 @@ Setup: a squad of 4 or more AI on Aware or Combat, an enemy squad 150 to 250 m a
 
 Fail if: the squad keeps lagging while you push, units get stuck standing in the open after you stop, or an overwatch or breach unit is dragged away.
 
-### ❌ 35. Planted squad AI freed (1.32.2)
+### ✅ 35. Planted squad AI freed (1.32.2)
 
 What it does: squad AI no longer stand on a fire order at a far or unreachable enemy; those that do are sent back after 8 s (1.32.2).
 
