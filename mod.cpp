@@ -1,6 +1,10 @@
 name = "Antistasi Ultimate QoL Extension by TchicX";
 author = "AUQOL Contributors";
 tooltip = "Antistasi Ultimate QoL Extension by TchicX";
+picture = "logo.paa";
+logo = "logo.paa";
+logoOver = "logo.paa";
+logoSmall = "logo_small.paa";
 overview = "Quality of life and smarter AI for Antistasi Ultimate: crews leave immobilized vehicles, service vehicles never run dry, any vehicle can gather loot, no sway, unlimited stamina and weight, squad tactics and call-outs, look to spot and the T key, AI fire teams and cover, stuck AI recovery, night spotting limits and hiding in the grass. Requires CBA_A3.";
 overviewText = "Requires CBA_A3. ACE3, RHS and CUP are optional.";
 actionName = "GitHub";

@@ -1,5 +1,7 @@
 # Antistasi Ultimate QoL Extension (AUQOL)
 
+<img src="logo.svg" alt="AUQOL logo" width="96" align="right">
+
 An Arma 3 mod that adds quality-of-life features and smarter AI to Antistasi Ultimate, without editing the mission.
 
 ## What it does

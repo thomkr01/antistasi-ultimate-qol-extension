@@ -14,4 +14,6 @@ include = [
     "FEATURES.md",
     "CHANGELOG.md",
     "LICENSE",
+    "logo.paa",
+    "logo_small.paa",
 ]

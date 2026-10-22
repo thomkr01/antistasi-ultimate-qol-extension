@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.30.2
+
+The mod has a logo: a hex nut around a scope bore with an orange cross (service, aim, healing). The launcher shows it in the mod list (`logo.paa` 512 px, `logo_small.paa` 128 px, both from `logo.svg`, original artwork) and the README shows it. No code change.
+
 ## 1.30.1
 
 Docs only. Every test in `docs/testing.md` now has Setup, numbered Steps with the exact action and expected result, and a Fail-if line; common setups (enemy squad snippet, settings menu, night, RPT) are listed once at the top of the test plan. No code change.

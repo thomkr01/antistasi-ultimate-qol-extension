@@ -43,7 +43,9 @@ Where everything lives. Update this file whenever a file is added, moved or remo
 | `docs/service-audit.md` | Audit of every fuel, ammo, repair, medical and logistics service, and what AUQOL does with each. |
 | `docs/testing.md` | Static checks, in-game results and the complete in-game test list (every feature, steps and expected results). |
 | `CONTRIBUTING.md` | Code conventions and how to release. |
-| `mod.cpp` | Launcher name, description and link. |
+| `mod.cpp` | Launcher name, description, link and logo. |
+| `logo.svg` | Source of the logo (original artwork). Edit this, then rebuild the two PAA files below. |
+| `logo.paa`, `logo_small.paa` | The launcher logo at 512 and 128 px, made from `logo.svg` with `hemtt utils paa convert <png> <paa>`. Listed in `.hemtt/project.toml` so they ship in the release. |
 
 ## Build and tests
 
