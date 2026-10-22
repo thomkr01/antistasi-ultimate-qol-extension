@@ -20,9 +20,15 @@ private _halted = time - (_group getVariable ["auqol_owStill", time]) > 3;
 _group setVariable ["auqol_owStill", _group getVariable ["auqol_owStill", time]];
 {
     private _until = _x getVariable "auqol_owUntil";
-    if (!isNil "_until" && {time >= _until || {!(_x getVariable ["auqol_owBreach", false]) && {!_fight || {!_halted}}}}) then {
+    // Handed back when time is up, when the situation ended, or when it has not reached its spot in 15 s (blocked):
+    // it rests 30 s from new spots and stuck recovery can look at it, instead of standing owned by overwatch.
+    private _dest = _x getVariable "auqol_tacDest";
+    private _blocked = !isNil "_dest" && {time - (_x getVariable ["auqol_owAt", time]) > 15} && {_x distance2D _dest > 2.5};
+    if (!isNil "_until" && {time >= _until || _blocked || {!(_x getVariable ["auqol_owBreach", false]) && {!_fight || {!_halted}}}}) then {
         _x setVariable ["auqol_owUntil", nil];
         _x setVariable ["auqol_owBreach", nil];
+        _x setVariable ["auqol_owAt", nil];
+        if (_blocked) then { _x setVariable ["auqol_tacRestUntil", time + 30] };
         [_x] call AUQOL_fnc_combatRelease;
     };
 } forEach _ai;
@@ -49,5 +55,6 @@ private _done = 0;
     _unit setVariable ["auqol_tacDest", _spot];
     _unit setVariable ["auqol_tacIndoor", _indoor];
     _unit setVariable ["auqol_owUntil", time + 120];
+    _unit setVariable ["auqol_owAt", time];
     _unit doMove _spot;
 } forEach _ai;

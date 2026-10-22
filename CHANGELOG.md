@@ -2,6 +2,17 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.30.0
+
+Not tested in game yet. Thomas: smart combat and the squad AI should supplement each other, not overlap, as one "Combat AI" featureset. Review: `/mnt/project-files/reports/auqol-1.30-combat-ai-handoffs.md`.
+
+- One "Combat AI" featureset: the settings menu groups smart combat, squad reactions and squad tactics together ("Combat AI: ..."). Names and defaults are unchanged.
+- Fix: a covering unit still walking to its cover got a fire order from smart combat that cancelled the walk. Fire orders now wait until it arrives (or has made no progress for 9 s). The T key focus does the same for units walking to overwatch or breach spots.
+- Fix: self-treat and medic treatment drop the unit's old spot, so it picks a new one afterwards instead of counting a failed spot.
+- Fix: overwatch and breach units that cannot reach their spot in 15 s are handed back (30 s rest, stuck recovery can see them).
+- Fix: ambush discipline came back within a second of your first shot while still in Stealth. It now stays ended until you leave Stealth. Breach also ends it.
+- Checked against: every pairing of smart combat, T focus, look to spot and ally sharing, launchers, self-treat and medics, overwatch, breach, ambush, call-outs, light discipline, dodge, stuck recovery and Antistasi's flags (see the report). Player-led groups are still skipped by smart combat; Antistasi PATCOM is never touched.
+
 ## 1.29.5
 
 Docs only. `docs/testing.md` is now the complete test list: every feature has a test with what it does and what to look for, the audit's open checks (tests 28 to 31) were moved in from the reports, and the test order is fixed. No code change.

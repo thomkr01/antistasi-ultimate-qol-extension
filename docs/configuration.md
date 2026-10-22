@@ -56,6 +56,10 @@ See [service-audit.md](service-audit.md) for why each service is handled the way
 
 With `auqol_player_squad` off these only affect the local player's unit. With it on they also cover the AI in your own group, applied when a recruit joins and re-checked every 15 seconds as a fallback. AI outside your group are never changed. An AI that leaves your group keeps the values it had (Antistasi normally deletes dismissed AI).
 
+## Combat AI (one featureset, 1.30.0)
+
+Smart combat, squad reactions and squad tactics are one featureset. In the CBA settings menu they sit together as "Combat AI: smart combat", "Combat AI: squad reactions" and "Combat AI: squad tactics". Setting names and defaults did not change. The sections below keep their old names.
+
 ## Squad tactics (1.28.0)
 
 All Server scope, all on by default. They only order your own squad, only from your own actions, and never touch Antistasi's groups.

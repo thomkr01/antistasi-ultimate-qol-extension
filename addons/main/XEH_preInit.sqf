@@ -151,98 +151,98 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 [
     "auqol_squad_reaction", "CHECKBOX",
     ["Faster squad reactions", "The AI in groups led by a player spot enemies sooner, pass sightings to each other faster and turn onto targets quicker: their spot time, spot distance, aiming speed, commanding and courage (they hold the line instead of breaking and fleeing) skills are raised to at least the value below. Accuracy is not changed."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1, _squadChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_reactionSkill", "SLIDER",
     ["Minimum reaction skill", "The floor for those five skills, 0.3 to 1. Skills already higher are left alone. Antistasi recruits start around 0.2 to 0.4."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     [0.3, 1, 0.8, 2], 1, _squadChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_reactionAll", "CHECKBOX",
     ["Also for all friendly AI", "The faster reactions above also apply to every friendly AI, not just your squad: garrisons, static and turret gunners at outposts and HQ, and high-command squads. Applied where each AI runs (server, headless client or player) when it spawns, and checked again every minute."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1, _squadChanged
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_revealKey", "CHECKBOX",
     ["Reveal target key alerts your squad", "Pressing Reveal target (T by default) while looking at an enemy gives every unit in your group full knowledge of it. If you lead the group it becomes your AI's focus for 30 s: they target it at once, and each new press moves the focus to the new enemy while the old one stays known. They fire under their current combat mode, so Hold fire still holds."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_lookSpot", "CHECKBOX",
     ["Look to spot for your squad", "Enemies you can see near where you look (within the angle below of your crosshair, up to 1500 m) are revealed to your squad without pressing anything. Every such enemy counts, and the squad's own combat AI picks which to fight first. No focus is set, unlike the Reveal target key, which still works."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_lookAngle", "SLIDER",
     ["Look to spot angle (degrees)", "How close to the centre of your view an enemy must be to be spotted, 1 to 15 degrees. About 5 is a hand's width around the crosshair on a normal screen."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     [1, 15, 5, 0], 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_selfTreat", "CHECKBOX",
     ["Wounded squad AI treat themselves", "AI in your group that are hurt (limping, can't run) use their first aid kit on themselves at once, a few seconds after being hit. Light leftover damage that only keeps the red hurt icon up (for example after Antistasi's revive) is cleared without using a kit. Off under ACE medical, which has its own AI medical."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_selfTreatMedikit", "CHECKBOX",
     ["Require medikit to clear the hurt icon", "On: light leftover damage (the red hurt icon, for example after a revive by a non-medic) is only cleared on AI that carry a medikit. Off: it is cleared on every AI. Treating real wounds with a first aid kit is not affected."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_launchers", "CHECKBOX",
     ["Squad switches to launchers at once", "An AI in your group with a loaded AT or AA launcher takes it out as soon as it knows about an enemy vehicle it can see and hit: ground vehicles within 500 m for AT, aircraft within 2000 m for AA. Knowing comes from its own spotting, the squad, or your Reveal target key."],
-    [_category, "Squad reactions"],
+    [_category, "Combat AI: squad reactions"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_callouts", "CHECKBOX",
     ["Radio call-outs", "When the Reveal target key or look to spot shows your squad an enemy, one of your AI calls it out in group chat: type, clock position and distance."],
-    [_category, "Squad tactics"],
+    [_category, "Combat AI: squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_ambush", "CHECKBOX",
     ["Ambush discipline", "While you lead your group in Stealth behaviour, your squad is put on Hold fire so nobody gives the position away. The first shot you fire, leaving Stealth or setting a combat mode yourself ends it, and the squad opens up together."],
-    [_category, "Squad tactics"],
+    [_category, "Combat AI: squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_overwatch", "CHECKBOX",
     ["Overwatch when you stop", "With an enemy known within 300 m and you standing still for 3 s, your free AI take the nearest cover within 15 m and cover you. They return to formation when you move again or the enemy is gone. AI you ordered yourself are left alone."],
-    [_category, "Squad tactics"],
+    [_category, "Combat AI: squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_breach", "CHECKBOX",
     ["Breach and clear (Reveal target key)", "Pressing Reveal target on an enemy soldier inside a building within 150 m sends the two free AI nearest to the building in together, to the positions nearest him, for 30 s."],
-    [_category, "Squad tactics"],
+    [_category, "Combat AI: squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_squad_nvDiscipline", "CHECKBOX",
     ["Light discipline at night", "At night, friendly AI with night vision or thermal keep their weapon lights off and use IR lasers, so only enemies with night vision can see them. AI without night vision are left alone."],
-    [_category, "Squad tactics"],
+    [_category, "Combat AI: squad tactics"],
     true, 1
 ] call CBA_fnc_addSetting;
 
@@ -296,140 +296,140 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
 [
     "auqol_combat_tactics", "CHECKBOX",
     ["Squads fight from cover", "AI groups in contact fight as two fire teams: one moves to the next covered spot (behind walls, rocks, trees, or inside buildings) while the other covers it, then they swap. Antistasi keeps steering the group; only members move between cover, and they rejoin formation when the fight ends. Not for groups led by a player."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_buildings", "CHECKBOX",
     ["Use and clear buildings", "Building positions count as cover, so AI fight from inside houses, and an enemy inside a building within 80 m is cleared: up to two movers take the positions nearest to it."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_flank", "CHECKBOX",
     ["Flank", "In groups of four or more, the second fire team advances on a line swung out to one side of the enemy instead of straight at it."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_suppressiveFire", "CHECKBOX",
     ["Suppressive fire", "Covering AI that can't see the enemy fire at where it was last seen, to keep its head down while their team moves."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_fireChance", "SLIDER",
     ["Covering fire chance (%)", "How often, every 3 s, each covering AI is ordered to fire: at an enemy it sees, or (with Suppressive fire) at where it was last seen. 100 % is every pass; every pass anyway while the group is under fire. 0 to 100."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     [0, 100, 80, 0], 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_grenades", "CHECKBOX",
     ["Hand grenades at hidden enemies", "An AI 12 to 35 m from an enemy it can't see (behind cover or inside a building) throws a hand grenade at it, if it has one and no friend is near that spot. At most once every 40 s per AI."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_smoke", "CHECKBOX",
     ["Smoke when there is no cover", "An AI that has to move with no cover near and the enemy within 200 m throws a smoke grenade toward it first. At most once a minute per group."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_assault", "CHECKBOX",
     ["Assault when close and stronger", "With the enemy within 50 m and at least twice its number, the moving team closes in on its position instead of stopping at cover."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_defend", "CHECKBOX",
     ["Defend in place", "A group that isn't going anywhere (Antistasi defend orders, a hold, guard or sentry waypoint, no waypoint left, or a stopped leader) takes cover within 30 m of its leader instead of advancing, preferring building positions."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_antiArmor", "CHECKBOX",
     ["Fight armor as a team", "With an enemy tank or APC known within 400 m, AI with AT launchers take them out and target it at once, and the others take cover further away from it."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_spreadTargets", "CHECKBOX",
     ["Spread targets", "With several enemies known, the covering team splits them up: one enemy each, in turn, instead of everyone on the same one."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_shareContacts", "CHECKBOX",
     ["Contact reports between groups", "When a group (or your squad) spots an enemy, AI groups of the same side within 300 m learn about it too and join the fight. Only knowledge is shared; where they go stays with Antistasi or the mission."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_dodge", "CHECKBOX",
     ["Get away from grenades", "AI within 10 m of a thrown hand grenade run 12 m away from it, then rejoin their group."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_resupply", "CHECKBOX",
     ["Share magazines", "In a fight, an AI down to its last magazine gets one from a group mate within 15 m who has four or more that fit its weapon."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_medics", "CHECKBOX",
     ["Medics treat the wounded", "While no enemy is within 60 m, a group's medic treats the most hurt mate within 30 m who is wounded but not down. Downed units stay with Antistasi's revive. Off under ACE medical."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_range", "SLIDER",
     ["Contact range (m)", "Tactics run while the group knows of an enemy within this distance, 100 to 1000 m, and stop 30 s after the last one."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     [100, 1000, 500, 0], 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_noProne", "CHECKBOX",
     ["Never make AI go prone", "AUQOL's own suppression reaction stops at crouching. AI already avoid prone through the mod's config. Stance orders from you, Antistasi or other mods are never overridden either way."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_revealShooter", "CHECKBOX",
     ["AI under fire learn where it comes from", "When rounds pass close to an AI, its group gets to know the shooter, so it answers the fire instead of scanning for it. Applies to every AI, both sides."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_takeCover", "CHECKBOX",
     ["Suppressed AI get low", "A standing AI on foot crouches when rounds pass close, or goes prone under heavy fire (unless 'Never make AI go prone' is on), and goes back to its own stance choice 10 s after the last close round. Only AI whose stance is left to the AI are touched; AI in a group led by a player are skipped."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
 [
     "auqol_combat_yieldToAIMods", "CHECKBOX",
     ["Leave combat AI to LAMBS or Vcom", "When LAMBS Danger or Vcom AI is loaded, every smart combat AI setting above stays off, since those mods already run their own combat AI."],
-    [_category, "Smart combat AI"],
+    [_category, "Combat AI: smart combat"],
     true, 1
 ] call CBA_fnc_addSetting;
 
