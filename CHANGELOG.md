@@ -2,6 +2,13 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.32.1
+
+Not tested in game yet. Thomas: Ctrl+S on a ladder did nothing.
+
+- Fix attempt: the ladder slide only looked at objects within 4 m of you and ladder lines within 0.8 m, which misses tall buildings (their position is far from the ladder) and the offset you hang from the rungs. It now looks at objects within 40 m and ladder lines within 2 m. With `auqol_debug` on, the RPT says why it did nothing ("not on a ladder (animation ...)", "no ladder within 2 m found among N objects") or which ladder it used. If it still does nothing, send those lines.
+- Checked against: faster ladder climb (config, unchanged), AI animation speed and stuck recovery (unchanged), ACE (no overlap), Ladder Tweak Remastered (same key, use one).
+
 ## 1.32.0
 
 Not tested in game yet. Thomas: the squad rarely pushes with him in bigger fights.
