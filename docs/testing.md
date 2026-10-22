@@ -522,9 +522,11 @@ What it does: Climbing is 2.5 times as fast for you and every AI (engine `ladder
 Setup: single player, a tall ladder (a radio tower or a lighthouse on Altis or Malden, or an editor-placed `Land_Cargo_Tower_V1_F`), a stopwatch (your phone).
 
 1. Walk to the foot of the ladder, use "Climb up" and start the stopwatch; stop it when you step off at the top. Do this once with AUQOL and once without AUQOL loaded (or compare with how slow it felt before). Expected: AUQOL is about 2.5 times faster, for example 4 s instead of 10 s. `getAnimSpeedCoef player` reads 1 and `getNumber (configFile >> "CfgAnimation" >> "ladderSpeed")` reads 1.25.
-2. On a ladder press Ctrl+S (rebind under Controls, Configure Addons). Expected: you step off and reach the foot in a second or two, taking no damage. Off a ladder, nothing happens. Turn `auqol_anim_ladderSlide` off: nothing happens on a ladder either.
+2. On a ladder (tall tower or building ladders too) press Ctrl+S (rebind under Controls, Configure Addons). Expected: you step off and reach the foot in a second or two, taking no damage. Off a ladder, nothing happens. Turn `auqol_anim_ladderSlide` off: nothing happens on a ladder either.
 3. Order a squad AI up the ladder (move order to the top). Expected: it climbs and is not slower than vanilla. Stuck recovery does not report it while it climbs.
 4. With Ladder Tweak Remastered loaded as well: the speed is the same as with AUQOL alone. Use only one of the two slide keys.
+
+If the slide does nothing, turn on `auqol_debug` and send the "Ladder slide:" lines from the RPT (1.32.1 logs why).
 
 Fail if: the climb is not clearly faster, the slide hurts you, or the AI refuses the ladder.
 

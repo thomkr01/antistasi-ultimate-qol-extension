@@ -2,7 +2,7 @@
     Author: AUQOL
     Slide down the ladder you are on: leaves the ladder and moves the player to its foot at about 5 m/s
     (Ladder Tweak Remastered has a slide-down; this is our own code, with the vanilla animations).
-    The ladder is found from the nearby objects' config `ladders` lines (start and end selection, both
+    The ladder is found (objects within 40 m, line within 2 m, 1.32.1) from the nearby objects' config `ladders` lines (start and end selection, both
     in model space); the one the player is on the line of is used, the lower end is the target.
     The player's unit is local, so setPosASL each frame is replicated by the engine; no object is attached.
     Called from the Slide down ladder keybind (local player only).
@@ -11,10 +11,11 @@
 */
 
 private _unit = player;
-if (!auqol_ready || {!auqol_anim_ladderSlide} || {!alive _unit} || {!local _unit} || {!("ladder" in toLowerANSI animationState _unit)}) exitWith {};
+if (!auqol_ready || {!auqol_anim_ladderSlide} || {!alive _unit} || {!local _unit}) exitWith {};
+if !("ladder" in toLowerANSI animationState _unit) exitWith { [format ["Ladder slide: not on a ladder (animation %1)", animationState _unit], true] call AUQOL_fnc_log };
 
 private _best = [];
-private _bestDist = 0.8; // m from the ladder line
+private _bestDist = 2; // m from the ladder line (the player hangs about 0.5 m off it, and a model's ladder points need not be exact)
 private _pos = getPosASL _unit;
 {
     private _building = _x;
@@ -31,11 +32,12 @@ private _pos = getPosASL _unit;
             _best = [_building, [_b, _a] select ((_a select 2) < (_b select 2))];
         };
     } forEach getArray (configOf _building >> "ladders");
-} forEach (nearestObjects [_unit, [], 4, true] select { getArray (configOf _x >> "ladders") isNotEqualTo [] });
-if (_best isEqualTo []) exitWith {};
+} forEach (nearestObjects [_unit, [], 40, true] select { getArray (configOf _x >> "ladders") isNotEqualTo [] });
+if (_best isEqualTo []) exitWith { [format ["Ladder slide: no ladder within 2 m found among %1 objects near %2", count (nearestObjects [_unit, [], 40, true]), getPosATL _unit], true] call AUQOL_fnc_log };
 
 _best params ["_building", "_foot"];
 private _target = AGLToASL (_building modelToWorld _foot);
+[format ["Ladder slide: %1 from %2 to %3", typeOf _building, getPosASL _unit, _target], true] call AUQOL_fnc_log;
 _unit action ["ladderOff", _building];
 
 [{
