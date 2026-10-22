@@ -39,6 +39,7 @@ What Thomas has reported from his games (Antistasi Ultimate, mostly single playe
 | 28 | Faster ladders and Ctrl+S slide down | ❌ Not tested yet |
 | 29 to 32 | Covering fire, MP fixes, audit follow-ups, combat AI handoffs | ❌ Not tested yet |
 | 33 | AI dismount all at once | ❌ Not tested yet (new in 1.31.0) |
+| 34 | Push with you | ❌ Not tested yet (new in 1.32.0) |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -599,3 +600,17 @@ Setup: single player, `auqol_debug` on, a squad of four or more AI, a truck or A
 6. **ACE.** With ACE3, load a handcuffed prisoner and an unconscious soldier into a vehicle with your squad, then order the squad out. Expected: the prisoner and the unconscious soldier stay inside; ACE's own "Unload" still works.
 
 Fail if: the group still leaves one by one with the setting on, a driver or gunner who was not ordered out leaves, a prisoner or unconscious unit is pushed out, or anyone is thrown out of a moving vehicle.
+
+### ❌ 34. Push with you (1.32.0)
+
+What it does: in a larger fight your squad leapfrogs with you instead of lagging behind (1.32.0). Also covers the treat-then-return fix (N1).
+
+Setup: a squad of 4 or more AI on Aware or Combat, an enemy squad 150 to 250 m away with cover between.
+
+1. Walk toward the enemy at a jog. Expected: within a few seconds half the squad moves to cover just ahead of you while the other half fires at the last known enemy position; they swap every 8 s or so.
+2. Stop. Expected: after 3 s overwatch cover as before; after 6 s without pushing, anyone left over returns to formation.
+3. Set the squad to Safe or Stealth and push. Expected: nothing special happens. Give an AI a move order yourself: it is left alone.
+4. Wound an AI mid-push so it treats itself, then keep pushing. Expected: it treats, then returns to formation instead of standing where it stopped. Same for one healed by a medic.
+5. With `auqol_debug` on: no script errors; stuck recovery reports nothing for pushing units.
+
+Fail if: the squad keeps lagging while you push, units get stuck standing in the open after you stop, or an overwatch or breach unit is dragged away.

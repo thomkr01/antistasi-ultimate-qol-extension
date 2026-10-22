@@ -13,8 +13,9 @@
 params ["_unit"];
 if (isNil {_unit getVariable "auqol_tacTeam"}) exitWith {};
 
-private _moved = !isNil {_unit getVariable "auqol_tacDest"};
-{ _unit setVariable [_x, nil] } forEach ["auqol_tacTeam", "auqol_tacDest", "auqol_tacIndoor", "auqol_tacProgress", "auqol_tacNextSeek"];
+// auqol_tacMoved: the spot was dropped for treatment, but the unit was still sent out and waits where it stopped.
+private _moved = !isNil {_unit getVariable "auqol_tacDest"} || {_unit getVariable ["auqol_tacMoved", false]};
+{ _unit setVariable [_x, nil] } forEach ["auqol_tacMoved", "auqol_pushTeam", "auqol_tacTeam", "auqol_tacDest", "auqol_tacIndoor", "auqol_tacProgress", "auqol_tacNextSeek"];
 if (!local _unit || {!alive _unit}) exitWith { _unit setVariable ["auqol_tacStance", nil] };
 
 if (_unit getVariable ["auqol_tacStance", false]) then {

@@ -57,6 +57,7 @@ if (auqol_combat_medics && _distEnemy > 60 && {!auqol_aceMedical}) then {
         if (_patients isEqualTo []) then { continue };
         _patients sort false;
         _medic setVariable ["auqol_tacNextHeal", time + 20];
+        if (!isNil {_medic getVariable "auqol_tacDest"}) then { _medic setVariable ["auqol_tacMoved", true] };
         _medic setVariable ["auqol_tacDest", nil];
         _medic setVariable ["auqol_tacProgress", nil];
         // Keeps smart combat from moving the medic mid-treatment, as it does the patient.
@@ -64,6 +65,7 @@ if (auqol_combat_medics && _distEnemy > 60 && {!auqol_aceMedical}) then {
         private _patient = _patients select 0 select 1;
         // Keeps self-treat from starting on the same patient while the medic works.
         _patient setVariable ["auqol_treatUntil", time + 10];
+        if (!isNil {_patient getVariable "auqol_tacDest"}) then { _patient setVariable ["auqol_tacMoved", true] };
         { _patient setVariable [_x, nil] } forEach ["auqol_tacDest", "auqol_tacProgress"];
         _medic action ["HealSoldier", _patient];
     } forEach _members;

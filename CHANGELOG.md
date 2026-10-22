@@ -2,6 +2,15 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.32.0
+
+Not tested in game yet. Thomas: the squad rarely pushes with him in bigger fights.
+
+- **Push with you** (`auqol_squad_push`, on). In contact on Aware or Combat, when you move toward a known enemy within 300 m (speed over 2 m/s and closing in), your free AI fight as two teams that leapfrog with you: one moves to cover just ahead of you (within 15 m of a point up to 20 m toward the enemy) while the other suppresses where the enemy was last seen (fire chance setting, YELLOW or RED only). They swap when the movers have arrived or after 8 s. Six seconds after you stop pushing they return to formation. Stop for 3 s and overwatch takes over as before.
+- Fix: a unit that treated itself or was healed by a medic mid-fight was released without a return to formation and waited where it stopped (audit N1). Treatment now marks it so the release sends it back.
+- Docs: look to spot shares with allies at level 4, not 3 (audit N2).
+- Checked against: overwatch and breach (units with their orders are never taken, push marks dropped if they take a unit over), orders of yours, treating and stopped units (combatIsEligible), ambush hold-fire and Stealth (push is off on Safe and Stealth), smart combat (player-led groups still skipped), stuck recovery (spot variables), look to spot and T focus (unchanged), launchers, Antistasi and PATCOM (no waypoints, behaviour or leader touched), ACE, RHS, CUP (no class use), dedicated server and HC (player machine only, early exit with no enemy).
+
 ## 1.31.2
 
 Not tested in game yet. Thomas: disembark was still one by one.
