@@ -350,6 +350,19 @@ Climbing a ladder is 2.5 times as fast, for the player and every AI. It is the e
 - Loading Ladder Tweak Remastered too changes the speed not at all (same value). Its slide key is Ctrl+S too: use one of the two.
 - Not touched: AI animation speed (AI climb at both, 1.25 times faster again), stuck recovery (still skips ladders), pistol swap, ACE fatigue.
 
+## 29. Combat AI: one owner per unit (1.30.0)
+
+Smart combat (AI groups), the squad features (T key, look to spot, launchers, self-treat, reactions) and your squad tactics (overwatch, breach, ambush) are one featureset, "Combat AI" in the settings menu. They supplement each other: a unit has one owner at a time, and each system hands it back cleanly.
+
+- **Who owns whom.** AI-led groups (allies, enemies) are smart combat's; the squad you lead is the squad features' and tactics'. Both share the same busy marks (the smart combat spot, `auqol_treatUntil`, the Antistasi flags), so one never moves a unit the other is using.
+- **Walking to cover is not interrupted.** A fire order replaces a move order. Covering units in smart combat, and the T key focus, no longer give fire orders to a unit still walking to its cover or into a building (a unit that makes no progress for 9 s fires from where it is). Before, a unit sent to cover could be stopped in the open by its own fire order.
+- **Treating hands the spot back.** Self-treat, treatment by a medic and being treated clear the unit's old spot, so it gets a fresh one afterwards instead of a stale progress record that counted as a failed spot.
+- **Overwatch and breach hand back blocked units.** A unit that has not reached its spot in 15 s is released, rests 30 s from new spots and is open to stuck recovery.
+- **Breach ends ambush discipline.** Sending the squad in is an order to engage, so Hold fire ends.
+- **Ambush stays ended.** After your first shot (or a mode you set) the hold does not start again until you leave Stealth. Before, it came back within a second.
+- **Behaviour modes.** Safe: the squad stays relaxed (no overwatch); call-outs, look to spot, launchers, light discipline and an explicit T breach still work. Stealth: your squad holds fire (ambush discipline) and takes overwatch cover; allied AI-led groups on Stealth keep quiet (no suppression, frags, smoke or fire orders) until shot at, but still use cover. Aware and Combat: everything runs. Smart combat never changes a group's behaviour, and the squad features never touch an AI-led group's.
+- **Allies can still open fire early.** Ambush discipline only holds your own squad; allied AI groups that learn of an enemy fight as usual.
+
 ## Features working together
 
 - Look to spot (26) only reveals, it never sets the 30 s T focus or touches orders, so T focus, smart combat target split, launcher switching, self-treat and stuck recovery work as before; the launcher check simply runs when a new enemy is revealed. Hard to locate and hiding only affect what enemies know about you, not what your squad knows about them.

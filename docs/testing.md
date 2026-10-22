@@ -392,6 +392,18 @@ What it does: Enemy aircraft that crash intact lose their crew, and the grenade 
 5. **Ambush hold-fire across groups (1.29.1):** put the squad in Stealth with Open fire, then regroup or join an AI to another group: the hold-fire stays active until you shoot.
 6. Check the RPT for script errors during all of the above.
 
+### ❌ 32. Combat AI handoffs (1.30.0)
+
+What it does: smart combat, squad features and squad tactics hand units to each other cleanly.
+
+1. **Cover walk:** start a fight with an AI group (`tests/ingame/combat_test.sqf`): units sent to cover walk there before firing; none stands in the open firing while its cover is 10 m away.
+2. **T focus on walkers:** stop in contact so overwatch sends AI to cover, then press T on an enemy: they finish the walk, then fire at it.
+3. **Treat and return:** hurt a smart combat soldier so it treats itself: afterwards it takes a new spot (RPT "Tactics" lines), with no "rests 30 s" after a single treatment.
+4. **Blocked overwatch:** put a wall between a squad AI and its cover spot: after 15 s it rejoins formation and is not re-sent for 30 s.
+5. **Ambush:** in Stealth, fire one shot: the squad opens up and stays free to fire until you leave and re-enter Stealth. Breach with T while holding fire: the hold ends.
+6. **Modes:** set your squad to Safe and stop in contact: no overwatch. Stealth: they hold fire and take cover. An allied AI group on Stealth (Zeus) near an enemy moves between cover without shooting until shot at. Aware and Combat: everything runs as before.
+7. **Settings menu:** the three groups appear together as "Combat AI: ...".
+
 ### ❌ 31. Audit follow-ups to look at (1.29.0 to 1.29.2)
 
 What it does: Items the full audit could not decide without a game run. Record the result next to each.

@@ -24,14 +24,19 @@ if (!isNull _old && _old isNotEqualTo _group) then {
 if (!local _group) exitWith {};
 private _held = _group getVariable ["auqol_ambushMode", ""];
 private _stealth = auqol_squad_ambush && {leader _group isEqualTo _player} && {behaviour _player == "STEALTH"};
+// Your own shot also ends the ambush for as long as you stay in Stealth.
+if (_fired && _stealth) then { _group setVariable ["auqol_ambushDone", true] };
 if (_held != "") exitWith {
     if (_fired || {!_stealth} || {combatMode _group != "GREEN"}) then {
         // A mode you set yourself while holding stays.
         if (combatMode _group == "GREEN") then { _group setCombatMode _held };
         _group setVariable ["auqol_ambushMode", nil];
+        // Once ended, the hold does not start again until you leave Stealth (else it would be back within a second).
+        _group setVariable ["auqol_ambushDone", true];
     };
 };
-if (_stealth && {!_fired} && {combatMode _group in ["YELLOW", "RED"]}) then {
+if (!_stealth) then { _group setVariable ["auqol_ambushDone", nil] };
+if (_stealth && {!_fired} && {!(_group getVariable ["auqol_ambushDone", false])} && {combatMode _group in ["YELLOW", "RED"]}) then {
     _group setVariable ["auqol_ambushMode", combatMode _group];
     auqol_ambushGroup = _group;
     _group setCombatMode "GREEN";

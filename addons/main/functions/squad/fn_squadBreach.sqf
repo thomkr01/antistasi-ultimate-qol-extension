@@ -31,6 +31,9 @@ private _taken = [];
     _unit setVariable ["auqol_tacIndoor", true];
     _unit setVariable ["auqol_owUntil", time + 30];
     _unit setVariable ["auqol_owBreach", true];
+    _unit setVariable ["auqol_owAt", time];
     _unit doMove (_spot select 1);
 } forEach (_crew select [0, 2]);
+// Going in is an order to engage: it ends ambush discipline, so the squad does not walk in on Hold fire.
+if (_taken isNotEqualTo []) then { [true] call AUQOL_fnc_squadAmbush };
 if (_taken isNotEqualTo []) then { [format ["Breach: %1 moving into %2", count _taken, typeOf _house], true] call AUQOL_fnc_log };
