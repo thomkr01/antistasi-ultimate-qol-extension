@@ -1,5 +1,5 @@
 name = "Antistasi Ultimate QoL Extension"
-author = "AUQOL Contributors"
+author = "TchicX"
 prefix = "auqol"
 mainprefix = "z"
 
@@ -16,4 +16,5 @@ include = [
     "LICENSE",
     "logo.paa",
     "logo_small.paa",
+    "picture.paa",
 ]

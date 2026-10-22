@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.31.1
+
+The logo shows where Arma uses mod.cpp images, not in the Arma 3 Launcher: `logo` is the main menu icon, `picture` the Expansions menu picture (new `picture.paa`, 2048x1024), `logoSmall` the small icon (now 64 px). The Launcher does not read these for local mods, so its tile stays the default "LOCAL FILE" card. The Launcher's Author field now says TchicX (was "AUQOL Contributors") in `mod.cpp`, `config.cpp` and the HEMTT project. No code change.
+
 ## 1.31.0
 
 Not tested in game yet.
