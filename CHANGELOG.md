@@ -2,6 +2,12 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.29.4
+
+Not tested in game yet.
+
+- The "marked for your squad" notification after pressing T now shows in the centre of the screen, at the same height as before, instead of at the right edge. Same look, fade and time as a CBA notification; a new press replaces the old text. Only you see it.
+
 ## 1.29.3
 
 Docs only. `docs/testing.md` marks every in-game result and test with ✅ (confirmed working in game) or ❌ (not tested or not confirmed yet). No code change.
