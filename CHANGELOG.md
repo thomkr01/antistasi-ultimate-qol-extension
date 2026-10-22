@@ -2,6 +2,10 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.29.5
+
+Docs only. `docs/testing.md` is now the complete test list: every feature has a test with what it does and what to look for, the audit's open checks (tests 28 to 31) were moved in from the reports, and the test order is fixed. No code change.
+
 ## 1.29.4
 
 Not tested in game yet.
