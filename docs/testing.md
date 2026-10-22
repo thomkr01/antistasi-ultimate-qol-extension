@@ -257,7 +257,7 @@ Turn on debug logging (`auqol_debug`) to see "Hard to locate" lines in the RPT.
 2. **T while the jet is up:** with the AA soldier holding his launcher on the jet, press T on an enemy soldier: he stays on the jet, the rest of the squad takes the soldier.
 3. **Paratroopers:** enemy parachutes in the air draw no AA round.
 4. **T near an enemy:** aim a little beside an enemy soldier you can see and press T: he is marked (notification shows his name) and the squad engages him. An enemy hidden behind a wall is not picked.
-5. **T feedback:** press T on an enemy: a small notification "<enemy> marked for your squad" appears for you only. Pressing T on nothing or on a friendly shows nothing.
+5. **T feedback:** press T on an enemy: a small notification "<enemy> marked for your squad" appears for you only, centred horizontally on the screen at the height CBA notifications use (about a quarter down from the top), and fades out after a few seconds. Press T on two different enemies quickly: the second text replaces the first. Pressing T on nothing or on a friendly shows nothing.
 
 Please report results, including anything that didn't behave as written here, as GitHub issues with your mod list and whether it was SP, hosted or dedicated.
 

@@ -8,7 +8,7 @@
     re-issues the order every second to any AI that turned to another target, until the enemy dies.
     They fire under their current combat mode, so a Hold fire order is still respected. The launcher
     check runs right after, and nearby friendly AI groups are told about the enemy
-    (AUQOL_fnc_combatShareContact). A short CBA notification on this player's screen confirms the press.
+    (AUQOL_fnc_combatShareContact). A short notification, centred on this player's screen, confirms the press.
 
     Arguments: none
     Return Value: none
@@ -65,6 +65,6 @@ if (leader _group isEqualTo _player) then {
 [] call AUQOL_fnc_squadLaunchers;
 
 // Feedback for the player who pressed the key only, nothing sent over the network.
-[format ["%1 marked for your squad", getText (configOf _target >> "displayName")]] call CBA_fnc_notify;
+[format ["%1 marked for your squad", getText (configOf _target >> "displayName")]] call AUQOL_fnc_squadNotify;
 
 [format ["Reveal: %1 (%2) shown to %3 units", typeOf _target, side _target, count _local], true] call AUQOL_fnc_log;

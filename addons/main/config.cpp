@@ -118,6 +118,7 @@ class CfgFunctions {
             file = "\z\auqol\addons\main\functions\squad";
             class squadReactApply {};
             class squadRevealTarget {};
+            class squadNotify {};
             class squadLaunchers {};
             class squadGroupHooks {};
             class squadRevealFocus {};

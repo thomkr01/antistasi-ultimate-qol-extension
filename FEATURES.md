@@ -168,7 +168,7 @@ Press T (the game's Reveal target key, whatever you bound it to) while looking a
 - Every unit in your group gets full knowledge of that enemy (soldier or vehicle) at once.
 - They are told to fire at it when their combat mode allows firing (Fire at will or Engage at will), so Hold fire still holds.
 - If you lead the group, that enemy becomes your AI's focus for 30 s. Every second, any AI that turned to another target is put back on it. A new T press always moves the focus to the new enemy; the old one stays known, so they still deal with it afterwards.
-- A short notification on your screen ("<enemy> marked for your squad") confirms the press worked (1.20.5). Only you see it; nothing is sent over the network.
+- A short notification on your screen ("<enemy> marked for your squad") confirms the press worked (1.20.5). It is drawn like a CBA notification (same box, fade and time, same height) but centred on the screen (1.29.4). Only you see it; nothing is sent over the network.
 - Friendly, civilian, surrendered, empty and dead targets are ignored. `auqol_squad_revealKey` (on).
 
 ## 15. Squad switches to launchers at once
