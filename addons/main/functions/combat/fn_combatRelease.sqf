@@ -22,5 +22,5 @@ if (_unit getVariable ["auqol_tacStance", false]) then {
     if (unitPos _unit == "Middle") then { _unit setUnitPos "AUTO" };
     _unit setVariable ["auqol_tacStance", nil];
 };
-// A unit that reached its doMove spot waits there until told to follow again.
-if (_moved && {_unit checkAIFeature "PATH"} && {currentCommand _unit in ["", "MOVE"]}) then { _unit doFollow leader _unit };
+// A unit that reached its doMove spot waits there until told to follow again; a fire order left over (1.32.2) would keep it there too.
+if (_moved && {_unit checkAIFeature "PATH"} && {currentCommand _unit in ["", "MOVE", "FIRE", "ATTACK", "ATTACKFIRE"]}) then { _unit doFollow leader _unit };

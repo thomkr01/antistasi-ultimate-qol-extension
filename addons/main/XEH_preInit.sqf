@@ -240,6 +240,13 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 ] call CBA_fnc_addSetting;
 
 [
+    "auqol_squad_unpin", "CHECKBOX",
+    ["Free planted squad AI", "A squad AI that has stood on a fire order for 8 s, more than 25 m from you and with no target it can really see, is sent back into formation. Look to spot and the Reveal target key only give fire orders to enemies within 400 m in line of sight (farther away they just aim)."],
+    [_category, "Combat AI: squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
     "auqol_squad_breach", "CHECKBOX",
     ["Breach and clear (Reveal target key)", "Pressing Reveal target on an enemy soldier inside a building within 150 m sends the two free AI nearest to the building in together, to the positions nearest him, for 30 s."],
     [_category, "Combat AI: squad tactics"],

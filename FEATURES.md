@@ -347,10 +347,11 @@ Your own squad, from your own actions only. Smart combat still leaves player-led
 - **Repeat guard (1.29.1).** Look to spot announces and shares the same enemy again only after 20 s.
 - **Ambush discipline.** In Stealth behaviour your squad holds fire until you shoot, then the original combat mode returns and all open up. Leaving Stealth or setting the mode yourself also ends it.
 - **Push with you (1.32.0).** Move toward a known enemy within 300 m on Aware or Combat: free AI split into two teams that leapfrog with you, one moving to cover just ahead of you while the other suppresses the last known position, swapping every 8 s or when the movers arrive. Six seconds after you stop pushing they return to formation; stop for 3 s and overwatch takes over. `auqol_squad_push` (on).
+- **Free planted squad AI (1.32.2).** Fire orders (look to spot, T focus) are only given for enemies within 400 m in line of sight, and a squad AI that has stood on a fire order for 8 s, more than 25 m from you with no target it can really see, is sent back into formation. `auqol_squad_unpin` (on).
 - **Overwatch.** Stop with an enemy within 300 m: free AI take cover within 15 m. Move and they rejoin formation.
 - **Breach and clear.** T on an enemy inside a building within 150 m sends the two nearest free AI in for 30 s.
 - **Light discipline.** At night AI with night vision keep weapon lights off and use IR lasers.
-- **Together with other features.** Orders you gave, stopped units, treating units and vehicle crews are never touched; stuck recovery skips overwatch and breach units; self-treat and launchers work as before; Antistasi's groups and PATCOM are not involved. Settings: `auqol_squad_callouts`, `auqol_squad_ambush`, `auqol_squad_overwatch`, `auqol_squad_push`, `auqol_squad_breach`, `auqol_squad_nvDiscipline` (all on).
+- **Together with other features.** Orders you gave, stopped units, treating units and vehicle crews are never touched; stuck recovery skips overwatch and breach units; self-treat and launchers work as before; Antistasi's groups and PATCOM are not involved. Settings: `auqol_squad_callouts`, `auqol_squad_ambush`, `auqol_squad_overwatch`, `auqol_squad_push`, `auqol_squad_unpin`, `auqol_squad_breach`, `auqol_squad_nvDiscipline` (all on).
 
 ## 28. Faster ladders (1.29.0)
 

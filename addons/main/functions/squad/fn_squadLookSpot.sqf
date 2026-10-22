@@ -48,9 +48,11 @@ private _first = _byAim select 0 select 1;
     if (_first isKindOf "Man" && {currentWeapon _x == secondaryWeapon _x} && {primaryWeapon _x != ""}) then { _x selectWeapon primaryWeapon _x };
     _x doTarget _first;
     private _dest = _x getVariable "auqol_tacDest";
-    if (combatMode _x in ["YELLOW", "RED"] && {isNil "_dest" || {_x distance2D _dest < 2.5}}) then { _x doFire _first };
+    // A fire order plants the unit where it stands, so it only gets one for an enemy within 400 m it can see.
+    if (combatMode _x in ["YELLOW", "RED"] && {isNil "_dest" || {_x distance2D _dest < 2.5}} && {_x distance _first < 400}
+        && {([_x, "VIEW", _first] checkVisibility [eyePos _x, aimPos _first]) > 0.3}) then { _x doFire _first };
 } forEach ([[], _ai] select (leader _group isEqualTo _player) select {
-    isNull getAttackTarget _x && {lifeState _x != "INCAPACITATED"} && {time >= _x getVariable ["auqol_treatUntil", 0]}
+    isNull getAttackTarget _x && {!(currentCommand _x in ["FIRE", "ATTACK", "ATTACKFIRE"])} && {lifeState _x != "INCAPACITATED"} && {time >= _x getVariable ["auqol_treatUntil", 0]}
 });
 
 // Reveal level 4 fades, so an enemy you keep looking at comes back here: the call-out, the ally share and
