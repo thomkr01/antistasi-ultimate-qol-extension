@@ -587,11 +587,11 @@ Fail if: a unit fires in the open with cover near, is re-sent immediately after 
 
 ### ❌ 33. AI dismount all at once (1.31.0)
 
-What it does: When AI are told to get out of a vehicle, the whole group climbs out together with the normal get-out animation, the way they board, instead of one man after another. Crew who stay (a driver or gunner still assigned to the vehicle), players, prisoners and unconscious units are left alone, and nothing happens while the vehicle is moving or a helicopter is in the air. Setting: `auqol_anim_fastDismount` (on, under AI animation speed).
+What it does: When AI are told to get out of a vehicle, the whole group is out at once, instantly beside the vehicle without the get-out animation (the engine queues the animated get-out one unit at a time), instead of one man after another. Crew who stay (a driver or gunner still assigned to the vehicle), players, prisoners and unconscious units are left alone, and nothing happens while the vehicle is moving or a helicopter is in the air. Setting: `auqol_anim_fastDismount` (on, under AI animation speed).
 
 Setup: single player, `auqol_debug` on, a squad of four or more AI, a truck or APC with room for all of you (vanilla, RHS or CUP), a transport helicopter for step 4.
 
-1. **Your squad.** Order all AI into the truck's cargo (select all, command menu, Get in). Drive it, stop, then order them out (select all, 4 Action... or Disembark). Expected: they all start the get-out animation within about a second of the first one and stand next to the truck together. The RPT shows "Fast dismount: ... units out of ...". With the setting off they come out one by one.
+1. **Your squad.** Order all AI into the truck's cargo (select all, command menu, Get in). Drive it, stop, then order them out (select all, 4 Action... or Disembark). Expected: they all appear beside the truck within about a second of the first one (no get-out animation) and stand there together. The RPT shows "Fast dismount: ... units out of ...". With the setting off they come out one by one.
 2. **Driver stays.** Put an AI from your squad in the driver seat and the others in cargo. Order only the cargo AI out. Expected: they leave together, the driver stays in.
 3. **You get out alone.** With the squad in cargo, get out yourself without ordering them out. Expected: they stay inside.
 4. **Moving or flying.** Order them out while the truck still drives faster than a walk: they leave as vanilla does (one by one, after it stops). In a helicopter in the air, nothing changes; once it lands they leave together.
