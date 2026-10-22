@@ -224,6 +224,15 @@ Every AI soldier of every faction plays its animations 25% faster by default, ad
 - A new value reaches every AI within 15 seconds.
 - `auqol_anim_ai` (on), `auqol_anim_aiSpeed` (1.25).
 
+### AI dismount all at once (1.31.0)
+
+When AI are told to get out of a vehicle (your Disembark order, an Antistasi QRF unloading, a GETOUT waypoint), the whole group climbs out together with the normal get-out animation, the way they board, instead of one after another.
+
+- Triggered by the first one getting out: every other AI of the same group still in that vehicle that has also been told to leave (no vehicle assignment any more) gets the vanilla get-out action at once. Nobody is moved by script and no order, waypoint or assignment is changed, so Antistasi's AI and PATCOM decide what happens next.
+- Left alone: crew still assigned (a driver or gunner who stays), players, captives (ACE handcuffs, surrendered) and unconscious units, other groups in the same vehicle, and everyone while the vehicle moves faster than 5 km/h or an aircraft is off the ground (paradrops and Eject stay vanilla).
+- Works for any vehicle of any mod (RHS, CUP, vanilla), on the server, headless clients and players' machines: each machine handles the units it owns.
+- `auqol_anim_fastDismount` (on).
+
 ## 20. Faster pistol swap
 
 Switching to or from your handgun plays twice as fast, and the moment the pistol comes up three times as fast. Ladders are a separate feature, see section 28.
@@ -322,11 +331,12 @@ The same rules, timings and indicator as the Hide Among The Grass (HATG) mod (it
 
 Look at enemies and your squad learns about them, without pressing T.
 
-- Twice a second, every living enemy soldier or vehicle you can see within 1500 m and within 5 degrees of the centre of your view (`auqol_squad_lookAngle`, 1 to 15) is revealed to the AI of your group that run on your machine. Every enemy in the cone counts, not just the nearest.
-- No focus is set: the squad's smart combat AI (fire team target split, launcher choice) decides which enemy is the bigger threat. T still sets a 30 s focus, so use it when you want them on one target.
+- Twice a second, every living enemy soldier or vehicle you can see within 1500 m and within 5 degrees of the centre of your view (`auqol_squad_lookAngle`, 1 to 15) is revealed to the AI of your group that run on your machine, with full knowledge as with T (1.31.0; was a lower level before). Every enemy in the cone counts, not just the nearest.
+- When you lead the group, squad AI that are not attacking anything yet target the enemy nearest your crosshair and fire under their combat mode (Hold fire and a Stealth ambush still hold), so they open up as fast as after T (1.31.0). A unit walking to cover or a breach spot aims and fires on arrival; a unit treating itself finishes first; a gunner with his launcher out takes his rifle for a soldier.
+- No 30 s focus is set: AI already fighting keep their target, and the squad's smart combat AI (fire team target split, launcher choice) decides the rest. T still sets the focus and shows the notification, so use it when you want them all on one target.
 - Skips enemies the group already knows at that level, so it does nothing while you keep looking at the same enemy. Nothing is shown and nothing goes over the network. Skipped with the map open or while you are down.
 - Needs line of sight (the same visibility check as T). Squads on a headless client (high command) are not told, as with T.
-- Friendly AI groups within 300 m also learn about up to three of the enemies you reveal (1.26.0), at the same level as your squad (3), so they join the fight and their smart combat takes over. Same rules as the T key sharing: 6 groups at most, not player-led groups, off with `auqol_combat_shareContacts` or when a yielding AI mod is loaded. Only knowledge is shared; no orders are given.
+- Friendly AI groups within 300 m also learn about up to three of the enemies you reveal (1.26.0), at the same level as your squad (4 since 1.31.0), so they join the fight and their smart combat takes over. Same rules as the T key sharing: 6 groups at most, not player-led groups, off with `auqol_combat_shareContacts` or when a yielding AI mod is loaded. Only knowledge is shared; no orders are given.
 - `auqol_squad_lookSpot` (on).
 
 ## 27. Squad tactics (1.28.0)

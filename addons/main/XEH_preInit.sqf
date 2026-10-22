@@ -263,6 +263,13 @@ private _animChanged = { if (auqol_ready) then { [] call AUQOL_fnc_animAiApply }
     [1, 2, 1.25, 2], 1, _animChanged
 ] call CBA_fnc_addSetting;
 
+[
+    "auqol_anim_fastDismount", "CHECKBOX",
+    ["AI dismount all at once", "When AI are told to leave a vehicle, the whole group climbs out together with the normal get-out animation, the way they board, instead of one after another. Crew who stay (a driver or gunner still assigned), players, captives and unconscious units are left alone, and nothing happens while the vehicle is moving or an aircraft is in the air."],
+    [_category, "AI animation speed"],
+    true, 1
+] call CBA_fnc_addSetting;
+
 // --- Player animations (local player only; the speed is sent to every machine while it lasts)
 [
     "auqol_anim_pistolSwap", "CHECKBOX",

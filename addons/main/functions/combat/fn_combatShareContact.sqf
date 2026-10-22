@@ -13,7 +13,7 @@
     0: Reporting group <GROUP>
     1: Detected enemy <OBJECT>
     2: Always share, ignoring the 10 s limit <BOOL> (default: false; the T key and look to spot pass true)
-    3: Reveal level the receivers get <NUMBER> (default: 1.5; look to spot passes 3, the level its own squad gets)
+    3: Reveal level the receivers get <NUMBER> (default: 1.5; look to spot passes 4, the level its own squad gets)
 
     Return Value: none
 */

@@ -10,29 +10,35 @@ This file is the whole test list. Every feature in [FEATURES.md](../FEATURES.md)
 
 ## In-game results
 
-Reported by Thomas on 2026-10-18 (version 1.4.0, Antistasi Ultimate). ✅ = confirmed working in game, ❌ = not tested or not confirmed yet (same marks on each test heading below):
+What Thomas has reported from his games (Antistasi Ultimate, mostly single player). ✅ = confirmed working, ❌ = not tested or not confirmed yet. The same mark is on each test heading below; the test number tells you where the steps are.
 
-| Feature | Result |
-| --- | --- |
-| No weapon sway | Works |
-| No recoil | ✅ Works |
-| Unlimited stamina and weightless running | ✅ Works |
-| No total weight limit | ✅ Works |
-| Infinite service stock | ✅ Works |
-| Loot from vehicles and the loot crate | ✅ Works |
-| Enemy crew ejection | ✅ Works (reported 2026-10-19) |
-| Short Withstand cooldown | ✅ Works (reported 2026-10-19) |
-| Item caches within 30 m | ✅ Works (1.4.0). 1.4.1 now deletes the empty box, not yet reported. |
-| Squad perks (1.5.0) | ❌ "Seems fine" (2026-10-19) |
-| Copy from user (1.5.0) | ✅ Works (reported 2026-10-18) |
-| AI stuck recovery (1.5.0) | ❌ "Seems fine" (2026-10-19) |
-| Squad reactions, T key, squad launchers (1.6.0) | ❌ Not tested yet |
-| Live vehicle markers (1.6.0) | ❌ Not tested yet |
-| Faster reactions for all friendly AI (1.7.0) | ❌ Not tested yet |
-| Self-treat, recoil slider, T key focus, instant contact sharing (1.9.0) | ❌ Not tested yet. Thomas reported the 1.6.0 T key "doesn't really work"; 1.9.0 is the fix. |
-| Safer stuck recovery and leaner scans (1.8.0) | ❌ Not tested yet |
-| Edge-case fixes (1.8.1) | ❌ Not tested yet, see test 13 |
-| Vehicle freeze and less background work (1.10.0) | ❌ Not tested yet, see test 14 |
+| Test | Feature | Result |
+| --- | --- | --- |
+| 1 | Startup and diagnostics | ❌ Not reported |
+| 2 | Enemy crew ejection | ✅ Works (2026-10-19) |
+| 3 | Infinite service stock | ✅ Works (2026-10-18) |
+| 4 | No sway, no recoil, stamina, weightless running | ✅ Works (2026-10-18) |
+| 5 | No total weight limit | ✅ Works (2026-10-18) |
+| 6 | Loot from vehicles, item caches within 30 m | ✅ Works (1.4.0). 1.4.1 deletes the empty box, not yet reported. |
+| 7 | Short Withstand cooldown | ✅ Works (2026-10-19) |
+| 8 | Squad perks: your AI get no sway, stamina, weight and recoil like you | ❌ "Seems fine" (2026-10-19), not checked step by step |
+| 9 | Copy from user | ✅ Works (2026-10-18) |
+| 10, 10b | AI stuck recovery (1.5.0), safer rules and leaner scans (1.8.0) | ❌ "Seems fine" (2026-10-19), not checked step by step |
+| 11 | Faster reactions, T key, contact sharing, launcher switch | ✅ Works (2026-10-22): T alerts the squad and nearby allies and they all fire at once, contacts are shared at once, launchers come out quicker |
+| 11b | Wounded AI treat themselves | ❌ Not tested yet |
+| 12 | Live vehicle markers | ❌ Not tested yet |
+| 13 | 1.8.1 fixes (loot double-press, nested items, skill restore, ejection off, circling AI, convoy markers) | ❌ Not tested yet |
+| 14 | Vehicle freeze and less background work (1.8.0, 1.10.0) | ❌ Not tested yet |
+| 15 | Faster AI animations, pistol swap, smart combat | ❌ Partly: faster AI confirmed (2026-10-22), the rest not tested |
+| 16 to 21 | Cover, self-treat in cover, night spotting, hiding in grass, hard to locate, optimizations | ❌ Not tested yet |
+| 22 | AA launchers against jets, T key notification | ✅ Works (1.20.5) |
+| 23 | AI avoid prone | ❌ Not tested yet |
+| 24 | Look to spot | ❌ Not tested yet (1.31.0 makes it act like T, see the test) |
+| 25 | Rifle (not launcher) after getting up from unconscious | ❌ Not tested yet |
+| 26, 27 | AI edge cases, squad tactics | ❌ Not tested yet |
+| 28 | Faster ladders and Ctrl+S slide down | ❌ Not tested yet |
+| 29 to 32 | Covering fire, MP fixes, audit follow-ups, combat AI handoffs | ❌ Not tested yet |
+| 33 | AI dismount all at once | ❌ Not tested yet (new in 1.31.0) |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
 
@@ -94,7 +100,7 @@ Setup: Antistasi Ultimate with CBA and AUQOL, no ACE.
 
 1. Start the mission. Open the RPT and find the line block starting `[AUQOL] Version`. Expected: the version equals the one in `addons/main/script_version.hpp`, and no line with `Error` that mentions `auqol`.
 2. Run Local exec `call AUQOL_fnc_diagnostics`. Expected: a list of features; each service handler line says `vanilla`.
-3. Esc, Configure, Addon Options, AUQOL. Expected: 96 settings (listed in `docs/configuration.md`), grouped under categories, all with tooltips.
+3. Esc, Configure, Addon Options, AUQOL. Expected: 97 settings (listed in `docs/configuration.md`), grouped under categories, all with tooltips.
 
 Fail if: no `[AUQOL] Version` block, any `auqol` error in the RPT, or fewer settings than listed.
 
@@ -184,16 +190,19 @@ Fail if: the second H press is refused for more than a few seconds with the sett
 
 ### ❌ 8. Squad perks
 
-What it does: Your squad AI get your perks: no sway, stamina and weight (1.5.0).
+What it does: The AI in your squad get the same perks you have: their aim does not sway, they never get tired, weight does not slow them, and the Recoil slider applies to them too (1.5.0). You notice it as AI that keep sprinting with you over long distances with full backpacks instead of falling behind and walking. Setting: `auqol_player_squad` (on).
 
-Setup: two recruited AI in your squad.
+Setup: single player. Recruit two AI with Antistasi (HQ, Recruit, any rifleman) so they are in your group. Give one of them a heavy backpack full of ammo (over 40 kg total, `loadAbs _ai` over 400).
 
-1. Right after they join, Local exec: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected for the AI rows: `0`, `false`, `0`. (Your own row also reads those.)
-2. Turn `auqol_player_squad` off. Expected: the AI go back to `1`, `true` and their earlier loadCoef; yours stays at your perks.
-3. Turn it on again and set `auqol_player_recoil` to 0%. Local exec: `units group player apply { unitRecoilCoefficient _x }`. Expected: `0` for the AI.
-4. With ACE3: repeat step 1. Expected: the AI still read `0`, `false`, `0`.
+1. **See it.** Sprint (double-tap W) for 2 minutes across open ground. Expected: both AI keep sprinting next to you the whole time and never slow to a walk or breathe heavily, including the one with the heavy backpack.
+2. **Check the values.** Open the debug console and Local exec: `units group player apply { [name _x, getCustomAimCoef _x, isStaminaEnabled _x, _x getUnitTrait "loadCoef"] }`. Expected: every row, yours and the two AI, shows `0`, `false`, `0` (no sway, no stamina, no weight).
+3. **New recruit.** Recruit a third AI and run the line from step 2 again within 3 s. Expected: the new row also shows `0`, `false`, `0`.
+4. **Recoil.** Set `auqol_player_recoil` to 0% (Addon Options, AUQOL, Player). Local exec `units group player apply { unitRecoilCoefficient _x }`. Expected: `0` for everyone. Set it back to 100%: `1` for everyone.
+5. **Off.** Turn `auqol_player_squad` off and run the line from step 2. Expected: the AI rows show `1`, `true` and a number above 0; your own row still shows `0`, `false`, `0`. Sprint again: the heavy AI now falls behind. Turn it back on.
+6. **Leaving the squad.** Dismiss one AI (command menu, Dismiss) and run `[getCustomAimCoef _ai, isStaminaEnabled _ai]` on it (aim at it and use `_ai = cursorTarget`). Expected: `1`, `true`; it no longer has the perks.
+7. With ACE3 loaded: repeat steps 1 and 2. Expected: same results.
 
-Fail if: an AI keeps vanilla values after joining, or keeps the perks after the setting is off.
+Fail if: an AI in your squad gets tired or slowed by weight in step 1, any value in steps 2 to 4 differs, or an AI keeps the perks after step 5 or 6.
 
 ### ✅ 9. Copy from user
 
@@ -211,9 +220,9 @@ Fail if: the button is missing, a locked item is copied silently, or your gear i
 
 ### ❌ 10. AI stuck recovery
 
-What it does: Detects friendly AI that cannot move and gets them going again in careful steps (1.5.0 to 1.8.1).
+What it does: Watches friendly AI and notices when one has stopped making progress: boxed in by walls, caught on a rock, unable to follow you. It then tries, in order: (1) re-give its move order, (2) send it back into formation, (3) a short hop of a few metres to free ground, and only if you turn it on, (4) teleport it next to you (1.5.0). Since 1.8.0 it is more careful: it never touches a unit that is fighting, healing, rearming, surrendering, in a scripted animation, on a static weapon or in a vehicle (for the teleport), and it checks all of that again right before a hop or teleport. You should normally never notice it, except for the chat lines when a unit is freed.
 
-Setup: turn on `auqol_stuck_notifyDetect` and `auqol_debug` so every step shows in chat and the RPT.
+Setup: single player. Turn on `auqol_stuck_notifyDetect` (Addon Options, AUQOL, AI stuck recovery, "Message when a unit gets stuck") and `auqol_debug`, so every step shows in system chat and the RPT.
 
 1. **Against a wall.** Run `tests/ingame/stuck_test.sqf`. Expected after about 30 s: "seems stuck (blocked by ...)", step 1; after another 30 s step 3 (step 2 is skipped because the unit has its own move order); then "is moving again after a short hop".
 2. **Rock or terrain.** Order a squad AI into a gap between rocks or onto a steep slope it cannot climb. Expected: the same sequence with "blocked by terrain" or "cannot find a way to its destination".
@@ -230,9 +239,25 @@ Setup: turn on `auqol_stuck_notifyDetect` and `auqol_debug` so every step shows 
 
 Fail if: a busy, down or garrisoned unit is reported or moved, a unit is teleported while engaging, or the sequence in step 1 does not run.
 
-### ❌ 11. Squad reactions, T key and launchers
+### ❌ 10b. Safer stuck recovery and leaner scans (1.8.0)
+
+What it does: Two things from 1.8.0. **Safer:** stuck recovery leaves busy units alone (test 10 steps 4 to 6 cover this). **Leaner scans:** several features stopped checking things every second and now react to game events instead: launchers are checked when your group spots a new enemy or you press T (5 s fallback), live markers only look at new markers, player perks only re-apply when your unit, loadout or group changes (15 s fallback), stuck recovery keeps a list of units instead of searching all of them. Nothing should look different in game; the test is that everything still works and the server does less work.
+
+Setup: single player, `auqol_debug` on, two AI in your squad (one with an AT launcher), the enemy squad snippet.
+
+1. **Busy unit is left alone.** Run `tests/ingame/stuck_test.sqf` (from test 10). As soon as chat says "seems stuck", spawn the enemy squad 150 m away so your boxed AI sees them and starts shooting. Expected: chat says the step was "not carried out" (or no hop happens) while it is fighting. Kill the enemies: after the fight the steps continue.
+2. **Healing unit is left alone.** Get a squad AI wounded and let your squad medic heal it next to a wall. Expected: no "seems stuck" line for either of them.
+3. **Launcher without the 1 s scan.** Spawn an enemy APC 400 m ahead in view (snippet in test 11 step 3). Expected: the AT soldier has his launcher out within about 5 s of the squad seeing it, the same as before.
+4. **Perks without the 5 s scan.** Pick up a different rifle or change backpack in an arsenal. Run `getCustomAimCoef player` right after. Expected: `0` within about a second, not 5 to 15 s later.
+5. **Background work.** Play 5 minutes near enemies, then search the RPT for `Timing:`. Expected: a line for each AUQOL timer, each average under 1 ms on a normal PC. Run `diag_activeScripts` at the start and after 30 minutes. Expected: the numbers stay about the same.
+
+Fail if: a fighting or healing unit is hopped or teleported, the launcher or perks take longer than written, or the script counts keep growing.
+
+### ✅ 11. Squad reactions, T key and launchers
 
 What it does: The squad reacts faster, shares contacts, the T key marks an enemy for them, and AT/AA soldiers switch to launchers at once (1.6.0 to 1.15.1).
+
+Confirmed by Thomas on 2026-10-22: T alerts the squad and nearby allies and they all fire at once, squad and nearby allies react at once, contacts are shared at once, launchers come out quicker. Steps 4 (AA) and 5 (garrisons) were not reported separately.
 
 Setup: two AI in your squad, one with an AT launcher (RHS RPG-7 or M136) and one with an AA launcher; the enemy squad snippet from the common setups; Zeus or the console for enemy vehicles and helicopters.
 
@@ -260,33 +285,36 @@ Fail if: a wounded AI with a kit never treats itself within 10 s, or uses a kit 
 
 ### ❌ 12. Live vehicle markers
 
-What it does: Map markers of tracked vehicles follow them every second instead of once a minute (1.6.0).
+What it does: Antistasi puts a map marker on some vehicles: the target of a convoy mission, mission vehicles and supply boxes, and enemy vehicles your side has spotted. Without AUQOL those markers jump to the vehicle's position only once a minute, so a driving convoy is often far from its marker. With AUQOL the marker follows its vehicle about every second while your map or GPS is open (1.6.0). Only those Antistasi vehicle markers change; your own and zone markers are untouched, and no new markers appear. Setting: `auqol_map_liveVehicles` (on).
 
-Setup: a convoy mission or a revealed enemy vehicle, map open.
+Setup: Antistasi. Take a convoy mission (Missions, Convoy, from the HQ flag or the petros mission board) and wait until the convoy is driving. Its marker is the NATO vehicle icon with the convoy's name next to it.
 
-1. Watch the marker of a driving vehicle. Expected: it moves smoothly, about every second; a parked vehicle's marker stays still.
-2. Turn `auqol_map_liveVehicles` off. Expected: the marker goes back to jumping about once a minute.
-3. Destroy the vehicle. Expected: the marker disappears as before (within Antistasi's minute).
+1. **Following.** Open the map (M), zoom on the convoy marker and watch it for 30 s. Expected: it moves along the road in small steps about once a second. Compare with Antistasi alone (step 3): there it stands still for up to a minute, then jumps.
+2. **Parked.** When the convoy stops, or for a parked mission vehicle: the marker stays still and does not drift.
+3. **Off.** Turn `auqol_map_liveVehicles` off with the map open. Expected: the marker freezes and from then on jumps only about once a minute. Turn it back on: it catches up within a second.
+4. **Map opened later.** Close the map for a minute while the convoy drives, then open it. Expected: the marker is already at the vehicle the moment the map opens, not where it was a minute ago.
+5. **Destroyed.** Destroy the convoy vehicle. Expected: its marker disappears within a minute (Antistasi removes it, as without AUQOL), and it does not keep moving.
+6. **Several vehicles.** Watch a convoy of three or more vehicles. Expected: each marker sits on its own vehicle. If one is ever on the wrong vehicle, it moves to the right one within about a minute.
 
-Fail if: markers do not move between Antistasi's updates with the setting on, or a destroyed vehicle's marker stays.
+Fail if: a marker of a driving vehicle stands still for more than 2 s with the map open and the setting on, a marker stays after its vehicle is destroyed, or a marker sits on the wrong vehicle for more than a minute.
 
 ### ❌ 13. Edge cases fixed in 1.8.1
 
-What it does: Fixes for rare cases found in a review of 1.8.0. Static checks only show the fixes are in the code.
+What it does: 1.8.1 fixed seven rare problems found in a code review of 1.8.0. Each step below recreates one of them; before 1.8.1 the step would have gone wrong in the way the "Fail if" line describes. You do not need a server for steps 1, 2, 4, 5 and 6.
 
-Setup: ideally a dedicated server with a second client and a headless client; `auqol_debug` on.
+Setup: single player unless a step says otherwise, `auqol_debug` on.
 
-1. **Loot request.** Hold "Gather Scattered Loot" on a vehicle: it works as before. Hold it twice within 10 s (or with two players at once). Expected: the second gets Antistasi's cooldown line and caches are emptied once. A request sent while dead, in a vehicle or more than 10 m away logs "Refused loot request". On a hosted game the host's own request works.
-2. **Copy from user, nested items.** Run `tests/ingame/loadout_test.sqf` (works anywhere). Expected: every line says PASS. Then in the loadout editor carry an unlocked rifle with a locked optic and a locked magazine in your backpack and press Copy from user. Expected: the rifle stays in the backpack without the optic and magazine, and the chat line names both.
-3. **Reaction skills and the headless client.** Turn `auqol_squad_reaction` off, read a garrison unit's `skill "spotTime"`, turn it on. Let Antistasi hand the group to the headless client (or back), then turn the setting off. Expected: the value returns to the first one noted, not 0.8.
-4. **Sway and recoil restore.** `player setCustomAimCoef 0.5;` then turn `auqol_player_noSway` on and off. Expected: `getCustomAimCoef player` reads 0.5 again. Same with `player setUnitRecoilCoefficient 0.7;` and `auqol_player_recoil` at 0% and back to 100%. Respawn and change loadout with both on: values stay 0; turning off afterwards gives the right value back.
-5. **Pending ejection.** Shoot the wheels of a moving enemy truck and turn `auqol_eject_enabled` off within a second. Expected: nobody is ejected. With a headless client, damage an HC-owned vehicle while it changes owner: the crew is ejected exactly once.
-6. **Stuck, circling.** Put a squad AI on a move order to a point behind a long wall with no gap. Expected: after about 90 s plus one timeout it is reported stuck and recovery starts. A unit on a long but working detour under 90 s is not reported. Formation followers walking with you are never reported.
-7. **Vehicle markers in a convoy.** Watch a convoy of several vehicles on the map. Expected: every marker follows its own vehicle; a marker on the wrong vehicle corrects itself within about a minute.
+1. **Loot pressed twice.** Park a vehicle within 30 m of an enemy supply crate at a captured outpost, with a few dead enemies around. Hold "Gather Scattered Loot" on the vehicle, and as soon as it finishes hold it again. Expected: the first gathers and empties the crate; the second shows Antistasi's "used recently" line and gathers nothing. Before 1.8.1 a double request could empty caches twice or start two gathers. (Server only: a request from a dead player, one in a vehicle or one more than 10 m away logs "Refused loot request" in the server RPT.)
+2. **Locked attachment on a stored rifle.** Run `tests/ingame/loadout_test.sqf` in the debug console. Expected: every line says PASS. Then put an unlocked rifle with a locked optic (one with a limited count in the arsenal) in your backpack, open Set Rebel Loadouts, a role, and press Copy from user. Expected: the rifle is copied without the optic, and the chat line names the optic. Before 1.8.1 the locked optic was copied along.
+3. **AI skills after a server hand-over (dedicated server with headless client only).** Turn `auqol_squad_reaction` off. Aim at a garrison soldier and on the server run `cursorTarget skill "spotTime"`; note the number. Turn it on, wait until Antistasi moves that group to the headless client, then turn it off again and read the value again. Expected: the first number, not 0.8. Before 1.8.1 the raised 0.8 became the "original".
+4. **Your own sway and recoil values come back.** Local exec `player setCustomAimCoef 0.5;`, then turn `auqol_player_noSway` off and on and off again. Run `getCustomAimCoef player`. Expected: `0.5`. Same with `player setUnitRecoilCoefficient 0.7;` and `auqol_player_recoil` set to 0% and back to 100%: `unitRecoilCoefficient player` reads `0.7`. Before 1.8.1 it always went back to 1.
+5. **Ejection switched off in time.** Shoot the wheels of a moving enemy truck and within one second turn `auqol_eject_enabled` off. Expected: the crew stays inside. Turn it back on. Before 1.8.1 the pending ejection ran anyway.
+6. **AI walking in circles.** Order a squad AI (command menu, Move) to a point on the other side of a long wall or fence with no gap. Expected: it walks along the wall; after about 90 s plus the stuck timeout (30 s) chat says it seems stuck and recovery starts. An AI on a long detour that does arrive within 90 s is not reported. Before 1.8.1 a unit circling forever was never detected.
+7. **Convoy markers on the right vehicle.** Same as test 12 step 6.
 
-Fail if: any expected value above is not seen.
+Fail if: step 1 empties a crate twice, step 2 copies the locked optic, steps 3 or 4 give back a different number than noted, step 5 ejects the crew, step 6 never reports the circling AI, or a convoy marker stays on the wrong vehicle.
 
-### ❌ 14. Performance (1.10.0)
+### ❌ 14. Vehicle freeze and less background work (1.10.0)
 
 What it does: Parked empty vehicles and settled wrecks sleep when no player is near, and timers are spread out to save server time (1.10.0).
 
@@ -307,7 +335,7 @@ What it does: Faster AI animation, faster pistol swap, and the full smart combat
 
 Setup: the enemy squad snippet, Antistasi mission for step 6, a ladder (tower) for test 28.
 
-1. **AI speed.** Local exec `getAnimSpeedCoef (allUnits select { !isPlayer _x } select 0)`. Expected: 1.25. `getAnimSpeedCoef player`: 1. Set `auqol_anim_aiSpeed` to 2: AI move visibly faster within 15 s. Turn `auqol_anim_ai` off: back to 1.
+1. **AI speed** (confirmed faster by Thomas, 2026-10-22). Local exec `getAnimSpeedCoef (allUnits select { !isPlayer _x } select 0)`. Expected: 1.25. `getAnimSpeedCoef player`: 1. Set `auqol_anim_aiSpeed` to 2: AI move visibly faster within 15 s. Turn `auqol_anim_ai` off: back to 1.
 2. **Pistol swap.** Switch from rifle to pistol and back (default keys). Expected: both are about twice as fast as vanilla. Reloading is unchanged.
 3. **Ladders.** See test 28.
 4. **Suppression.** Shoot near (not at) a standing enemy patrol from cover. Expected: they crouch (prone only with `auqol_combat_noProne` off) and turn toward you; about 10 s after you stop firing they stand again. Your own squad's stance does not change. With LAMBS loaded, behaviour is LAMBS's own.
@@ -431,16 +459,18 @@ Fail if: AI go prone with the setting on, or ignore your Prone order.
 
 ### ❌ 24. Look to spot (1.22.0)
 
-What it does: Looking at an enemy with the crosshair reveals it to your squad and to friendly groups within 300 m (1.22.0, 1.26.0).
+What it does: Just look at an enemy, without pressing anything: put your crosshair on it (within about a hand's width, 5 degrees) for half a second, and your squad and friendly AI groups within 300 m learn about it, the same as with T (1.22.0, 1.26.0). Since 1.31.0 it gives the same full knowledge as T, and squad AI that are not already shooting at something open fire on the enemy nearest your crosshair at once. Unlike T there is no on-screen message and no 30 s focus: AI already in a fight keep their own target. It is on by default (`auqol_squad_lookSpot`, angle `auqol_squad_lookAngle`). You only see it working when your squad has not spotted the enemy yet; if they already know it, nothing changes.
 
-Setup: `auqol_debug` on, a squad, two enemies about 150 m apart in the open that your squad has not seen, a friendly garrison or AI squad within 300 m for step 4.
+Setup: single player, you lead a squad of two or three AI, set to Open fire. `auqol_debug` on. Use the enemy squad snippet, but 300 m away and behind you, so your squad has not seen them. A friendly AI group (garrison or Zeus-placed squad) within 300 m of you for step 4.
 
-1. Put the crosshair between the two enemies, within the look angle (default 5 degrees), without pressing T. Expected: the RPT shows "Look to spot: 2 enemies revealed"; the squad turns and engages; they split targets on their own.
-2. Look away and back at an already known enemy. Expected: no new RPT line within 20 s. Press T on one: it becomes the focus as before.
-3. Open the map, or turn `auqol_squad_lookSpot` off. Expected: nothing is revealed.
-4. Stand within 300 m of a friendly garrison or AI squad and look at an enemy neither group has seen. Expected: they turn to face it and fight from cover within seconds.
+1. **Look, don't press.** Turn around and put your crosshair on one enemy for one second. Do not press T. Expected: within a second your AI turn and fire at him, a group chat call-out ("Contact! ...") appears, and the RPT shows "Look to spot: 1 enemies revealed".
+2. **Several enemies.** Put the crosshair between two enemies standing close together. Expected: both are revealed ("2 enemies revealed"); your AI fire at the one nearest the crosshair first and the rest of the squad picks targets on its own.
+3. **No repeat spam.** Keep looking at the same enemy. Expected: no new call-out or RPT line for that enemy within 20 s.
+4. **Allies.** Stand within 300 m of the friendly AI group and look at an enemy neither group has seen. Expected: the friendly group turns toward it and starts fighting within a few seconds, as when you press T.
+5. **Hold fire.** Set your squad to Hold fire and repeat step 1. Expected: they aim at him but do not shoot. Same in a Stealth ambush (test 27 step 2) until you fire.
+6. **Off.** Open the map, or turn `auqol_squad_lookSpot` off, and look at a new enemy. Expected: nothing happens; T still works.
 
-Fail if: nothing is revealed in step 1, or the same enemy is announced more than once in 20 s.
+Fail if: your squad does not react in step 1 within about 2 s, they shoot in step 5, or the same enemy gets a call-out more than once in 20 s.
 
 ### ❌ 25. Primary weapon after getting up (1.25.0)
 
@@ -488,9 +518,9 @@ Fail if: an ambush hold continues after you shoot, or AI you ordered are moved.
 
 What it does: Climbing is 2.5 times as fast for you and every AI (engine `ladderSpeed` set in config, so the climb itself is faster, not only the animation). Ctrl+S slides you down a ladder (`auqol_anim_ladderSlide`).
 
-Setup: a tall ladder (Altis tower), a stopwatch.
+Setup: single player, a tall ladder (a radio tower or a lighthouse on Altis or Malden, or an editor-placed `Land_Cargo_Tower_V1_F`), a stopwatch (your phone).
 
-1. Time a climb from bottom to top without AUQOL (vanilla), then with AUQOL. Expected: AUQOL is about 2.5 times faster. `getAnimSpeedCoef player` reads 1 and `getNumber (configFile >> "CfgAnimation" >> "ladderSpeed")` reads 1.25.
+1. Walk to the foot of the ladder, use "Climb up" and start the stopwatch; stop it when you step off at the top. Do this once with AUQOL and once without AUQOL loaded (or compare with how slow it felt before). Expected: AUQOL is about 2.5 times faster, for example 4 s instead of 10 s. `getAnimSpeedCoef player` reads 1 and `getNumber (configFile >> "CfgAnimation" >> "ladderSpeed")` reads 1.25.
 2. On a ladder press Ctrl+S (rebind under Controls, Configure Addons). Expected: you step off and reach the foot in a second or two, taking no damage. Off a ladder, nothing happens. Turn `auqol_anim_ladderSlide` off: nothing happens on a ladder either.
 3. Order a squad AI up the ladder (move order to the top). Expected: it climbs and is not slower than vanilla. Stuck recovery does not report it while it climbs.
 4. With Ladder Tweak Remastered loaded as well: the speed is the same as with AUQOL alone. Use only one of the two slide keys.
@@ -554,3 +584,18 @@ Setup: `auqol_debug` on, `tests/ingame/combat_test.sqf`, a squad of 3 AI, an Ant
 7. **Settings menu.** Expected: the three groups appear together as "Combat AI: ...".
 
 Fail if: a unit fires in the open with cover near, is re-sent immediately after a blocked walk, or keeps the hold after you shot.
+
+### ❌ 33. AI dismount all at once (1.31.0)
+
+What it does: When AI are told to get out of a vehicle, the whole group climbs out together with the normal get-out animation, the way they board, instead of one man after another. Crew who stay (a driver or gunner still assigned to the vehicle), players, prisoners and unconscious units are left alone, and nothing happens while the vehicle is moving or a helicopter is in the air. Setting: `auqol_anim_fastDismount` (on, under AI animation speed).
+
+Setup: single player, `auqol_debug` on, a squad of four or more AI, a truck or APC with room for all of you (vanilla, RHS or CUP), a transport helicopter for step 4.
+
+1. **Your squad.** Order all AI into the truck's cargo (select all, command menu, Get in). Drive it, stop, then order them out (select all, 4 Action... or Disembark). Expected: they all start the get-out animation within about a second of the first one and stand next to the truck together. The RPT shows "Fast dismount: ... units out of ...". With the setting off they come out one by one.
+2. **Driver stays.** Put an AI from your squad in the driver seat and the others in cargo. Order only the cargo AI out. Expected: they leave together, the driver stays in.
+3. **You get out alone.** With the squad in cargo, get out yourself without ordering them out. Expected: they stay inside.
+4. **Moving or flying.** Order them out while the truck still drives faster than a walk: they leave as vanilla does (one by one, after it stops). In a helicopter in the air, nothing changes; once it lands they leave together.
+5. **Antistasi.** Watch an enemy QRF truck unload at an outpost you attack, and a rebel AI squad you send by vehicle. Expected: their infantry gets out together and then does what Antistasi tells it (patrol, attack); the truck driver drives off as before.
+6. **ACE.** With ACE3, load a handcuffed prisoner and an unconscious soldier into a vehicle with your squad, then order the squad out. Expected: the prisoner and the unconscious soldier stay inside; ACE's own "Unload" still works.
+
+Fail if: the group still leaves one by one with the setting on, a driver or gunner who was not ordered out leaves, a prisoner or unconscious unit is pushed out, or anyone is thrown out of a moving vehicle.

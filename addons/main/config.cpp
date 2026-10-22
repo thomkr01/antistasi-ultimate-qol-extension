@@ -143,6 +143,7 @@ class CfgFunctions {
             class animAiApply {};
             class animPlayerState {};
             class animLadderSlide {};
+            class animFastDismount {};
         };
         class combat {
             file = "\z\auqol\addons\main\functions\combat";
