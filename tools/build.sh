@@ -21,7 +21,8 @@ if [[ -n "$SOURCES" ]]; then
     clone ace https://github.com/acemod/ACE3.git
     clone antistasi https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate.git
     clone wiki https://github.com/acemod/arma3-wiki.git dist
-    ARGS=(--cba "$SOURCES/cba" --ace "$SOURCES/ace" --antistasi "$SOURCES/antistasi" --wiki "$SOURCES/wiki")
+    clone lambs https://github.com/nk3nny/LambsDanger.git
+    ARGS=(--cba "$SOURCES/cba" --ace "$SOURCES/ace" --antistasi "$SOURCES/antistasi" --wiki "$SOURCES/wiki" --lambs "$SOURCES/lambs")
 fi
 
 python3 tests/static_checks.py ${ARGS[@]+"${ARGS[@]}"}

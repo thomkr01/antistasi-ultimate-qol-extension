@@ -17,7 +17,8 @@ if ($Sources -ne "") {
         @("cba", "https://github.com/CBATeam/CBA_A3.git", ""),
         @("ace", "https://github.com/acemod/ACE3.git", ""),
         @("antistasi", "https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate.git", ""),
-        @("wiki", "https://github.com/acemod/arma3-wiki.git", "dist")
+        @("wiki", "https://github.com/acemod/arma3-wiki.git", "dist"),
+        @("lambs", "https://github.com/nk3nny/LambsDanger.git", "")
     )
     foreach ($r in $repos) {
         $dest = Join-Path $Sources $r[0]
@@ -27,7 +28,8 @@ if ($Sources -ne "") {
         }
     }
     $checkArgs = @("--cba", (Join-Path $Sources "cba"), "--ace", (Join-Path $Sources "ace"),
-                   "--antistasi", (Join-Path $Sources "antistasi"), "--wiki", (Join-Path $Sources "wiki"))
+                   "--antistasi", (Join-Path $Sources "antistasi"), "--wiki", (Join-Path $Sources "wiki"),
+                   "--lambs", (Join-Path $Sources "lambs"))
 }
 
 & $python tests/static_checks.py @checkArgs

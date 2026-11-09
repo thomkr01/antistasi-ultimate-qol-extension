@@ -3,7 +3,7 @@
 
 Run from the repository root:
 
-    python3 tests/static_checks.py [--cba PATH] [--ace PATH] [--antistasi PATH] [--wiki PATH]
+    python3 tests/static_checks.py [--cba PATH] [--ace PATH] [--antistasi PATH] [--wiki PATH] [--lambs PATH]
 
 Without source paths only the self-contained checks run. With them, every external function,
 variable, event name and class name the mod relies on is looked up in the real sources:
@@ -12,6 +12,7 @@ variable, event name and class name the mod relies on is looked up in the real s
     --ace        clone of https://github.com/acemod/ACE3
     --antistasi  clone of https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate
     --wiki       "dist" branch of https://github.com/acemod/arma3-wiki (parsed BI wiki: commands and events)
+    --lambs      clone of https://github.com/nk3nny/LambsDanger (the sharing event the radio net listens to)
 
 Exit code 0 when every executed check passes, 1 otherwise. Checks that were skipped are listed.
 """
@@ -180,6 +181,13 @@ def check_regressions():
             problems.append(f"{f.name}: the binocular spotter must not switch AI features (only doStop), or other systems lose track of the unit")
     if "!stopped _unit" not in code("functions/front/fn_frontSpotTick.sqf"):
         problems.append("frontSpotTick: an order from the player (unit no longer stopped) must end spotting")
+    radio = code("functions/radio/fn_radioShare.sqf")
+    guard = radio.find('_target setVariable ["auqol_radioAt", time]')
+    if guard == -1 or radio.find("+ 15) exitWith") == -1 or radio.find("+ 15) exitWith") > guard \
+            or radio.find('"auqol_combat_reveal"') < guard or radio.find('"auqol_radio_callout"') < guard:
+        problems.append("radioShare: the 15 s cascade guard must be checked and set before anything is sent")
+    if re.search(r"\b(doMove|commandMove|setBehaviour|setCombatMode|addWaypoint|doFire|commandFire|doTarget)\b", radio):
+        problems.append("radioShare: the radio net shares knowledge only and must not give orders")
     loadout = code("functions/loadout/fn_loadoutFilter.sqf")
     if "[_class] call _filterWeapon" not in loadout:
         problems.append("loadoutFilter: weapons stored in containers must go through _filterWeapon")
@@ -450,7 +458,34 @@ def check_antistasi(au):
     order = [markers.find(f'_veh isKindOf "{c}"') for c in ("Truck", "Wheeled_APC_F", "Tank", "Plane_Base_F", "UAV_02_base_F", "Helicopter", "Boat_F")]
     if -1 in order or order != sorted(order):
         problems.append("fn_vehicleMarkers.sqf vehicle icon rules changed (AUQOL_fnc_mapVehicleMarkers mirrors them)")
-    check("Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker and unit state names used exist", problems)
+    # Radio net: the rebel post lists, and that each post's crew is spawned at its marker (AUQOL_fnc_radioGroupType).
+    outpost = au / "A3A" / "addons" / "scrt" / "Outpost"
+    for name, var in (("Watchpost", "watchpostsFIA"), ("At", "atpostsFIA"), ("Aa", "aapostsFIA"), ("Hmg", "hmgpostsFIA"), ("Roadblock", "roadblocksFIA")):
+        spawn = (outpost / f"fn_outpost_create{name}Distance.sqf").read_text()
+        if f"(!(_markerX in {var}))" not in spawn or "private _positionX = getMarkerPos _markerX;" not in spawn \
+                or not re.search(r"\[_positionX, teamPlayer, _\w+(, ?true, ?false)?\] call A3A_fnc_spawnGroup", spawn):
+            problems.append(f"fn_outpost_create{name}Distance.sqf no longer spawns the {var} crew at its marker")
+    if "hcAllGroups theBoss" not in src:
+        problems.append("hcAllGroups theBoss not found in Antistasi Ultimate (radio net high command squads)")
+    check("Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker, unit state and rebel post names used exist", problems)
+
+
+def check_lambs(lambs):
+    """The radio net listens to LAMBS Danger's sharing event and reads its documented parameters."""
+    problems = []
+    main = lambs / "addons" / "main"
+    share = (main / "functions" / "fnc_doShareInformation.sqf").read_text()
+    if "[QGVAR(OnInformationShared), [_newUnit, group _newUnit, _target, _groups]] call FUNC(eventCallback);" not in share:
+        problems.append("lambs_main_OnInformationShared is no longer raised with [unit, group, target, groups]")
+    if "CBA_fnc_localEvent" not in (main / "functions" / "fnc_eventCallback.sqf").read_text():
+        problems.append("lambs_main_fnc_eventCallback no longer raises a CBA local event")
+    if not re.search(r"#define COMPONENT main\b", (main / "script_component.hpp").read_text()) \
+            or "#define PREFIX lambs" not in all_text(lambs / "addons" / "main", ["*.hpp"]):
+        problems.append("LAMBS main is no longer lambs_main (CfgPatches the radio net detects)")
+    code = "\n".join(sqf_code().values())
+    if '"lambs_main_OnInformationShared"' not in code or '"lambs_main"' not in code:
+        problems.append("AUQOL no longer listens to lambs_main_OnInformationShared")
+    check("LAMBS Danger: the sharing event and CfgPatches the radio net uses exist", problems)
 
 
 def main():
@@ -459,6 +494,7 @@ def main():
     parser.add_argument("--ace", type=Path)
     parser.add_argument("--antistasi", type=Path)
     parser.add_argument("--wiki", type=Path)
+    parser.add_argument("--lambs", type=Path)
     args = parser.parse_args()
 
     check_functions()
@@ -466,7 +502,8 @@ def main():
     check_settings()
     check_regressions()
     for label, path, fn in (("Arma 3 wiki", args.wiki, check_wiki), ("CBA_A3", args.cba, check_cba),
-                            ("ACE3", args.ace, check_ace), ("Antistasi Ultimate", args.antistasi, check_antistasi)):
+                            ("ACE3", args.ace, check_ace), ("Antistasi Ultimate", args.antistasi, check_antistasi),
+                            ("LAMBS Danger", args.lambs, check_lambs)):
         if path and path.is_dir():
             fn(path)
         else:

@@ -18,15 +18,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch reference sources (CBA_A3, ACE3, Antistasi Ultimate, Arma 3 wiki)
+      - name: Fetch reference sources (CBA_A3, ACE3, Antistasi Ultimate, Arma 3 wiki, LAMBS Danger)
         run: |
           git clone --depth 1 https://github.com/CBATeam/CBA_A3.git ../src/cba
           git clone --depth 1 https://github.com/acemod/ACE3.git ../src/ace
           git clone --depth 1 https://github.com/SilenceIsFatto/A3-Antistasi-Ultimate.git ../src/antistasi
           git clone --depth 1 -b dist https://github.com/acemod/arma3-wiki.git ../src/wiki
+          git clone --depth 1 https://github.com/nk3nny/LambsDanger.git ../src/lambs
 
       - name: Static checks
-        run: python3 tests/static_checks.py --cba ../src/cba --ace ../src/ace --antistasi ../src/antistasi --wiki ../src/wiki
+        run: python3 tests/static_checks.py --cba ../src/cba --ace ../src/ace --antistasi ../src/antistasi --wiki ../src/wiki --lambs ../src/lambs
 
       - uses: arma-actions/hemtt@v1
         name: Setup HEMTT
