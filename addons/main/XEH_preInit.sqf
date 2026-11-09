@@ -6,6 +6,14 @@ auqol_aceRearmSources = [];
 auqol_map_tracked = createHashMap; // Antistasi vehicle marker -> [its vehicle, position AUQOL or Antistasi last gave it]
 auqol_launcherFlags = createHashMap; // magazine -> aiAmmoUsageFlags of its ammo
 auqol_calloutNext = 0; // time of the next radio call-out
+auqol_front_wtdif = isClass (configFile >> "CfgPatches" >> "WTDIF_main"); // Where The Duck Is Front loaded: AUQOL's bearing dial stays off
+auqol_front_hudHandler = -1; // EachFrame handler turning the bearing dial, only while it is on screen
+auqol_front_hudUntil = 0;
+auqol_front_hudTarget = objNull; // the enemy the dial marks
+auqol_front_spotters = []; // squad AI spotting with binoculars (AUQOL_fnc_frontSpot)
+auqol_front_spotHandler = -1; // their 5 s handler, only while there is one
+auqol_front_menuTargets = []; // the Where is target? list
+auqol_front_menuUnits = [];
 auqol_ambushGroup = grpNull; // the group AUQOL put on Hold fire for the ambush
 auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
@@ -213,8 +221,36 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
 
 [
     "auqol_squad_callouts", "CHECKBOX",
-    ["Radio call-outs", "When the Reveal target key or look to spot shows your squad an enemy, one of your AI calls it out in group chat: type, clock position and distance."],
+    ["Radio call-outs", "When your group spots a new enemy, or the Reveal target key, look to spot or a binocular spotter shows it, one of your AI calls it out in group chat: type, direction (see Direction in call-outs) and distance. At most one every 4 s."],
     [_category, "Combat AI: squad tactics"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_front_system", "LIST",
+    ["Direction in call-outs", "How call-outs say where an enemy is, always seen from you. Bearing: the exact compass bearing to 1 degree (bearing 313). Clock: from where you face. Clock from front: from your formation's front, the front the game's own contact reports mean. Compass: eight points (north-east)."],
+    [_category, "Combat AI: where is front"],
+    [[0, 1, 2, 3], ["Bearing (exact)", "Clock (from where you face)", "Clock (from formation front)", "Compass (8 points)"], 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_front_hud", "CHECKBOX",
+    ["Bearing dial", "For 8 s after each call-out a compass dial shows on the left of your screen: it turns with your view, an orange marker shows the enemy, and below it his bearing / your heading. Off when Where The Duck Is Front is loaded."],
+    [_category, "Combat AI: where is front"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_front_menu", "CHECKBOX",
+    ["Where is it? menu entries", "Command menu: Where is it? (point at an enemy) and Status > Where is target? (list of known enemies). The AI you selected that can see him calls out where he is, or says it has no visual. No orders are given."],
+    [_category, "Combat AI: where is front"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_front_spotter", "CHECKBOX",
+    ["Binocular spotter", "Command menu: Engage > Spot with binoculars, or Spot this way with binoculars. The AI you selected stop, take out their binoculars and sweep 60 degrees around where you look, out to 1000 m, revealing and calling out enemies (worse at night without night vision). Any order you give, being hit, an enemy within 150 m or 5 minutes ends it."],
+    [_category, "Combat AI: where is front"],
     true, 1
 ] call CBA_fnc_addSetting;
 

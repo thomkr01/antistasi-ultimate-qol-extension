@@ -8,7 +8,7 @@ An Arma 3 mod that adds quality-of-life features and smarter AI to Antistasi Ult
 
 - **For you and your squad:** no weapon sway, unlimited stamina, no weight limit, a recoil slider, faster pistol swap, and a 1-second Withstand cooldown. Your squad AI get your perks.
 - **Logistics:** service trucks never run dry, any vehicle can gather scattered loot (and empties nearby enemy supply crates), light scratches no longer ask for Repair, map markers follow their vehicles live, and "Copy from user" in the rebel loadout editor.
-- **AI:** friendly AI react and move faster, no AI going prone, looking at enemies or pressing T alerts your squad (with radio call-outs and breach and clear), your squad holds fire in Stealth until you shoot and covers you when you stop, launchers come out at once against vehicles, AI get out of vehicles all at once, wounded AI treat themselves, stuck AI get freed, and AI squads fight from cover as fire teams.
+- **AI:** friendly AI react and move faster, no AI going prone, looking at enemies or pressing T alerts your squad (with radio call-outs giving the exact bearing, a bearing dial, and breach and clear), AI can spot for you with binoculars, your squad holds fire in Stealth until you shoot and covers you when you stop, launchers come out at once against vehicles, AI get out of vehicles all at once, wounded AI treat themselves, stuck AI get freed, and AI squads fight from cover as fire teams.
 - **Stealth:** enemies without night vision see less at night, you can hide in the grass (like the HATG mod), and far shots don't give away where you are.
 - **Enemy vehicles:** crews leave vehicles that can no longer move. Parked vehicles and wrecks far from players are frozen to save server work.
 
@@ -33,6 +33,6 @@ Needs [CBA_A3](https://github.com/CBATeam/CBA_A3) and Arma 3 2.14+. Download `@a
 
 ## License
 
-MIT, see [LICENSE](LICENSE). This project contains no code from Antistasi Ultimate, CBA_A3, ACE3 or Hide Among The Grass. It only calls their public functions at runtime.
+MIT, see [LICENSE](LICENSE). This project contains no code from Antistasi Ultimate, CBA_A3, ACE3, Hide Among The Grass or Where The Duck Is Front? (snakebyte), which inspired the bearing call-outs and binocular spotter. It only calls their public functions at runtime.
 
 The three concealment indicator icons in `addons/main/data/conceal/` are from [Hide Among The Grass](https://github.com/Antistasi-Ultimate-Community/HATG) by SilenceIsFatto and MaxxLite, used unchanged under the [Arma Public License Share Alike (APL-SA)](https://www.bohemia.net/community/licenses/arma-public-license-share-alike); those files stay under that licence.

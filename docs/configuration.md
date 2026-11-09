@@ -58,7 +58,7 @@ With `auqol_player_squad` off these only affect the local player's unit. With it
 
 ## Combat AI (one featureset, 1.30.0)
 
-Smart combat, squad reactions and squad tactics are one featureset. In the CBA settings menu they sit together as "Combat AI: smart combat", "Combat AI: squad reactions" and "Combat AI: squad tactics". Setting names and defaults did not change. The sections below keep their old names.
+Smart combat, squad reactions and squad tactics are one featureset. In the CBA settings menu they sit together as "Combat AI: smart combat", "Combat AI: squad reactions", "Combat AI: squad tactics" and (1.33.0) "Combat AI: where is front". Setting names and defaults did not change. The sections below keep their old names.
 
 ## Squad tactics (1.28.0)
 
@@ -66,13 +66,22 @@ All Server scope, all on by default. They only order your own squad, only from y
 
 | Setting | Type | Default | Scope | Description |
 | --- | --- | --- | --- | --- |
-| `auqol_squad_callouts` | Checkbox | On | Server | One of your AI calls out an enemy shown by the Reveal target key or look to spot in group chat (type, clock position, distance), at most every 4 s. |
+| `auqol_squad_callouts` | Checkbox | On | Server | One of your AI calls out in group chat a new enemy your group spots (`EnemyDetected`, 1.33.0) or one shown by the Reveal target key, look to spot or a binocular spotter: type, direction (`auqol_front_system`) and distance, at most every 4 s. |
 | `auqol_squad_ambush` | Checkbox | On | Server | While you lead your group in `STEALTH` behaviour with combat mode YELLOW or RED, the group is set to GREEN (hold fire). Your first shot, leaving Stealth, or a combat mode you set yourself restores the saved mode. Checked every second. |
 | `auqol_squad_overwatch` | Checkbox | On | Server | With a known enemy within 300 m and you still for 3 s, free AI (`AUQOL_fnc_combatIsEligible`) take cover within 15 m (`AUQOL_fnc_combatFindCover`, two units per pass), carrying the smart combat spot variables so stuck recovery skips them. They go back to formation when you move or the enemy is gone. |
 | `auqol_squad_push` | Checkbox | On | Server | In contact on `AWARE` or `COMBAT`, leading the group, on foot, with an enemy known within 300 m and the player over 2 m/s and closing in by 3 m per 2 s (held 6 s): free AI (`AUQOL_fnc_combatIsEligible`, no overwatch or breach order) are split into two teams by index (`AUQOL_fnc_squadPush`, player machine, 1 s pass). The moving team gets `doMove` to cover from `AUQOL_fnc_combatFindCover` within 15 m of a point up to 20 m ahead of the player toward the enemy; the other team gets `doSuppressiveFire` at the last known enemy position with `auqol_combat_fireChance`, only under YELLOW or RED. Teams swap after 8 s or when the movers arrived (3 s minimum). A mover that has not arrived in 10 s is released and rests 30 s. When pushing ends units go through `AUQOL_fnc_combatRelease` (`doFollow`). |
 | `auqol_squad_unpin` | Checkbox | On | Server | `AUQOL_fnc_squadUnpin` (player machine, 1 s pass), leading the group: a local AI that has had `currentCommand` FIRE, ATTACK or ATTACKFIRE for 8 s, is more than 25 m from the player and has no target it sees (no attack target, over 400 m, or `checkVisibility` under 0.1) gets `doFollow` the player. Skips units with overwatch, breach or push orders or an `auqol_tacDest`, treating, stopped, pathing off, in vehicles, incapacitated or captive. Look to spot and the T focus now give `doFire` only within 400 m and with `checkVisibility` over 0.3. |
 | `auqol_squad_breach` | Checkbox | On | Server | Reveal target on an enemy soldier inside a building within 150 m: the two free AI nearest the building `doMove` to the building positions nearest him, released after 30 s. |
 | `auqol_squad_nvDiscipline` | Checkbox | On | Server | At night (`sunOrMoon` below 0.3), friendly AI with night vision (`AUQOL_fnc_nightHasVision`) get `enableGunLights "ForceOff"` and `enableIRLasers true`; set back to Auto by day or when the setting is off. Covers your squad, and all friendly AI with `auqol_squad_reactionAll`. |
+
+## Where is front (1.33.0)
+
+| Setting | Type | Default | Scope | Description |
+| --- | --- | --- | --- | --- |
+| `auqol_front_system` | List | Bearing (exact) | Server | How call-outs give an enemy's direction, always from you (`AUQOL_fnc_frontDirection`): 0 exact compass bearing rounded to 1 degree ("bearing 313"), 1 clock from where you face (`getRelDir`), 2 clock from the formation's front (`formationDirection` of your leader, what the game's own "front" means), 3 eight compass points. |
+| `auqol_front_hud` | Checkbox | On | Server | Bearing dial for 8 s after each call-out (`AUQOL_fnc_frontHud`): compass rose turned by your camera heading, orange marker on the enemy's bearing from you, "his bearing / your heading" below. A mission EachFrame handler turns it and removes itself when the dial goes. Skipped when Where The Duck Is Front (`WTDIF_main`) is loaded. |
+| `auqol_front_menu` | Checkbox | On | Server | Command menu *Where is it?* (cursor on an enemy) and *Status > Where is target?* (`group targets` within 1500 m, nearest first, nine per `#USER` page). The first selected AI with checkVisibility over 0 calls out at once (`AUQOL_fnc_frontReport`), else "Negative, no visual". No orders. Off: the entries stay in the menu but do nothing. |
+| `auqol_front_spotter` | Checkbox | On | Server | Command menu *Engage > Spot with binoculars (where you look)* and *Spot this way with binoculars* (cursor on ground). Selected local AI of your group with a binocular-slot item get `doStop`, stance Middle (only if it was Auto) and the binoculars (`AUQOL_fnc_frontSpot`). One 5 s handler for all spotters (`AUQOL_fnc_frontSpotTick`, removed when none is left) sweeps 5 bearings 15 degrees apart; per step hostile entities within 1000 m in a 20 degree wedge, known under 1.5 by the group, are spotted with chance checkVisibility x (1 - 0.5 x distance/1000) x light (night spotting's darkness x 0.8 taken off without NV or thermal). Found: reveal 4 to the squad, `AUQOL_fnc_combatShareContact` (3 at most), call-out, launcher check. Ends on any order (unit no longer `stopped`), damage up, an enemy within 150 m, treatment, launcher in hand, vehicle, down, other group, 5 minutes or the setting off; weapon and stance are put back and, unless you ordered it, `doFollow`. |
 
 ## Squad reactions
 

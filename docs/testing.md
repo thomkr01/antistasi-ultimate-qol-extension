@@ -618,6 +618,22 @@ Setup: a squad of 4 or more AI on Aware or Combat, an enemy squad 150 to 250 m a
 
 Fail if: the squad keeps lagging while you push, units get stuck standing in the open after you stop, or an overwatch or breach unit is dragged away.
 
+### ❌ 36. Where is front (1.33.0)
+
+What it does: call-outs give the exact bearing from you, a dial shows it, the command menu asks the squad where an enemy is, and AI can spot with binoculars (1.33.0).
+
+Setup: a squad of 4 AI, at least two with binoculars (one RHS or ACE pair if you run them), an enemy squad 300 to 800 m away, `auqol_debug` on.
+
+1. Let the squad spot the enemy. Expected: next to the game's "front" report, one AI says "Contact! infantry, bearing NNN, NNN m"; the dial appears on the left for 8 s, turns as you turn, and the orange marker sits on the enemy (turn until it is at the top: you face him). The numbers read his bearing / your heading.
+2. Point at an enemy, command menu (Space), *Where is it?*. Expected: a selected AI that sees him calls him out at once; with none that can, "Negative, no visual on that one."
+3. Command menu, *Status (5) > Where is target?*. Expected: known enemies nearest first, "Next" past nine; picking one answers as in step 2.
+4. Select the AI with binoculars, look toward the enemy, *Engage (3) > Spot with binoculars*. Expected: "Copy, spotting bearing NNN", he stops, crouches, binoculars out, sweeps slowly; enemies he finds are called out and the squad engages them. One without binoculars says so.
+5. Give the spotter any order (Return to formation, Move). Expected: binoculars away, rifle back, he obeys at once. Shoot near him or let an enemy within 150 m: he stops spotting and fights.
+6. At night without NV: he finds far fewer; with NV binoculars or goggles as at day.
+7. Change `auqol_front_system` (clock, clock from front, compass) and repeat step 1: the call-out changes. `auqol_front_hud` off: no dial.
+
+Fail if: a wrong bearing (check against your compass), the dial stays on screen, the spotter keeps standing after your order or under close fire, overwatch/push/stuck recovery moves a spotter, or a script error.
+
 ### ✅ 35. Planted squad AI freed (1.32.2)
 
 What it does: squad AI no longer stand on a fire order at a far or unreachable enemy; those that do are sent back after 8 s (1.32.2).

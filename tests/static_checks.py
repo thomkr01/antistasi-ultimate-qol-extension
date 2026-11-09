@@ -88,6 +88,11 @@ def check_functions():
             used.add(fnc)
             if fnc not in functions:
                 problems.append(f"{path.relative_to(ROOT)} calls undefined {fnc}")
+    # Command menu entries in config.cpp call functions too.
+    for fnc in re.findall(r"\bAUQOL_fnc_\w+", (ADDON / "config.cpp").read_text()):
+        used.add(fnc)
+        if fnc not in functions:
+            problems.append(f"config.cpp calls undefined {fnc}")
     for fnc in functions:
         if fnc not in used:
             problems.append(f"{fnc} is registered but never called")
@@ -170,6 +175,11 @@ def check_regressions():
     action = code("functions/loot/fn_lootAddAction.sqf")
     if 'remoteExecCall ["AUQOL_fnc_lootGather", 2]' not in action or "CBA_fnc_serverEvent" in action:
         problems.append("lootAddAction: request must go by remoteExecCall with the caller")
+    for f in sorted((ADDON / "functions/front").glob("*.sqf")):
+        if re.search(r"\bdisableAI\b|\benableAI\b", strip_comments(f.read_text())):
+            problems.append(f"{f.name}: the binocular spotter must not switch AI features (only doStop), or other systems lose track of the unit")
+    if "!stopped _unit" not in code("functions/front/fn_frontSpotTick.sqf"):
+        problems.append("frontSpotTick: an order from the player (unit no longer stopped) must end spotting")
     loadout = code("functions/loadout/fn_loadoutFilter.sqf")
     if "[_class] call _filterWeapon" not in loadout:
         problems.append("loadoutFilter: weapons stored in containers must go through _filterWeapon")

@@ -2,6 +2,18 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.33.0
+
+Not tested in game yet. Thomas asked for Where The Duck Is Front? in AUQOL, with an exact bearing ("313") as default and the dial on by default with its own switch. Plan: reports/auqol-1.33-wheretheduckisfront-plan.md in the project files.
+
+- **Where is front** (new featureset, "Combat AI: where is front" in the settings). Our own code and icons, nothing copied (that mod is APL-SA).
+- Call-outs give the direction from you: `auqol_front_system` (exact bearing, default; clock from where you face; clock from formation front; 8 compass points). A new enemy your group spots is now called out too (`EnemyDetected`, 4 s limit shared with T, look to spot and the spotter).
+- Bearing dial (`auqol_front_hud`, on): turns with your view, marks the called-out enemy, shows his bearing and your heading, 8 s. Its EachFrame handler exists only while shown. Off when Where The Duck Is Front is loaded.
+- Command menu (`auqol_front_menu`, on): *Where is it?* on an enemy and *Status > Where is target?* (known enemies within 1500 m, nine to a page): the selected AI that sees him calls him out.
+- Binocular spotter (`auqol_front_spotter`, on): *Engage > Spot with binoculars* or *Spot this way with binoculars* on the ground. Sweeps 60 degrees, 1000 m, one step per 5 s on one shared handler that only runs while someone spots; darkness without night vision lowers the chance as night spotting does. Ends on any order, a hit, an enemy within 150 m, treatment, launcher, vehicle, going down or 5 minutes.
+- Static checks: config.cpp menu calls count as callers; guard that the spotter never uses `disableAI`/`enableAI` and ends on a player order.
+- Checked against: smart combat, overwatch, push, breach, unpin, stuck recovery (all skip stopped units, the spotter is only `doStop`ped), self-treat and medics (treatment ends spotting), T focus and launchers (take over), ambush hold-fire (spotter only reveals), look to spot (unchanged, now with bearings), night spotting (same darkness formula, own squad only), hiding and hard to locate (enemy knowledge only, unrelated), Antistasi and PATCOM (own group only, no waypoints, no AI-led groups; Antistasi adds no command menu entries), ACE (binoculars by slot, unconscious ends spotting), RHS and CUP (no class lists), HATG (no overlap), dedicated server and HC (nothing runs there).
+
 ## 1.32.2
 
 Not tested in game yet. Thomas: his squad sometimes stands still in combat, ignoring new orders.
