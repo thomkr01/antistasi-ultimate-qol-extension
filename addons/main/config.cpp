@@ -194,6 +194,10 @@ class CfgFunctions {
             class radioReceivers {};
             class radioShare {};
         };
+        class gear {
+            file = "\z\auqol\addons\main\functions\gear";
+            class gearBattery {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

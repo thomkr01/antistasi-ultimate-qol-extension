@@ -59,6 +59,10 @@ if (isServer || hasInterface) then {
 [] call AUQOL_fnc_animAiApply;
 [{ ["AI animation speed", { [] call AUQOL_fnc_animAiApply }] call AUQOL_fnc_perfRun }, 15] call _every;
 
+// Built-in batteries: units that spawned before the settings were final get theirs once now; later ones
+// at spawn, owner change, joining your group and (the player) every loadout change.
+{ [_x] call AUQOL_fnc_gearBattery } forEach (allUnits select { local _x });
+
 // AI stuck checks run on every machine (server, clients, headless clients) for the AI local to it.
 // No engine event reports "no progress", so this polls; the pass returns at once when the feature is off.
 [{ ["stuck AI", { call AUQOL_fnc_stuckMonitor }] call AUQOL_fnc_perfRun }, 5] call _every;
@@ -83,7 +87,7 @@ if (hasInterface) then {
         call AUQOL_fnc_playerApply;
         [{ call AUQOL_fnc_playerApply }, [], 3] call CBA_fnc_waitAndExecute;
     }, true] call CBA_fnc_addPlayerEventHandler;
-    ["loadout", { call AUQOL_fnc_playerApply }] call CBA_fnc_addPlayerEventHandler;
+    ["loadout", { call AUQOL_fnc_playerApply; [player] call AUQOL_fnc_gearBattery }] call CBA_fnc_addPlayerEventHandler;
     ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; [] call AUQOL_fnc_squadSelfTreat; [units group player] call AUQOL_fnc_squadReactApply }, true] call CBA_fnc_addPlayerEventHandler;
     // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
     // without a hit, such as the 0.25 Antistasi's revive leaves.

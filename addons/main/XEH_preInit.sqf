@@ -19,6 +19,7 @@ auqol_radio_nextBuild = 0; // time the receiver list may be built again
 auqol_radio_itemCache = createHashMap; // item class -> is a radio (simulation ItemRadio)
 auqol_radio_bagCache = createHashMap; // backpack class -> is a long range radio backpack
 auqol_radio_lambsLoaded = isClass (configFile >> "CfgPatches" >> "lambs_main"); // LAMBS Danger: the radio net listens to its sharing
+auqol_gear_batteryCache = createHashMap; // binoculars slot item class -> the battery it takes ("" for none)
 auqol_ambushGroup = grpNull; // the group AUQOL put on Hold fire for the ambush
 auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
@@ -256,6 +257,13 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
     "auqol_front_spotter", "CHECKBOX",
     ["Binocular spotter", "Command menu: Engage > Spot with binoculars, or Spot this way with binoculars. The AI you selected stop, take out their binoculars and sweep 60 degrees around where you look, out to 1000 m, revealing and calling out enemies (worse at night without night vision). Any order you give, being hit, an enemy within 150 m or 5 minutes ends it."],
     [_category, "Combat AI: where is front"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_gear_builtInBattery", "CHECKBOX",
+    ["Built-in batteries", "Laser designators and anything else in the binoculars slot that takes a battery get it loaded at once, for you and every AI, from any mod: nobody has to find a battery. Gear handed back to the Antistasi arsenal takes its battery with it."],
+    [_category, "Gear"],
     true, 1
 ] call CBA_fnc_addSetting;
 

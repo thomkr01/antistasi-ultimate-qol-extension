@@ -51,8 +51,8 @@ if (auqol_radio_lambsLoaded) then {
     [_object] call AUQOL_fnc_lootInitObject;
 }, true, ["Man", "WeaponHolder", "WeaponHolderSimulated"], true] call CBA_fnc_addClassEventHandler;
 
-// Faster AI reactions and night spotting: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
-// set its skills and night gear) and whenever it becomes local to a new machine (server <-> headless client).
+// Faster AI reactions, night spotting and built-in batteries: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
+// set its skills and gear) and whenever it becomes local to a new machine (server <-> headless client).
 // Faster AI animations act only on the machine that sets them, so this runs everywhere for every unit.
 // The Suppressed handler acts only where the unit is local, which follows locality changes.
 ["CAManBase", "InitPost", {
@@ -65,6 +65,7 @@ if (auqol_radio_lambsLoaded) then {
         [_unit] call AUQOL_fnc_combatGroupHook;
         if (_isLocal) then {
             [[_unit]] call AUQOL_fnc_squadReactApply;
+            [_unit] call AUQOL_fnc_gearBattery;
             // The old owner publishes the saved night skills as it lets go; 2 s lets them arrive before the baseline is read.
             [{ [[_this]] call AUQOL_fnc_nightApply }, _unit, 2] call CBA_fnc_waitAndExecute;
         } else {
@@ -74,7 +75,7 @@ if (auqol_radio_lambsLoaded) then {
     }];
     if (!local _unit) exitWith {};
     [[_unit]] call AUQOL_fnc_squadReactApply;
-    [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply }, _unit, 5] call CBA_fnc_waitAndExecute;
+    [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply; [_this] call AUQOL_fnc_gearBattery }, _unit, 5] call CBA_fnc_waitAndExecute;
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Grenade dodge: any unit's throw, checked for frags in the handler. Concealment counts the shots of the units it hides,
