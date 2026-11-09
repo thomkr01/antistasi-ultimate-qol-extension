@@ -40,6 +40,9 @@ What Thomas has reported from his games (Antistasi Ultimate, mostly single playe
 | 29 to 32 | Covering fire, MP fixes, audit follow-ups, combat AI handoffs | ❌ Not tested yet |
 | 33 | AI dismount all at once | ✅ Works (2026-10-22, 1.32.2): "works perfect" |
 | 34 | Push with you | ❌ Not tested yet (new in 1.32.0) |
+| 36 | Where is front | ❌ Not tested yet (new in 1.33.0) |
+| 37 | Radio net | ❌ Not tested yet (new in 1.34.0) |
+| 38 | Built-in batteries | ❌ Not tested yet (new in 1.34.0) |
 | 35 | Planted squad AI freed | ✅ Works (2026-10-22, 1.32.2): the squad follows much more reliably; the "Unpin:" log lines were not checked |
 
 Details such as single player, hosted or dedicated, and whether ACE was loaded, were not reported.
@@ -64,7 +67,8 @@ Run all of them with `tools/build.sh --sources <dir>`. CI (`.github/workflows/ci
 | Locality (heuristic) | `tests/static_checks.py --wiki` | A file using a local-argument command (per the wiki) must contain a `local`, `isServer` or `hasInterface` guard |
 | CBA API | `tests/static_checks.py --cba` | Every `CBA_fnc_` function used must exist. So must `CBA_settingsInitialized`, the XEH config classes, the `InitPost` class event, and the `unit` and `loadout` player events. |
 | ACE API | `tests/static_checks.py --ace` | Every `ace_*_fnc_` function used must exist. Every `ace_*` variable or setting name must exist as a `GVAR` in that ACE component, `REFUEL_INFINITE_FUEL` must be -10, the jerry can class must exist, and the RHS/CUP CfgPatches names must be ones ACE uses. |
-| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. For live vehicle markers: the marker name format, icon types and the order of its vehicle-kind rules, text and 60 s loop of `A3A_fnc_vehicleMarkers`. For the loot request: `CfgRemoteExec` allows all functions (mode 2) and the cooldown message key exists. |
+| LAMBS Danger | `tests/static_checks.py --lambs` | `lambs_main_OnInformationShared` is still raised through a CBA local event with `[unit, group, target, groups]`, and LAMBS main is still `lambs_main`. |
+| Antistasi API | `tests/static_checks.py --antistasi` | Every `HR_GRG_fnc_` function used must exist, along with `HR_GRG_Vehicles`, `HR_GRG_Sources`, `A3A_hasAce`, `teamPlayer`, `surrendered`, the source category index and the stored fuel layout. For Copy from user: the loadout editor's `applyInitialLoadout`, `OverrideTab` and `commanderLoadout` code, the blanked Random button, the arsenal's -1 unlimited marker, JNA's `arsenalOpened` handler and loading screen. For stuck recovery: the `incapacitated`, `helping` and `rearming` unit variables. For live vehicle markers: the marker name format, icon types and the order of its vehicle-kind rules, text and 60 s loop of `A3A_fnc_vehicleMarkers`. For the loot request: `CfgRemoteExec` allows all functions (mode 2) and the cooldown message key exists. For the radio net: the five post lists, each post script handing its crew the marker through `A3A_fnc_FIAinitBases`, which sets `markerX`, and `hcAllGroups theBoss`. |
 
 The checks were themselves tested by mutation. Adding an invented command, an invented event handler, a missing CBA function, a misspelled ACE variable, an undefined `AUQOL_fnc_` call and an undeclared global each made the matching check fail.
 
@@ -617,6 +621,34 @@ Setup: a squad of 4 or more AI on Aware or Combat, an enemy squad 150 to 250 m a
 5. With `auqol_debug` on: no script errors; stuck recovery reports nothing for pushing units.
 
 Fail if: the squad keeps lagging while you push, units get stuck standing in the open after you stop, or an overwatch or breach unit is dragged away.
+
+### ❌ 38. Built-in batteries (1.34.0)
+
+What it does: laser designators and other binoculars-slot gear that takes a battery get it loaded automatically (1.34.0).
+
+Setup: Antistasi with a laser designator unlocked (or the debug console: `player addWeapon "Laserdesignator"`), `auqol_debug` on.
+
+1. Take a designator without a battery in the Antistasi arsenal and close it. Expected: the battery is in when the arsenal closes ("Built-in battery:" in the RPT) and the designator lases. Only one battery more than you took.
+2. Recruit an AI and give it a designator in its loadout. Expected: it has a battery within 5 s.
+3. RHS or CUP designator: the same. Plain binoculars, a rangefinder or the ACE Vector: nothing is added.
+4. Debug console `player removeBinocularItem (binocularMagazine player select 0)`: within 15 s the battery is back.
+
+Fail if: a second battery appears in the inventory, the arsenal count jumps by more than one, or a script error.
+
+### ❌ 37. Radio net (1.34.0)
+
+What it does: your posts and high command squads share enemies they spot with each other and your squads, and call them out to you when they are near (1.34.0).
+
+Setup: an AA post and a watchpost built from the Antistasi menu, a few hundred metres apart; one high command squad; `auqol_debug` on.
+
+1. Let an enemy helicopter approach the watchpost. Expected: "Radio net: ... shared ..." in the RPT, the AA post engages when it has line of sight, and if the helicopter is within 2000 m of you: "Watchpost: Contact! <type>, bearing NNN, NNN m" and the dial marks it.
+2. An enemy on foot 1500 m from you near a post: no message for you. Your squad knows about him only if he is within 750 m of your squad (1500 m with a radio backpack).
+3. Remove the radios of the watchpost crew (Zeus or debug console): it no longer shares beyond the 300 m contact reports. Switch `auqol_radio_requireRadio` off: it shares again, at double range.
+4. With LAMBS Danger loaded: a LAMBS-run rebel group spots an enemy near you. Expected: your squad knows about him and you get a message with the group's callsign.
+5. Lead your squad in Stealth (ambush): they hold fire, the posts fire.
+6. `auqol_debug`: "Timing: radio net" in the RPT, no script errors, no repeated message about the same enemy within 15 s. On a dedicated server with a headless client the same.
+
+Fail if: posts get orders or leave their position, a message for an enemy far beyond the slider distance, chat spam, or a script error.
 
 ### ❌ 36. Where is front (1.33.0)
 

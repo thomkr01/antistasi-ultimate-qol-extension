@@ -97,5 +97,5 @@ if (_side isNotEqualTo (missionNamespace getVariable ["teamPlayer", sideUnknown]
             };
         } forEach (allPlayers - entities "HeadlessClient_F");
     };
-    [format ["Radio net: %1 (%2) shared %3 (knows %4) with %5 groups", groupId _group, _kind, typeOf _target, _level toFixed 1, _sent + (count _garrisons min 8)], true] call AUQOL_fnc_log;
+    if (auqol_debug) then { [format ["Radio net: %1 (%2) shared %3 (knows %4) with %5 groups", groupId _group, _kind, typeOf _target, _level toFixed 1, _sent + (count _garrisons min 8)]] call AUQOL_fnc_log };
 }] call AUQOL_fnc_perfRun;
