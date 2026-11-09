@@ -60,7 +60,7 @@ if (leader _group isEqualTo _player) then {
 [_group, _target, true] call AUQOL_fnc_combatShareContact;
 
 [_target] call AUQOL_fnc_squadBreach;
-[_target] call AUQOL_fnc_squadCallout;
+[_target, objNull, true] call AUQOL_fnc_squadCallout; // an explicit press is always called out, not lost to the 4 s limit
 // Knowledge just changed, so check launchers now instead of at the next pass.
 [] call AUQOL_fnc_squadLaunchers;
 

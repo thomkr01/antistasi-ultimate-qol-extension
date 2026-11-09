@@ -3,16 +3,17 @@
     Radio call-out: one of your AI says where an enemy is, in your group chat ("Contact! infantry, bearing 313,
     120 m"), the direction in the system chosen with auqol_front_system and always seen from you
     (AUQOL_fnc_frontDirection), and the bearing dial shows him (AUQOL_fnc_frontHud). Called when your group spots
-    a new enemy, by the Reveal target key, look to spot and the binocular spotter, at most one every 4 s; the
-    "Where is it?" menu asks for one at once. Text only, local to the player.
+    a new enemy, by look to spot and the binocular spotter, at most one every 4 s; the Reveal target key and the
+    "Where is it?" menu get one at once. Text only, local to the player.
     Arguments:
     0: Enemy <OBJECT>
     1: Who says it <OBJECT> (optional, default: a random AI of your group)
-    2: Asked for in the menu: ignores the 4 s limit and auqol_squad_callouts <BOOL> (optional, default: false)
+    2: Now <BOOL> (optional, default: false): ignores the 4 s limit (the T key); with a speaker also auqol_squad_callouts (the menu)
     Return Value: none
 */
 params ["_target", ["_speaker", objNull], ["_force", false]];
-if (!hasInterface || {!alive _target} || {!_force && {!auqol_squad_callouts || {time < auqol_calloutNext}}}) exitWith {};
+// The menu (a speaker and force) always answers; the T key (force) skips the 4 s limit but respects the setting.
+if (!hasInterface || {!alive _target} || {!auqol_squad_callouts && {!_force || {isNull _speaker}}} || {!_force && {time < auqol_calloutNext}}) exitWith {};
 if (isNull _speaker) then {
     private _speakers = units group player select { !isPlayer _x && {alive _x} && {lifeState _x in ["HEALTHY", "INJURED"]} };
     if (_speakers isNotEqualTo []) then { _speaker = selectRandom _speakers };

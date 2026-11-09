@@ -2,6 +2,18 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.33.1
+
+Not tested in game yet. Thomas: make sure 1.33.0 does not break how the rest of AUQOL works in combat (full edge-case sweep).
+
+- Fix: a binocular spotter did not dodge grenades (the dodge skips stopped units). Spotters now dodge; the move ends spotting and the dodge sends him back to formation.
+- Fix: T focus and look to spot gave a spotter a fire order, but the next spotter pass took the binoculars out again, so he never fired. A fire or attack order, or a target within 400 m he may fire at (YELLOW or RED), now ends spotting. On Hold fire (ambush) he keeps watching.
+- Fix: a spotter who started treating himself was sent back to formation in the middle of it. Treatment (own, by a medic, Antistasi helping) now pauses spotting.
+- Fix: taking a unit out of overwatch or push for spotting left their marks on it, so their later release pulled him off. They are handed back first.
+- Fix: the T key's call-out could be swallowed by the 4 s limit after a new-enemy call-out. T always calls out now (the setting still applies).
+- Spotting also ends when he is suppressed (over 0.5), surrenders (no return to formation then) or is rearming.
+- Checked against: smart combat and its medics, overwatch, push, breach, unpin, stuck recovery, self-treat, launchers, T focus, look to spot, ambush hold-fire, grenade dodge, the Suppressed stance handler (does not touch a spotter's Middle stance), concealment, night spotting, Antistasi helping/rearming/surrender flags.
+
 ## 1.33.0
 
 Not tested in game yet. Thomas asked for Where The Duck Is Front? in AUQOL, with an exact bearing ("313") as default and the dial on by default with its own switch. Plan: reports/auqol-1.33-wheretheduckisfront-plan.md in the project files.

@@ -8,9 +8,12 @@
     is revealed to your squad at full knowledge, shared with friendly AI groups within 300 m
     (AUQOL_fnc_combatShareContact) and called out with its bearing (AUQOL_fnc_squadCallout).
 
-    Spotting ends, and the unit gets its weapon and stance back, when you give it any order, it is hit, an enemy
-    is known within 150 m of it, it has to treat itself, takes out its launcher, gets in a vehicle, goes down,
-    leaves your group, after 5 minutes, or with auqol_front_spotter off. It goes back into formation unless you
+    Spotting ends, and the unit gets its weapon and stance back, when you give it any order, it is hit or suppressed,
+    an enemy is known within 150 m of it, it is told to fire (T focus, look to spot) or picks a target within 400 m
+    it may fire at (not on Hold fire, so an ambush spotter keeps watching), takes out its launcher, is moved by a
+    grenade dodge or Antistasi, gets in a vehicle, goes down,
+    leaves your group, after 5 minutes, or with auqol_front_spotter off. While it treats itself or is treated it
+    waits in place and carries on afterwards. It goes back into formation unless you
     ordered it elsewhere. The handler removes itself when no spotter is left.
 
     Arguments: none
@@ -23,11 +26,16 @@ private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
     private _unit = _x;
     private _spot = _unit getVariable ["auqol_spot", []];
     _spot params [["_dir", 0], ["_step", 0], ["_weapon", ""], ["_setStance", false], ["_damage", 0], ["_until", 0]];
+    // Treating himself or being treated (in place, he is stopped): wait, do not pull him away mid-treatment.
+    if (_spot isNotEqualTo [] && {alive _unit} && {time < _unit getVariable ["auqol_treatUntil", 0] || {_unit getVariable ["helping", false]} || {!isNull (_unit getVariable ["helped", objNull])}}) then { continue };
     private _enemy = _unit findNearestEnemy _unit;
+    private _fight = getAttackTarget _unit;
     private _ordered = alive _unit && {!stopped _unit};
     if (_spot isEqualTo [] || {!auqol_front_spotter} || {!alive _unit} || {!local _unit} || _ordered || {time > _until}
         || {group _unit isNotEqualTo _group} || {!isNull objectParent _unit} || {!(lifeState _unit in ["HEALTHY", "INJURED"])}
-        || {damage _unit > _damage + 0.01} || {time < _unit getVariable ["auqol_treatUntil", 0]} || {binocular _unit == ""}
+        || {damage _unit > _damage + 0.01} || {getSuppression _unit > 0.5} || {captive _unit} || {_unit getVariable ["rearming", false]} || {binocular _unit == ""}
+        // He is told to fire (T focus, look to spot) or picks a fight he may open (within 400 m, not on Hold fire): the fight wins.
+        || {currentCommand _unit in ["FIRE", "ATTACK", "ATTACKFIRE"]} || {!isNull _fight && {combatMode _unit in ["YELLOW", "RED"]} && {_unit distance _fight < 400}}
         || {currentWeapon _unit != "" && {currentWeapon _unit == secondaryWeapon _unit}}
         || {!isNull _enemy && {_unit distance _enemy < 150}}) then {
         _unit setVariable ["auqol_spot", nil];
@@ -37,7 +45,7 @@ private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
         if (_setStance && {unitPos _unit == "Middle"}) then { _unit setUnitPos "AUTO" };
         _unit doWatch objNull;
         // An order you gave wins; otherwise back into formation.
-        if (!_ordered && {stopped _unit}) then { _unit doFollow leader _unit };
+        if (!_ordered && {stopped _unit} && {!captive _unit}) then { _unit doFollow leader _unit };
         [format ["Spotter: %1 stopped spotting", name _unit], true] call AUQOL_fnc_log;
         continue;
     };
@@ -57,7 +65,7 @@ private _dark = (1 - sunOrMoon) * (1 - 0.6 * moonIntensity * (1 - overcast));
         && {random 1 < ([_unit, "VIEW", _x] checkVisibility [_eye, aimPos _x]) * (1 - 0.5 * (_unit distance _x) / 1000) * _light}
     };
     if (_found isEqualTo []) then { continue };
-    { private _enemy = _x; { _x reveal [_enemy, 4] } forEach (units _group select { local _x }) } forEach _found;
+    { private _found1 = _x; { _x reveal [_found1, 4] } forEach (units _group select { local _x }) } forEach _found;
     { [_group, _x, true, 4] call AUQOL_fnc_combatShareContact } forEach (_found select [0, 3]);
     [_found select 0, _unit] call AUQOL_fnc_squadCallout;
     [] call AUQOL_fnc_squadLaunchers;
