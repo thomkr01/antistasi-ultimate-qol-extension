@@ -13,6 +13,20 @@
 ["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
 // Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
 ["auqol_combat_reveal", { params ["_group", "_target", ["_level", 1.5]]; _group reveal [_target, _level] }] call CBA_fnc_addEventHandler;
+// Radio net call-out on a player's machine: said by a member of the sending group with a radio (AUQOL_fnc_radioShare).
+["auqol_radio_callout", {
+    params ["_target", "_group", "_label"];
+    private _speaker = (units _group) select { alive _x && {[_x] call AUQOL_fnc_radioItem} } param [0, leader _group];
+    [_target, _speaker, false, _label] call AUQOL_fnc_squadCallout;
+}] call CBA_fnc_addEventHandler;
+// LAMBS Danger shares sightings itself, but only with AI groups within 200 m; the radio net passes them on to
+// your squads and to posts and high command squads farther away. Its event fires where the sharing unit is local.
+if (auqol_radio_lambsLoaded) then {
+    ["lambs_main_OnInformationShared", {
+        params ["_unit", "_group", "_target"];
+        if (auqol_radio_lambs && {!isNull _target}) then { [_group, _target, true] call AUQOL_fnc_radioShare };
+    }] call CBA_fnc_addEventHandler;
+};
 // Hard to locate: each machine checks the hostile groups local to it.
 ["auqol_combat_dodge", { _this call AUQOL_fnc_combatDodgeMove }] call CBA_fnc_addEventHandler;
 ["auqol_locate_shot", { _this call AUQOL_fnc_concealLocateCheck }] call CBA_fnc_addEventHandler;

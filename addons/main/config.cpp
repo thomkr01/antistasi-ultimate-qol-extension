@@ -186,6 +186,14 @@ class CfgFunctions {
             class frontSpot {};
             class frontSpotTick {};
         };
+        class radio {
+            file = "\z\auqol\addons\main\functions\radio";
+            class radioItem {};
+            class radioHasRadio {};
+            class radioGroupType {};
+            class radioReceivers {};
+            class radioShare {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};

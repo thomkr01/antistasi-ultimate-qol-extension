@@ -14,6 +14,11 @@ auqol_front_spotters = []; // squad AI spotting with binoculars (AUQOL_fnc_front
 auqol_front_spotHandler = -1; // their 5 s handler, only while there is one
 auqol_front_menuTargets = []; // the Where is target? list
 auqol_front_menuUnits = [];
+auqol_radio_receivers = []; // radio net: [[group, kind], ...] that can hear it (AUQOL_fnc_radioReceivers)
+auqol_radio_nextBuild = 0; // time the receiver list may be built again
+auqol_radio_itemCache = createHashMap; // item class -> is a radio (simulation ItemRadio)
+auqol_radio_bagCache = createHashMap; // backpack class -> is a long range radio backpack
+auqol_radio_lambsLoaded = isClass (configFile >> "CfgPatches" >> "lambs_main"); // LAMBS Danger: the radio net listens to its sharing
 auqol_ambushGroup = grpNull; // the group AUQOL put on Hold fire for the ambush
 auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass
 auqol_map_ignored = createHashMap; // markers already found not to be Antistasi vehicle markers
@@ -251,6 +256,41 @@ private _squadChanged = { if (auqol_ready) then { [] call AUQOL_fnc_squadReactAp
     "auqol_front_spotter", "CHECKBOX",
     ["Binocular spotter", "Command menu: Engage > Spot with binoculars, or Spot this way with binoculars. The AI you selected stop, take out their binoculars and sweep 60 degrees around where you look, out to 1000 m, revealing and calling out enemies (worse at night without night vision). Any order you give, being hit, an enemy within 150 m or 5 minutes ends it."],
     [_category, "Combat AI: where is front"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_radio_net", "CHECKBOX",
+    ["Radio net", "Your Antistasi posts (watchpost, AT, AA, HMG, roadblock) and high command squads pass every enemy they spot over the radio to each other and to your squads: AA posts within 2000 m of an aircraft, AT posts within 1000 m of a vehicle, everyone else within 750 m. They learn what the spotter knows, and crews with sight of him open fire on their own. Only knowledge is shared: no orders or waypoints change."],
+    [_category, "Combat AI: radio net"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_radio_requireRadio", "CHECKBOX",
+    ["Radio net needs a radio", "On: a group sends and hears only when one of its living members has a radio in the radio slot, and a radio backpack doubles its range. Off: every group counts as having a radio and the range is always doubled (use with ACRE, which keeps radios in the inventory)."],
+    [_category, "Combat AI: radio net"],
+    true, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_radio_calloutRange", "SLIDER",
+    ["Radio net call-out distance", "You get a call-out from a post, high command squad or LAMBS group only when the enemy is within this distance of you, twice it for vehicles and aircraft. Farther enemies are still shared, without a message."],
+    [_category, "Combat AI: radio net"],
+    [200, 3000, 1000, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_radio_garrisons", "CHECKBOX",
+    ["Radio net includes garrisons", "Your town and base garrisons send and hear the radio net too, the 8 nearest per sighting. Antistasi only spawns the garrisons near players, so the cost stays low, but more groups start smart combat."],
+    [_category, "Combat AI: radio net"],
+    false, 1
+] call CBA_fnc_addSetting;
+
+[
+    "auqol_radio_lambs", "CHECKBOX",
+    ["Radio net listens to LAMBS", "With LAMBS Danger loaded: each time a LAMBS group of your side shares an enemy, AUQOL passes it on where LAMBS does not reach: your squads, and posts and high command squads beyond LAMBS' 200 m or with better knowledge. LAMBS itself is not changed. Does nothing without LAMBS."],
+    [_category, "Combat AI: radio net"],
     true, 1
 ] call CBA_fnc_addSetting;
 
