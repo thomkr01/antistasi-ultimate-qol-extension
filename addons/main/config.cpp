@@ -177,6 +177,15 @@ class CfgFunctions {
             class concealLocateShot {};
             class concealLocateCheck {};
         };
+        class front {
+            file = "\z\auqol\addons\main\functions\front";
+            class frontDirection {};
+            class frontHud {};
+            class frontReport {};
+            class frontTargetMenu {};
+            class frontSpot {};
+            class frontSpotTick {};
+        };
         class withstand {
             file = "\z\auqol\addons\main\functions\withstand";
             class withstandApply {};
@@ -186,6 +195,73 @@ class CfgFunctions {
             class aceRefuelApply {};
             class aceRearmApply {};
             class aceRegisterFactors {};
+        };
+    };
+};
+
+
+// Command menu entries (Where is front, 1.33.0). Own class names, so they merge with the vanilla entries and
+// with other mods' instead of replacing them. The settings are checked when an entry is picked.
+class RscGroupRootMenu {
+    class Items {
+        class AUQOL_FrontWhere {
+            title = "Where is it?";
+            shortcuts[] = {};
+            submenu = "";
+            command = -5;
+            class params {
+                expression = "[_target, groupSelectedUnits player] call AUQOL_fnc_frontReport";
+            };
+            show = "IsLeader * CursorOnEnemy";
+            enable = "1";
+            speechId = 0;
+        };
+        class AUQOL_FrontSpotHere {
+            title = "Spot this way with binoculars";
+            shortcuts[] = {};
+            submenu = "";
+            command = -5;
+            class params {
+                expression = "[groupSelectedUnits player, player getDir screenToWorld [0.5, 0.5]] call AUQOL_fnc_frontSpot";
+            };
+            show = "IsLeader * CursorOnGround";
+            enable = "NotEmpty";
+            speechId = 0;
+        };
+    };
+};
+
+class RscSubmenu;
+class RscMenuEngage: RscSubmenu {
+    class Items {
+        class AUQOL_FrontSpot {
+            title = "Spot with binoculars (where you look)";
+            shortcuts[] = {};
+            submenu = "";
+            command = -5;
+            class params {
+                expression = "[groupSelectedUnits player, player getDir screenToWorld [0.5, 0.5]] call AUQOL_fnc_frontSpot";
+            };
+            show = "IsLeader";
+            enable = "NotEmpty";
+            speechId = 0;
+        };
+    };
+};
+
+class RscMenuStatus: RscSubmenu {
+    class Items {
+        class AUQOL_FrontTargets {
+            title = "Where is target?";
+            shortcuts[] = {};
+            submenu = "";
+            command = -5;
+            class params {
+                expression = "[groupSelectedUnits player] call AUQOL_fnc_frontTargetMenu";
+            };
+            show = "1";
+            enable = "IsLeader";
+            speechId = 0;
         };
     };
 };

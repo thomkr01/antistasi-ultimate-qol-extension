@@ -6,7 +6,8 @@
       gets the best knowledge anyone on its side has of it at once, instead of waiting for the spoken
       contact report to reach it through the radio queue. For vehicles the launcher check also runs at
       once instead of waiting for the 5 s fallback pass. With smart combat AI's contact sharing, nearby
-      friendly AI groups learn about it too (AUQOL_fnc_combatShareContact).
+      friendly AI groups learn about it too (AUQOL_fnc_combatShareContact). One AI calls it out with its
+      bearing from you (AUQOL_fnc_squadCallout, at most one every 4 s).
     - UnitJoined: a recruit joined, so the squad perks, the self-treat hook and the faster reactions are
       applied to it at once.
     Group events fire where the group is local (the machine of its leader); when another machine leads
@@ -27,6 +28,7 @@ _group addEventHandler ["EnemyDetected", {
     if (auqol_squad_reaction) then { { _x reveal _target } forEach (units _group select { local _x && {!isPlayer _x} }) };
     if !(_target isKindOf "Man") then { [] call AUQOL_fnc_squadLaunchers };
     [_group, _target] call AUQOL_fnc_combatShareContact;
+    [_target] call AUQOL_fnc_squadCallout; // the bearing from you, next to the game's own "front" report
 }];
 _group addEventHandler ["UnitJoined", {
     params ["_group", "_unit"];
