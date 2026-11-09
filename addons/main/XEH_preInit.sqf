@@ -19,6 +19,7 @@ auqol_radio_nextBuild = 0; // time the receiver list may be built again
 auqol_radio_itemCache = createHashMap; // item class -> is a radio (simulation ItemRadio)
 auqol_radio_bagCache = createHashMap; // backpack class -> is a long range radio backpack
 auqol_radio_lambsLoaded = isClass (configFile >> "CfgPatches" >> "lambs_main"); // LAMBS Danger: the radio net listens to its sharing
+auqol_gear_inArsenal = false; // the local player has an arsenal open (built-in batteries wait for it to close)
 auqol_gear_batteryCache = createHashMap; // binoculars slot item class -> the battery it takes ("" for none)
 auqol_ambushGroup = grpNull; // the group AUQOL put on Hold fire for the ambush
 auqol_launcherNext = 0; // time of the next 5 s launcher fallback pass

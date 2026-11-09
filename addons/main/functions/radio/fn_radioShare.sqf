@@ -34,7 +34,8 @@ params ["_group", "_target", ["_fromLambs", false]];
 if (!auqol_ready || {!auqol_radio_net} || {!local _group} || {!alive _target} || {captive _target}) exitWith {};
 private _side = side _group;
 if (_side isNotEqualTo (missionNamespace getVariable ["teamPlayer", sideUnknown]) || {isPlayer leader _group}
-    || {!alive leader _group} || {(side group _target) getFriend _side >= 0.6}) exitWith {};
+    || {!alive leader _group} || {(side group _target) getFriend _side >= 0.6}
+    || {time < (_target getVariable ["auqol_radioAt", -1e9]) + 15}) exitWith {}; // cheap early exit; LAMBS can share many times a second
 
 ["radio net", {
     private _boss = missionNamespace getVariable ["theBoss", objNull];
@@ -44,14 +45,14 @@ if (_side isNotEqualTo (missionNamespace getVariable ["teamPlayer", sideUnknown]
 
     ([_group] call AUQOL_fnc_radioHasRadio) params ["_hasRadio", "_senderBag"];
     if (!_hasRadio) exitWith {};
-    if (time < (_target getVariable ["auqol_radioAt", -1e9]) + 15) exitWith {};
-    _target setVariable ["auqol_radioAt", time];
     private _level = (_group knowsAbout _target) min 4;
     if (_level <= 0) exitWith {};
+    _target setVariable ["auqol_radioAt", time];
 
     private _isAir = _target isKindOf "Air";
     private _isVehicle = !(_target isKindOf "CAManBase");
-    private _garrisons = [];
+    private _receivers = [] call AUQOL_fnc_radioReceivers;
+    private _garrisons = []; // [distance, index in _receivers]: numbers only, so sort never compares groups
     private _sent = 0;
     {
         _x params ["_receiver", "_receiverKind"];
@@ -67,16 +68,17 @@ if (_side isNotEqualTo (missionNamespace getVariable ["teamPlayer", sideUnknown]
             && {simulationEnabled vehicle _leader} && {behaviour _leader isNotEqualTo "CARELESS"}) then {
             ([_receiver] call AUQOL_fnc_radioHasRadio) params ["_receiverRadio", "_receiverBag"];
             if (_receiverRadio && {_distance < _range * ([1, 2] select (_senderBag || _receiverBag))}) then {
-                if (_receiverKind isEqualTo "garrison") then { _garrisons pushBack [_distance, _receiver] } else {
+                if (_receiverKind isEqualTo "garrison") then { _garrisons pushBack [_distance, _forEachIndex] } else {
                     ["auqol_combat_reveal", [_receiver, _target, _level], _leader] call CBA_fnc_targetEvent;
                     _sent = _sent + 1;
                 };
             };
         };
-    } forEach ([] call AUQOL_fnc_radioReceivers);
+    } forEach _receivers;
     _garrisons sort true;
     {
-        ["auqol_combat_reveal", [_x select 1, _target, _level], leader (_x select 1)] call CBA_fnc_targetEvent;
+        private _receiver = _receivers select (_x select 1) select 0;
+        ["auqol_combat_reveal", [_receiver, _target, _level], leader _receiver] call CBA_fnc_targetEvent;
     } forEach (_garrisons select [0, 8]);
 
     if (auqol_squad_callouts) then {

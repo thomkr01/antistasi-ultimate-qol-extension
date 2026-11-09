@@ -183,7 +183,7 @@ def check_regressions():
         problems.append("frontSpotTick: an order from the player (unit no longer stopped) must end spotting")
     radio = code("functions/radio/fn_radioShare.sqf")
     guard = radio.find('_target setVariable ["auqol_radioAt", time]')
-    if guard == -1 or radio.find("+ 15) exitWith") == -1 or radio.find("+ 15) exitWith") > guard \
+    if guard == -1 or radio.find('"auqol_radioAt", -1e9]) + 15') == -1 or radio.find('"auqol_radioAt", -1e9]) + 15') > guard \
             or radio.find('"auqol_combat_reveal"') < guard or radio.find('"auqol_radio_callout"') < guard:
         problems.append("radioShare: the 15 s cascade guard must be checked and set before anything is sent")
     if re.search(r"\b(doMove|commandMove|setBehaviour|setCombatMode|addWaypoint|doFire|commandFire|doTarget)\b", radio):
@@ -458,13 +458,15 @@ def check_antistasi(au):
     order = [markers.find(f'_veh isKindOf "{c}"') for c in ("Truck", "Wheeled_APC_F", "Tank", "Plane_Base_F", "UAV_02_base_F", "Helicopter", "Boat_F")]
     if -1 in order or order != sorted(order):
         problems.append("fn_vehicleMarkers.sqf vehicle icon rules changed (AUQOL_fnc_mapVehicleMarkers mirrors them)")
-    # Radio net: the rebel post lists, and that each post's crew is spawned at its marker (AUQOL_fnc_radioGroupType).
+    # Radio net: the rebel post lists, and that each post's crew gets its marker as "markerX" (AUQOL_fnc_radioGroupType).
     outpost = au / "A3A" / "addons" / "scrt" / "Outpost"
     for name, var in (("Watchpost", "watchpostsFIA"), ("At", "atpostsFIA"), ("Aa", "aapostsFIA"), ("Hmg", "hmgpostsFIA"), ("Roadblock", "roadblocksFIA")):
         spawn = (outpost / f"fn_outpost_create{name}Distance.sqf").read_text()
-        if f"(!(_markerX in {var}))" not in spawn or "private _positionX = getMarkerPos _markerX;" not in spawn \
-                or not re.search(r"\[_positionX, teamPlayer, _\w+(, ?true, ?false)?\] call A3A_fnc_spawnGroup", spawn):
-            problems.append(f"fn_outpost_create{name}Distance.sqf no longer spawns the {var} crew at its marker")
+        if f"(!(_markerX in {var}))" not in spawn or not re.search(r"\[_x, ?_markerX\] spawn A3A_fnc_FIAinitBases", spawn):
+            problems.append(f"fn_outpost_create{name}Distance.sqf no longer gives the {var} crew its marker (A3A_fnc_FIAinitBases)")
+    bases = next((au / "A3A" / "addons" / "core").rglob("fn_FIAinitBASES.sqf")).read_text()
+    if '_unit setVariable ["markerX",_markerX,true];' not in bases:
+        problems.append('A3A_fnc_FIAinitBases no longer sets "markerX" on the unit')
     if "hcAllGroups theBoss" not in src:
         problems.append("hcAllGroups theBoss not found in Antistasi Ultimate (radio net high command squads)")
     check("Antistasi Ultimate: garage, loot, Withstand, loadout editor, vehicle marker, unit state and rebel post names used exist", problems)

@@ -65,7 +65,7 @@ if (auqol_radio_lambsLoaded) then {
         [_unit] call AUQOL_fnc_combatGroupHook;
         if (_isLocal) then {
             [[_unit]] call AUQOL_fnc_squadReactApply;
-            [_unit] call AUQOL_fnc_gearBattery;
+            [{ [_this] call AUQOL_fnc_gearBattery }, _unit, 2] call CBA_fnc_waitAndExecute;
             // The old owner publishes the saved night skills as it lets go; 2 s lets them arrive before the baseline is read.
             [{ [[_this]] call AUQOL_fnc_nightApply }, _unit, 2] call CBA_fnc_waitAndExecute;
         } else {
@@ -96,7 +96,11 @@ if (auqol_radio_lambsLoaded) then {
 
 // Antistasi's rebel loadout editor is a BIS arsenal; its open event is the only hook into that screen.
 if (hasInterface) then {
-    [missionNamespace, "arsenalOpened", { _this call AUQOL_fnc_loadoutCopyInit }] call BIS_fnc_addScriptedEventHandler;
+    [missionNamespace, "arsenalOpened", { auqol_gear_inArsenal = true; _this call AUQOL_fnc_loadoutCopyInit }] call BIS_fnc_addScriptedEventHandler;
+    // Built-in batteries wait while an arsenal is open (AUQOL_fnc_gearBattery); vanilla, Antistasi (JNA) and ACE.
+    [missionNamespace, "arsenalClosed", { auqol_gear_inArsenal = false; [player] call AUQOL_fnc_gearBattery }] call BIS_fnc_addScriptedEventHandler;
+    ["ace_arsenal_displayOpened", { auqol_gear_inArsenal = true }] call CBA_fnc_addEventHandler;
+    ["ace_arsenal_displayClosed", { auqol_gear_inArsenal = false; [player] call AUQOL_fnc_gearBattery }] call CBA_fnc_addEventHandler;
 };
 
 // Vanilla resupply (2.12+): fires repeatedly while a vehicle is being rearmed, repaired or refuelled.

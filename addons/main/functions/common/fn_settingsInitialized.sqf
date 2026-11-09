@@ -81,6 +81,7 @@ if (hasInterface) then {
             _unit setVariable ["auqol_animEH", _unit addEventHandler ["AnimStateChanged", { _this call AUQOL_fnc_animPlayerState }]];
         };
         [[_unit]] call AUQOL_fnc_animAiApply;
+        auqol_gear_inArsenal = false; // a new unit has no arsenal open, even if the last one never closed it
         // A boost left on the old unit (died on a ladder) must not keep ACE fatigue's exclusion.
         private _exclusions = missionNamespace getVariable "ace_advanced_fatigue_setAnimExclusions";
         if (!isNil "_exclusions") then { _exclusions deleteAt (_exclusions find "auqol") };
@@ -91,7 +92,7 @@ if (hasInterface) then {
     ["group", { call AUQOL_fnc_squadGroupHooks; call AUQOL_fnc_playerApply; [] call AUQOL_fnc_squadSelfTreat; [units group player] call AUQOL_fnc_squadReactApply }, true] call CBA_fnc_addPlayerEventHandler;
     // Self-treat runs 3 s after a hit (its "Dammaged" hook); the 15 s pass also catches damage set
     // without a hit, such as the 0.25 Antistasi's revive leaves.
-    [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat }] call AUQOL_fnc_perfRun }, 15] call _every;
+    [{ ["player perks", { call AUQOL_fnc_playerApply; call AUQOL_fnc_squadSelfTreat; [player] call AUQOL_fnc_gearBattery }] call AUQOL_fnc_perfRun }, 15] call _every;
 
     // Concealment: no event says a unit lay down or an enemy came near, so the player and their squad
     // are checked every second (a handful of units); hits, near shots and getting in are events.
