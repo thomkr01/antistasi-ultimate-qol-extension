@@ -631,6 +631,7 @@ Setup: a squad of 4 AI, at least two with binoculars (one RHS or ACE pair if you
 5. Give the spotter any order (Return to formation, Move). Expected: binoculars away, rifle back, he obeys at once. Shoot near him or let an enemy within 150 m: he stops spotting and fights.
 6. At night without NV: he finds far fewer; with NV binoculars or goggles as at day.
 7. Change `auqol_front_system` (clock, clock from front, compass) and repeat step 1: the call-out changes. `auqol_front_hud` off: no dial.
+8. (1.33.1) While one spots: press T on an enemy within 300 m; let a frag land near him; wound him; set the squad to Stealth. Expected: T makes him put the binoculars away and fire; he dodges the frag; wounded, he treats in place and then spots on; in Stealth he keeps watching and holds fire.
 
 Fail if: a wrong bearing (check against your compass), the dial stays on screen, the spotter keeps standing after your order or under close fire, overwatch/push/stuck recovery moves a spotter, or a script error.
 

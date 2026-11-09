@@ -26,6 +26,9 @@ _dir = (round _dir + 360) % 360;
     };
     if (binocular _unit == "") then { _unit groupChat "Negative, no binoculars."; continue };
     // [centre bearing, step (-2..2), weapon before, stance AUQOL set, damage at start, end time]
+    // Taken over from overwatch, push or smart combat spots: hand those back first, so their release later does not pull him off.
+    { _unit setVariable [_x, nil] } forEach ["auqol_owUntil", "auqol_owBreach", "auqol_owAt", "auqol_pushOwned", "auqol_pushAt"];
+    [_unit] call AUQOL_fnc_combatRelease;
     private _setStance = unitPos _unit == "Auto";
     _unit setVariable ["auqol_spot", [_dir, -2, currentWeapon _unit, _setStance, damage _unit, time + 300]];
     doStop _unit;

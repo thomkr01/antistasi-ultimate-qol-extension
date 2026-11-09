@@ -2,7 +2,7 @@
     Author: AUQOL
     The dodge itself, run on every machine by the "auqol_combat_dodge" event (AUQOL_fnc_combatDodge sends
     it from the thrower's machine): every AI on foot within 10 m of the grenade that is local to this
-    machine runs 12 m directly away from it and rejoins formation 6 s later.
+    machine runs 12 m directly away from it and rejoins formation 6 s later. Binocular spotters dodge too.
 
     Arguments:
     0: Grenade position <ARRAY> (ATL)
@@ -28,4 +28,5 @@ params ["_pos"];
         };
         _unit setVariable ["auqol_tacDodge", nil];
     }, [_unit], 6] call CBA_fnc_waitAndExecute;
-} forEach ((_pos nearEntities ["CAManBase", 10]) select { [_x] call AUQOL_fnc_combatIsEligible });
+// A binocular spotter (AUQOL_fnc_frontSpot) is stopped, which combatIsEligible skips, but he must dodge too; the move ends his spotting.
+} forEach ((_pos nearEntities ["CAManBase", 10]) select { [_x] call AUQOL_fnc_combatIsEligible || {local _x && {alive _x} && {(_x getVariable ["auqol_spot", []]) isNotEqualTo []}} });
