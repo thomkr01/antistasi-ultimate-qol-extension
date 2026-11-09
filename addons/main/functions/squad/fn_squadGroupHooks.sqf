@@ -8,8 +8,8 @@
       once instead of waiting for the 5 s fallback pass. With smart combat AI's contact sharing, nearby
       friendly AI groups learn about it too (AUQOL_fnc_combatShareContact). One AI calls it out with its
       bearing from you (AUQOL_fnc_squadCallout, at most one every 4 s).
-    - UnitJoined: a recruit joined, so the squad perks, the self-treat hook and the faster reactions are
-      applied to it at once.
+    - UnitJoined: a recruit joined, so the squad perks, the self-treat hook, the faster reactions and the
+      built-in battery (AUQOL_fnc_gearBattery) are applied to it at once.
     Group events fire where the group is local (the machine of its leader); when another machine leads
     the group the fallback timers still cover it.
 
@@ -34,4 +34,5 @@ _group addEventHandler ["UnitJoined", {
     params ["_group", "_unit"];
     if (group player isEqualTo _group) then { call AUQOL_fnc_playerApply; [] call AUQOL_fnc_squadSelfTreat };
     [[_unit]] call AUQOL_fnc_squadReactApply;
+    [_unit] call AUQOL_fnc_gearBattery;
 }];

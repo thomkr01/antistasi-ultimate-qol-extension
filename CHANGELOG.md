@@ -2,6 +2,18 @@
 
 Versions are `MAJOR.MINOR.PATCH`, set in `addons/main/script_version.hpp`. A new feature bumps MINOR, a fix bumps PATCH, and a change that breaks existing settings bumps MAJOR.
 
+## 1.34.0
+
+Not tested in game yet. Thomas asked for a radio net between his posts, his squad and high command squads, listening to LAMBS, and batteries built into binoculars-slot gear. Plan: reports/auqol-1.34-radio-net-batteries-plan.md, implementation log: reports/auqol-1.34-implementation-log.md in the project files.
+
+- **Radio net** (new, "Combat AI: radio net" in the settings): posts (watchpost, AT, AA, HMG, roadblock) and high command squads share every enemy they spot with each other and with player squads in range (AA 2000 m for aircraft, AT 1000 m for vehicles, others 750 m, doubled by a radio backpack). Knowledge only, no orders. `auqol_radio_net`, `auqol_radio_requireRadio`, `auqol_radio_calloutRange` (1000 m), `auqol_radio_garrisons` (off), `auqol_radio_lambs`.
+- Call-outs from the net within 1000 m of you (twice for vehicles and aircraft), in side chat with the post's name first. `AUQOL_fnc_squadCallout` takes an optional sender name.
+- LAMBS Danger: AUQOL listens to `lambs_main_OnInformationShared` and passes LAMBS sightings on to player squads and farther posts. LAMBS is not changed.
+- **Built-in batteries** (`auqol_gear_builtInBattery`, new "Gear" category): binoculars-slot items that take a battery get it loaded at once, for players and AI, from any mod; waits while an arsenal is open.
+- Static checks: LAMBS source (`--lambs`, also in CI and the build scripts) for the event and its parameters; Antistasi post lists and the crew's `markerX`; regression guards that the 15 s cascade guard comes before anything is sent and that the radio net gives no orders.
+- Each part was reviewed by a separate reviewer that only saw the spec and the code. Fixed from those reviews before release: patrols near a post taken for its crew (now by Antistasi's `markerX`), a possible sort error on two garrisons at the same distance, the guard read late on every LAMBS event, a free extra battery in the arsenals, and a battery check right after an owner change.
+- Checked against: smart combat (contact reports, yield to LAMBS/Vcom, starts on reveal as before), ambush hold-fire, overwatch, push, breach, unpin, stuck recovery (no orders given), T key, look to spot, binocular spotter, launchers, call-outs and the dial, night spotting, hiding and hard to locate (enemy knowledge only), Copy from user and arsenals, Antistasi (post lists, `theBoss`, `hcAllGroups`, `markerX` only read; PATCOM untouched), LAMBS, Vcom, ACE, TFAR, ACRE (setting), RHS, CUP, HATG, dedicated server and headless client.
+
 ## 1.33.1
 
 Not tested in game yet. Thomas: make sure 1.33.0 does not break how the rest of AUQOL works in combat (full edge-case sweep).

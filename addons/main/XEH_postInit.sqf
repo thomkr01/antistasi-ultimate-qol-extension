@@ -13,6 +13,20 @@
 ["auqol_anim_coef", { (_this select 0) setAnimSpeedCoef (_this select 1) }] call CBA_fnc_addEventHandler;
 // Smart combat contact reports: reveal only acts where the group is local, so it goes to its leader's machine.
 ["auqol_combat_reveal", { params ["_group", "_target", ["_level", 1.5]]; _group reveal [_target, _level] }] call CBA_fnc_addEventHandler;
+// Radio net call-out on a player's machine: said by a member of the sending group with a radio (AUQOL_fnc_radioShare).
+["auqol_radio_callout", {
+    params ["_target", "_group", "_label"];
+    private _speaker = (units _group) select { alive _x && {[_x] call AUQOL_fnc_radioItem} } param [0, leader _group];
+    [_target, _speaker, false, _label] call AUQOL_fnc_squadCallout;
+}] call CBA_fnc_addEventHandler;
+// LAMBS Danger shares sightings itself, but only with AI groups within 200 m; the radio net passes them on to
+// your squads and to posts and high command squads farther away. Its event fires where the sharing unit is local.
+if (auqol_radio_lambsLoaded) then {
+    ["lambs_main_OnInformationShared", {
+        params ["_unit", "_group", "_target"];
+        if (auqol_radio_lambs && {!isNull _target}) then { [_group, _target, true] call AUQOL_fnc_radioShare };
+    }] call CBA_fnc_addEventHandler;
+};
 // Hard to locate: each machine checks the hostile groups local to it.
 ["auqol_combat_dodge", { _this call AUQOL_fnc_combatDodgeMove }] call CBA_fnc_addEventHandler;
 ["auqol_locate_shot", { _this call AUQOL_fnc_concealLocateCheck }] call CBA_fnc_addEventHandler;
@@ -37,8 +51,8 @@
     [_object] call AUQOL_fnc_lootInitObject;
 }, true, ["Man", "WeaponHolder", "WeaponHolderSimulated"], true] call CBA_fnc_addClassEventHandler;
 
-// Faster AI reactions and night spotting: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
-// set its skills and night gear) and whenever it becomes local to a new machine (server <-> headless client).
+// Faster AI reactions, night spotting and built-in batteries: a unit is checked where it is local when it spawns, 5 s later (after Antistasi has
+// set its skills and gear) and whenever it becomes local to a new machine (server <-> headless client).
 // Faster AI animations act only on the machine that sets them, so this runs everywhere for every unit.
 // The Suppressed handler acts only where the unit is local, which follows locality changes.
 ["CAManBase", "InitPost", {
@@ -51,6 +65,7 @@
         [_unit] call AUQOL_fnc_combatGroupHook;
         if (_isLocal) then {
             [[_unit]] call AUQOL_fnc_squadReactApply;
+            [{ [_this] call AUQOL_fnc_gearBattery }, _unit, 2] call CBA_fnc_waitAndExecute;
             // The old owner publishes the saved night skills as it lets go; 2 s lets them arrive before the baseline is read.
             [{ [[_this]] call AUQOL_fnc_nightApply }, _unit, 2] call CBA_fnc_waitAndExecute;
         } else {
@@ -60,7 +75,7 @@
     }];
     if (!local _unit) exitWith {};
     [[_unit]] call AUQOL_fnc_squadReactApply;
-    [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply }, _unit, 5] call CBA_fnc_waitAndExecute;
+    [{ [[_this]] call AUQOL_fnc_squadReactApply; [[_this]] call AUQOL_fnc_nightApply; [_this] call AUQOL_fnc_gearBattery }, _unit, 5] call CBA_fnc_waitAndExecute;
 }, true, [], true] call CBA_fnc_addClassEventHandler;
 
 // Grenade dodge: any unit's throw, checked for frags in the handler. Concealment counts the shots of the units it hides,
@@ -81,7 +96,11 @@
 
 // Antistasi's rebel loadout editor is a BIS arsenal; its open event is the only hook into that screen.
 if (hasInterface) then {
-    [missionNamespace, "arsenalOpened", { _this call AUQOL_fnc_loadoutCopyInit }] call BIS_fnc_addScriptedEventHandler;
+    [missionNamespace, "arsenalOpened", { auqol_gear_inArsenal = true; _this call AUQOL_fnc_loadoutCopyInit }] call BIS_fnc_addScriptedEventHandler;
+    // Built-in batteries wait while an arsenal is open (AUQOL_fnc_gearBattery); vanilla, Antistasi (JNA) and ACE.
+    [missionNamespace, "arsenalClosed", { auqol_gear_inArsenal = false; [player] call AUQOL_fnc_gearBattery }] call BIS_fnc_addScriptedEventHandler;
+    ["ace_arsenal_displayOpened", { auqol_gear_inArsenal = true }] call CBA_fnc_addEventHandler;
+    ["ace_arsenal_displayClosed", { auqol_gear_inArsenal = false; [player] call AUQOL_fnc_gearBattery }] call CBA_fnc_addEventHandler;
 };
 
 // Vanilla resupply (2.12+): fires repeatedly while a vehicle is being rearmed, repaired or refuelled.
