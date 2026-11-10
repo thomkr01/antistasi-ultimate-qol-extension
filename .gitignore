@@ -3,3 +3,4 @@ releases/
 *.biprivatekey
 __pycache__/
 .hemttprivatekey
+graphify-out/
